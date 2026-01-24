@@ -541,6 +541,84 @@ Grok generates final comprehensive summary:
 - Limitations
 - Recommendations
 
+## 📐 Data Flow and Tool Calls
+
+### End-to-end data flow
+
+```
+┌─────────────┐     POST /api/query      ┌─────────────────┐     progress_callback     ┌──────────────┐
+│   Web UI    │ ───────────────────────► │  FastAPI        │ ◄──────────────────────── │   Agent      │
+│  (script.js)│                          │  routes/query   │      (event_type, data)   │  (agent.py)  │
+└─────────────┘                          └────────┬────────┘                           └──────┬───────┘
+       │                                           │                                            │
+       │  SSE stream (data: {...}\n\n)              │  run_workflow(query)                      │
+       │ ◄─────────────────────────────────────────┤                                            │
+       │                                           │  AgentService.get_agent()                 │
+       │                                           └──────────────────────────────────────────►│
+       │                                                                                       │
+       │                                                                     ┌─────────────────┴─────────────────┐
+       │                                                                     │  State machine: PLAN → EXECUTE →   │
+       │                                                                     │  ANALYZE → EVALUATE → REFINE /     │
+       │                                                                     │  CRITIQUE → SUMMARIZE → COMPLETE   │
+       │                                                                     └─────────────────┬─────────────────┘
+       │                                                                                       │
+       │                                                                     Plan-based        │ Dynamic tool
+       │                                                                     (retriever only)  │ calling (Grok API
+       │                                                                           │          │ + ToolRegistry)
+       │                                                                           ▼          ▼
+       │                                                                     ┌──────────┐  ┌──────────────┐
+       │                                                                     │Hybrid    │  │ Grok API     │
+       │                                                                     │Retriever │  │ (tools=...)  │
+       │                                                                     │tools.py  │  │ tools.py     │
+       │                                                                     └──────────┘  └──────────────┘
+```
+
+1. **Request**: User submits a query via the Web UI → `POST /api/query` (or `/api/query/compare-models` for multi-model).
+2. **Orchestration**: The route starts `run_workflow` in a background thread and sets `agent.progress_callback` to push events into a queue.
+3. **Streaming**: A generator consumes the queue and emits Server-Sent Events (`data: {"type": "...", ...}\n\n`) to the client. The UI updates logs and progress in real time from these events.
+4. **Execution**: The agent runs the state machine. **Execute** either uses **plan-based** retrieval (see below) or **dynamic tool calling** (Grok selects tools iteratively).
+5. **Response**: When the workflow reaches `COMPLETE`, the final result (summary, findings, etc.) is sent as the last SSE payload (or in the compare-models response). The UI displays it in the Summary tab.
+
+### Two execution modes
+
+| **Aspect** | **Plan-based execution** | **Dynamic tool calling** |
+|---|---|---|
+| **When** | Default. Used when `use_tool_calling=false` or when the plan is “simple” (e.g. low complexity, ≤2 steps, info_extraction/sentiment). | Used only when the planner sets `use_tool_calling=true` *and* the plan is not overridden as simple. |
+| **Who drives** | The plan’s `steps` (from `plan()`). The agent loops over steps and calls the retriever directly. | Grok API. The model chooses tools per turn; the agent runs them and appends results to the conversation. |
+| **Tools** | `hybrid_search`, `keyword_search`, `filter_by_metadata` via `HybridRetriever` / `retrieval` (no Grok tool-calling). | All tools in `ToolRegistry`: see below. |
+| **Progress** | `executing` events with `status: started | completed`, `results_count`. No `tool_calls` / `tool_calling_mode`. | Same, plus `tool_calling_mode: true`, `tool_calls` (list of `{name, args, success, ...}`), and per-call “Calling tool: X” / “Completed N tool call(s)” messages. |
+| **Logs** | “Retrieving relevant data…” → “Retrieved N items”. No “Tools used” section. | “Starting dynamic tool calling…” → “Calling tool: X” / “Completed N tool call(s)” → “Tool calling finished. Retrieved N results”. “Tools used” appears in the Logs tab when `tool_calls` is present. |
+
+Simple multi-step queries (e.g. “Summarize sentiment on crypto”) typically use **plan-based** execution, so you will not see tool-call entries in the logs. To see **tool calling** in the UI, use **complex, multi-step** prompts (e.g. “Compare sentiment about crypto vs traditional finance, then filter by verified accounts, then show how it changed over the last 7 days” or “What do verified accounts say about sports? Filter by high engagement.”).
+
+### Available tools (`tools.py`)
+
+Used in **dynamic tool calling**; in **plan-based** mode, only the retriever-based logic (hybrid/keyword/filter) is used.
+
+| Tool | Purpose |
+|------|--------|
+| `keyword_search` | Keyword/phrase matching. Good for exact terms, hashtags. |
+| `semantic_search` | Embedding-based similarity. Good for concepts and paraphrases. |
+| `hybrid_search` | Combines keyword + semantic. Default search in tool-calling mode. |
+| `user_profile_lookup` | Posts by author (name/id). Optional `verified_only`. |
+| `temporal_trend_analyzer` | Time-windowed analysis (e.g. `days_back`, date range). |
+| `filter_by_metadata` | Filter by sentiment, `min_engagement`, `verified_only`, category, language, etc. |
+
+`ToolRegistry` holds tool definitions (OpenAI-style function schema), implements `run_tool(name, arguments)`, and uses `HybridRetriever` and the full dataset for search/filter operations.
+
+### Tool-calling loop (dynamic mode only)
+
+1. Agent sends the research query to Grok with `tools` and `tool_choice="auto"`.
+2. Grok returns either a text reply or `tool_calls` (or both).
+3. If there are no `tool_calls`, the loop ends; aggregated results are passed to **Analyze**.
+4. Otherwise, for each `tool_call`:
+   - `ToolRegistry.run_tool(name, arguments)` is invoked.
+   - Results are appended to the conversation as tool messages.
+   - Progress is emitted (`tool_calling`, `tool_calls` history) so the UI can show “Calling tool: X” and “Tools used”.
+5. The updated `messages` are sent back to Grok; repeat until no more `tool_calls` or `max_tool_calls` is reached.
+
+After the loop, the final flattened result list is fed into **Analyze** → **Evaluate** → **Refine** / **Critique** → **Summarize** exactly as in plan-based execution.
+
 ## 🧪 Testing
 
 Run example queries:

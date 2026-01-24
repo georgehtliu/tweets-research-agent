@@ -38,7 +38,6 @@ ENV/
 *~
 
 # Data and Output
-data/*.json
 output/*.json
 logs/*.log
 *.db
@@ -47,9 +46,6 @@ logs/*.log
 # Evaluation Results
 server/evaluation/results/*.json
 !server/evaluation/results/.gitkeep
-
-# Embedding cache
-data/.embeddings_cache/
 
 # OS
 .DS_Store

@@ -1,0 +1,6537 @@
+[
+  {
+    "id": "post_0",
+    "text": "That Scorsese moment — solid",
+    "author": {
+      "username": "scorsese_95",
+      "display_name": "Scorsese",
+      "verified": true,
+      "followers": 37098928,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-23T22:50:34.234521",
+    "engagement": {
+      "likes": 45580,
+      "retweets": 154794,
+      "replies": 13825,
+      "bookmarks": 520
+    },
+    "sentiment": "neutral",
+    "category": "entertainment",
+    "topics": [
+      "Oscar season"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_1",
+    "text": "Everyone talking about voting rights but nobody saying backwards",
+    "author": {
+      "username": "regular_user_271",
+      "display_name": "Regular_User 6",
+      "verified": false,
+      "followers": 757,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-21T07:50:34.234567",
+    "engagement": {
+      "likes": 7527,
+      "retweets": 4392,
+      "replies": 63,
+      "bookmarks": 96
+    },
+    "sentiment": "negative",
+    "category": "politics",
+    "topics": [
+      "voting rights"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_2",
+    "text": "MVP-level Premier League discourse today. overrated",
+    "author": {
+      "username": "developer_364",
+      "display_name": "Developer 27",
+      "verified": false,
+      "followers": 2287,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-06T01:50:34.234598",
+    "engagement": {
+      "likes": 2339,
+      "retweets": 9980,
+      "replies": 650,
+      "bookmarks": 87
+    },
+    "sentiment": "negative",
+    "category": "sports",
+    "topics": [
+      "Premier League",
+      "MMA"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_3",
+    "text": "Andrej Karpathy and JavaScript: not production-ready",
+    "author": {
+      "username": "developer_218",
+      "display_name": "Developer 84",
+      "verified": false,
+      "followers": 4189,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-19T17:50:34.234613",
+    "engagement": {
+      "likes": 12964,
+      "retweets": 7517,
+      "replies": 146,
+      "bookmarks": 135
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "JavaScript"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_4",
+    "text": "Just read a not sure paper on Python #AI #Tech",
+    "author": {
+      "username": "journalist_542",
+      "display_name": "Journalist 33",
+      "verified": true,
+      "followers": 150024,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-02T07:50:34.234631",
+    "engagement": {
+      "likes": 28206,
+      "retweets": 188,
+      "replies": 1393,
+      "bookmarks": 117
+    },
+    "sentiment": "neutral",
+    "category": "tech",
+    "topics": [
+      "Python",
+      "JavaScript",
+      "Cybersecurity"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_5",
+    "text": "That Masters game was overrated #SZN #Ball",
+    "author": {
+      "username": "developer_246",
+      "display_name": "Developer 8",
+      "verified": false,
+      "followers": 2073,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-08T22:50:34.234655",
+    "engagement": {
+      "likes": 18591,
+      "retweets": 1290,
+      "replies": 87,
+      "bookmarks": 374
+    },
+    "sentiment": "negative",
+    "category": "sports",
+    "topics": [
+      "Masters",
+      "NFL",
+      "boxing"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_6",
+    "text": "Thoughts on TV shows: not for everyone #Music",
+    "author": {
+      "username": "regular_user_463",
+      "display_name": "Regular_User 16",
+      "verified": false,
+      "followers": 263,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-05T07:50:34.234674",
+    "engagement": {
+      "likes": 3681,
+      "retweets": 524,
+      "replies": 173,
+      "bookmarks": 5
+    },
+    "sentiment": "neutral",
+    "category": "entertainment",
+    "topics": [
+      "TV shows",
+      "concert tours",
+      "K-pop"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_7",
+    "text": "runway is worth considering",
+    "author": {
+      "username": "journalist_195",
+      "display_name": "Journalist 13",
+      "verified": true,
+      "followers": 30409,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-10T10:50:34.234697",
+    "engagement": {
+      "likes": 21593,
+      "retweets": 7062,
+      "replies": 725,
+      "bookmarks": 433
+    },
+    "sentiment": "neutral",
+    "category": "fashion",
+    "topics": [
+      "runway",
+      "sustainable fashion",
+      "statement pieces"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_8",
+    "text": "sustainable fashion: Pharrell siempre ídolo",
+    "author": {
+      "username": "pharrell_84",
+      "display_name": "Pharrell",
+      "verified": true,
+      "followers": 36778242,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-18T11:50:34.234718",
+    "engagement": {
+      "likes": 438319,
+      "retweets": 3868,
+      "replies": 3056,
+      "bookmarks": 3872
+    },
+    "sentiment": "positive",
+    "category": "fashion",
+    "topics": [
+      "sustainable fashion",
+      "NYFW"
+    ],
+    "language": "es",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_9",
+    "text": "Deep dive into Python: promising findings",
+    "author": {
+      "username": "journalist_293",
+      "display_name": "Journalist 55",
+      "verified": true,
+      "followers": 187607,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-19T18:50:34.234732",
+    "engagement": {
+      "likes": 23937,
+      "retweets": 12834,
+      "replies": 1138,
+      "bookmarks": 498
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "Python",
+      "AI"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_10",
+    "text": "Pharrell and NYFW: see how it ages",
+    "author": {
+      "username": "pharrell_31",
+      "display_name": "Pharrell",
+      "verified": true,
+      "followers": 27596918,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-05T05:50:34.234747",
+    "engagement": {
+      "likes": 62855,
+      "retweets": 246833,
+      "replies": 18667,
+      "bookmarks": 4033
+    },
+    "sentiment": "neutral",
+    "category": "fashion",
+    "topics": [
+      "NYFW",
+      "sustainable fashion",
+      "streetwear"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_11",
+    "text": "No hay nadie como Andrej Karpathy. habrá que ver #BuildInPublic",
+    "author": {
+      "username": "developer_903",
+      "display_name": "Developer 9",
+      "verified": false,
+      "followers": 2101,
+      "author_type": "developer"
+    },
+    "created_at": "2025-12-28T07:50:34.234764",
+    "engagement": {
+      "likes": 12108,
+      "retweets": 4669,
+      "replies": 161,
+      "bookmarks": 224
+    },
+    "sentiment": "neutral",
+    "category": "tech",
+    "topics": [
+      "AI",
+      "LLMs"
+    ],
+    "language": "es",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_12",
+    "text": "Just read a skeptical paper on Cloud Computing #Tech",
+    "author": {
+      "username": "developer_620",
+      "display_name": "Developer 27",
+      "verified": false,
+      "followers": 2908,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-15T23:50:34.234777",
+    "engagement": {
+      "likes": 6671,
+      "retweets": 4325,
+      "replies": 517,
+      "bookmarks": 250
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "Cloud Computing"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_13",
+    "text": "streaming is food for thought #Culture #Streaming",
+    "author": {
+      "username": "researcher_316",
+      "display_name": "Researcher 47",
+      "verified": true,
+      "followers": 3614,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-20T13:50:34.234795",
+    "engagement": {
+      "likes": 23449,
+      "retweets": 6883,
+      "replies": 1022,
+      "bookmarks": 682
+    },
+    "sentiment": "neutral",
+    "category": "entertainment",
+    "topics": [
+      "streaming",
+      "movies",
+      "gaming"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_14",
+    "text": "MVP-level Formula 1 discourse today. we'll see",
+    "author": {
+      "username": "journalist_228",
+      "display_name": "Journalist 26",
+      "verified": true,
+      "followers": 125665,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-23T03:50:34.234810",
+    "engagement": {
+      "likes": 11457,
+      "retweets": 5000,
+      "replies": 466,
+      "bookmarks": 228
+    },
+    "sentiment": "neutral",
+    "category": "sports",
+    "topics": [
+      "Formula 1"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_15",
+    "text": "museums e Damien Hirst. incrível #Museums",
+    "author": {
+      "username": "damienhirst_77",
+      "display_name": "Damien Hirst",
+      "verified": true,
+      "followers": 29663080,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-04T08:50:34.234823",
+    "engagement": {
+      "likes": 181239,
+      "retweets": 190983,
+      "replies": 10278,
+      "bookmarks": 7149
+    },
+    "sentiment": "positive",
+    "category": "art",
+    "topics": [
+      "museums"
+    ],
+    "language": "pt",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_16",
+    "text": "streetwear never misses. trying too hard #StreetStyle",
+    "author": {
+      "username": "developer_639",
+      "display_name": "Developer 41",
+      "verified": false,
+      "followers": 1120,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-10T14:50:34.234837",
+    "engagement": {
+      "likes": 9840,
+      "retweets": 8308,
+      "replies": 316,
+      "bookmarks": 341
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "streetwear",
+      "minimalism",
+      "designer collabs"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_17",
+    "text": "Web3 is overhyped #AI",
+    "author": {
+      "username": "developer_477",
+      "display_name": "Developer 57",
+      "verified": false,
+      "followers": 3722,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-18T03:50:34.234853",
+    "engagement": {
+      "likes": 7002,
+      "retweets": 8375,
+      "replies": 484,
+      "bookmarks": 376
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "Web3",
+      "JavaScript"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_18",
+    "text": "Just read a excited paper on JavaScript",
+    "author": {
+      "username": "regular_user_200",
+      "display_name": "Regular_User 92",
+      "verified": false,
+      "followers": 723,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-19T04:50:34.234866",
+    "engagement": {
+      "likes": 6291,
+      "retweets": 4049,
+      "replies": 204,
+      "bookmarks": 62
+    },
+    "sentiment": "positive",
+    "category": "tech",
+    "topics": [
+      "JavaScript",
+      "LLMs"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_19",
+    "text": "Hot take: Biotech — vaporware",
+    "author": {
+      "username": "regular_user_325",
+      "display_name": "Regular_User 97",
+      "verified": false,
+      "followers": 922,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-09T19:50:34.234878",
+    "engagement": {
+      "likes": 7251,
+      "retweets": 4135,
+      "replies": 218,
+      "bookmarks": 140
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "Biotech"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_20",
+    "text": "Thoughts on Neural Networks: privacy concerns",
+    "author": {
+      "username": "researcher_142",
+      "display_name": "Researcher 20",
+      "verified": true,
+      "followers": 16155,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-17T22:50:34.234890",
+    "engagement": {
+      "likes": 25102,
+      "retweets": 22739,
+      "replies": 625,
+      "bookmarks": 723
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "Neural Networks",
+      "JavaScript"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_21",
+    "text": "This NFT art piece is depends on the viewer",
+    "author": {
+      "username": "journalist_874",
+      "display_name": "Journalist 54",
+      "verified": true,
+      "followers": 146091,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-08T17:50:34.234902",
+    "engagement": {
+      "likes": 24494,
+      "retweets": 12036,
+      "replies": 1118,
+      "bookmarks": 225
+    },
+    "sentiment": "neutral",
+    "category": "art",
+    "topics": [
+      "NFT art"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_22",
+    "text": "Hot take: gaming — overhyped",
+    "author": {
+      "username": "developer_346",
+      "display_name": "Developer 98",
+      "verified": false,
+      "followers": 3205,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-09T00:50:34.234918",
+    "engagement": {
+      "likes": 9117,
+      "retweets": 6906,
+      "replies": 258,
+      "bookmarks": 41
+    },
+    "sentiment": "negative",
+    "category": "entertainment",
+    "topics": [
+      "gaming"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_23",
+    "text": "Thoughts on photography: derivative #Art #Museums",
+    "author": {
+      "username": "researcher_797",
+      "display_name": "Researcher 21",
+      "verified": true,
+      "followers": 21384,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-14T06:50:34.234933",
+    "engagement": {
+      "likes": 7084,
+      "retweets": 18962,
+      "replies": 105,
+      "bookmarks": 951
+    },
+    "sentiment": "negative",
+    "category": "art",
+    "topics": [
+      "photography",
+      "museums"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_24",
+    "text": "Everyone talking about local government but nobody saying corrupt",
+    "author": {
+      "username": "researcher_870",
+      "display_name": "Researcher 54",
+      "verified": true,
+      "followers": 33125,
+      "author_type": "researcher"
+    },
+    "created_at": "2025-12-26T10:50:34.234947",
+    "engagement": {
+      "likes": 6916,
+      "retweets": 14205,
+      "replies": 1483,
+      "bookmarks": 650
+    },
+    "sentiment": "negative",
+    "category": "politics",
+    "topics": [
+      "local government",
+      "infrastructure"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_25",
+    "text": "celebrity culture: BTS siempre genial",
+    "author": {
+      "username": "journalist_584",
+      "display_name": "Journalist 79",
+      "verified": true,
+      "followers": 180161,
+      "author_type": "journalist"
+    },
+    "created_at": "2025-12-27T14:50:34.234962",
+    "engagement": {
+      "likes": 12418,
+      "retweets": 5511,
+      "replies": 58,
+      "bookmarks": 506
+    },
+    "sentiment": "positive",
+    "category": "entertainment",
+    "topics": [
+      "celebrity culture",
+      "concert tours"
+    ],
+    "language": "es",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_26",
+    "text": "Bernie on immigration: step in the right direction",
+    "author": {
+      "username": "journalist_569",
+      "display_name": "Journalist 98",
+      "verified": true,
+      "followers": 67999,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-10T00:50:34.234974",
+    "engagement": {
+      "likes": 22629,
+      "retweets": 7800,
+      "replies": 1322,
+      "bookmarks": 502
+    },
+    "sentiment": "positive",
+    "category": "politics",
+    "topics": [
+      "immigration",
+      "foreign policy",
+      "education policy"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_27",
+    "text": "Premier League is game changer",
+    "author": {
+      "username": "influencer_197",
+      "display_name": "Influencer 28",
+      "verified": true,
+      "followers": 784483,
+      "author_type": "influencer"
+    },
+    "created_at": "2025-12-30T08:50:34.234990",
+    "engagement": {
+      "likes": 63464,
+      "retweets": 18120,
+      "replies": 4829,
+      "bookmarks": 2000
+    },
+    "sentiment": "positive",
+    "category": "sports",
+    "topics": [
+      "Premier League",
+      "F1",
+      "March Madness"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_28",
+    "text": "Nothing like Formula 1 season. GOAT",
+    "author": {
+      "username": "influencer_654",
+      "display_name": "Influencer 97",
+      "verified": true,
+      "followers": 524723,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-08T09:50:34.235002",
+    "engagement": {
+      "likes": 13446,
+      "retweets": 803,
+      "replies": 4702,
+      "bookmarks": 582
+    },
+    "sentiment": "positive",
+    "category": "sports",
+    "topics": [
+      "Formula 1"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_29",
+    "text": "Anyone else concerned about public art?",
+    "author": {
+      "username": "researcher_255",
+      "display_name": "Researcher 16",
+      "verified": true,
+      "followers": 37573,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-04T17:50:34.235016",
+    "engagement": {
+      "likes": 27274,
+      "retweets": 19867,
+      "replies": 2441,
+      "bookmarks": 809
+    },
+    "sentiment": "positive",
+    "category": "art",
+    "topics": [
+      "public art",
+      "contemporary art",
+      "street art"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_30",
+    "text": "Thoughts on Oscar season: solid #Music #Culture",
+    "author": {
+      "username": "influencer_246",
+      "display_name": "Influencer 23",
+      "verified": true,
+      "followers": 588805,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-09T02:50:34.235028",
+    "engagement": {
+      "likes": 9838,
+      "retweets": 10258,
+      "replies": 21,
+      "bookmarks": 836
+    },
+    "sentiment": "neutral",
+    "category": "entertainment",
+    "topics": [
+      "Oscar season"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_31",
+    "text": "That tennis game was best in the league",
+    "author": {
+      "username": "regular_user_767",
+      "display_name": "Regular_User 73",
+      "verified": false,
+      "followers": 953,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-01T15:50:34.235043",
+    "engagement": {
+      "likes": 4728,
+      "retweets": 3597,
+      "replies": 63,
+      "bookmarks": 119
+    },
+    "sentiment": "positive",
+    "category": "sports",
+    "topics": [
+      "tennis",
+      "US Open"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_32",
+    "text": "Thoughts on education policy: accountability",
+    "author": {
+      "username": "regular_user_602",
+      "display_name": "Regular_User 3",
+      "verified": false,
+      "followers": 793,
+      "author_type": "regular_user"
+    },
+    "created_at": "2025-12-30T19:50:34.235055",
+    "engagement": {
+      "likes": 4415,
+      "retweets": 4720,
+      "replies": 20,
+      "bookmarks": 195
+    },
+    "sentiment": "positive",
+    "category": "politics",
+    "topics": [
+      "education policy",
+      "elections"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_33",
+    "text": "tax reform is breakthrough",
+    "author": {
+      "username": "developer_679",
+      "display_name": "Developer 52",
+      "verified": false,
+      "followers": 4606,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-15T14:50:34.235066",
+    "engagement": {
+      "likes": 1202,
+      "retweets": 7451,
+      "replies": 90,
+      "bookmarks": 161
+    },
+    "sentiment": "positive",
+    "category": "politics",
+    "topics": [
+      "tax reform"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_34",
+    "text": "Anna Wintour x statement pieces — iconic",
+    "author": {
+      "username": "journalist_125",
+      "display_name": "Journalist 4",
+      "verified": true,
+      "followers": 170156,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-14T07:50:34.235080",
+    "engagement": {
+      "likes": 19951,
+      "retweets": 13095,
+      "replies": 490,
+      "bookmarks": 162
+    },
+    "sentiment": "positive",
+    "category": "fashion",
+    "topics": [
+      "statement pieces",
+      "streetwear"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_35",
+    "text": "Street style x runway: that fit",
+    "author": {
+      "username": "regular_user_765",
+      "display_name": "Regular_User 18",
+      "verified": false,
+      "followers": 894,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-13T08:50:34.235094",
+    "engagement": {
+      "likes": 1143,
+      "retweets": 2263,
+      "replies": 395,
+      "bookmarks": 106
+    },
+    "sentiment": "positive",
+    "category": "fashion",
+    "topics": [
+      "runway",
+      "minimalism"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_36",
+    "text": "Bernie et foreign policy — overrated",
+    "author": {
+      "username": "influencer_877",
+      "display_name": "Influencer 100",
+      "verified": true,
+      "followers": 440728,
+      "author_type": "influencer"
+    },
+    "created_at": "2025-12-25T12:50:34.235107",
+    "engagement": {
+      "likes": 5720,
+      "retweets": 20852,
+      "replies": 3874,
+      "bookmarks": 1444
+    },
+    "sentiment": "negative",
+    "category": "politics",
+    "topics": [
+      "foreign policy",
+      "education policy",
+      "Congress"
+    ],
+    "language": "fr",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_37",
+    "text": "Hot take: art market — derivative #Art #Museums",
+    "author": {
+      "username": "researcher_740",
+      "display_name": "Researcher 19",
+      "verified": true,
+      "followers": 27868,
+      "author_type": "researcher"
+    },
+    "created_at": "2025-12-29T16:50:34.235119",
+    "engagement": {
+      "likes": 42911,
+      "retweets": 5058,
+      "replies": 306,
+      "bookmarks": 480
+    },
+    "sentiment": "negative",
+    "category": "art",
+    "topics": [
+      "art market",
+      "galleries"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_38",
+    "text": "That music drop was not for everyone #Music",
+    "author": {
+      "username": "researcher_455",
+      "display_name": "Researcher 22",
+      "verified": true,
+      "followers": 46482,
+      "author_type": "researcher"
+    },
+    "created_at": "2025-12-29T23:50:34.235134",
+    "engagement": {
+      "likes": 19625,
+      "retweets": 948,
+      "replies": 188,
+      "bookmarks": 332
+    },
+    "sentiment": "neutral",
+    "category": "entertainment",
+    "topics": [
+      "music"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_39",
+    "text": "Vous en pensez quoi de Damien Hirst? faible #Museums #ContemporaryArt",
+    "author": {
+      "username": "researcher_921",
+      "display_name": "Researcher 60",
+      "verified": true,
+      "followers": 19850,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-09T13:50:34.235150",
+    "engagement": {
+      "likes": 44407,
+      "retweets": 17910,
+      "replies": 647,
+      "bookmarks": 75
+    },
+    "sentiment": "negative",
+    "category": "art",
+    "topics": [
+      "biennials",
+      "NFT art",
+      "photography"
+    ],
+    "language": "fr",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_40",
+    "text": "Nothing like World Cup season. absolute scenes",
+    "author": {
+      "username": "developer_717",
+      "display_name": "Developer 38",
+      "verified": false,
+      "followers": 279,
+      "author_type": "developer"
+    },
+    "created_at": "2025-12-27T03:50:34.235162",
+    "engagement": {
+      "likes": 12969,
+      "retweets": 4497,
+      "replies": 8,
+      "bookmarks": 289
+    },
+    "sentiment": "positive",
+    "category": "sports",
+    "topics": [
+      "World Cup",
+      "Premier League"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_41",
+    "text": "digital art take: conversation starter",
+    "author": {
+      "username": "researcher_317",
+      "display_name": "Researcher 57",
+      "verified": true,
+      "followers": 3186,
+      "author_type": "researcher"
+    },
+    "created_at": "2025-12-25T15:50:34.235175",
+    "engagement": {
+      "likes": 37982,
+      "retweets": 11955,
+      "replies": 538,
+      "bookmarks": 92
+    },
+    "sentiment": "neutral",
+    "category": "art",
+    "topics": [
+      "digital art",
+      "NFT art",
+      "street art"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_42",
+    "text": "designer collabs: Virgil Abloh encore décevant",
+    "author": {
+      "username": "journalist_991",
+      "display_name": "Journalist 72",
+      "verified": true,
+      "followers": 100885,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-15T07:50:34.235189",
+    "engagement": {
+      "likes": 2959,
+      "retweets": 12954,
+      "replies": 808,
+      "bookmarks": 14
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "designer collabs",
+      "trends",
+      "haute couture"
+    ],
+    "language": "fr",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_43",
+    "text": "AOC and education policy: concerning",
+    "author": {
+      "username": "regular_user_336",
+      "display_name": "Regular_User 79",
+      "verified": false,
+      "followers": 236,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-14T04:50:34.235199",
+    "engagement": {
+      "likes": 1035,
+      "retweets": 3803,
+      "replies": 465,
+      "bookmarks": 179
+    },
+    "sentiment": "negative",
+    "category": "politics",
+    "topics": [
+      "education policy",
+      "infrastructure"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_44",
+    "text": "Hot take: podcasts — fell off",
+    "author": {
+      "username": "regular_user_418",
+      "display_name": "Regular_User 36",
+      "verified": false,
+      "followers": 43,
+      "author_type": "regular_user"
+    },
+    "created_at": "2025-12-24T17:50:34.235214",
+    "engagement": {
+      "likes": 6070,
+      "retweets": 1779,
+      "replies": 227,
+      "bookmarks": 113
+    },
+    "sentiment": "negative",
+    "category": "entertainment",
+    "topics": [
+      "podcasts",
+      "streaming"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_45",
+    "text": "Anyone else curious about haute couture?",
+    "author": {
+      "username": "influencer_71",
+      "display_name": "Influencer 98",
+      "verified": true,
+      "followers": 591128,
+      "author_type": "influencer"
+    },
+    "created_at": "2025-12-27T17:50:34.235227",
+    "engagement": {
+      "likes": 27152,
+      "retweets": 38429,
+      "replies": 1769,
+      "bookmarks": 1665
+    },
+    "sentiment": "positive",
+    "category": "fashion",
+    "topics": [
+      "haute couture",
+      "designer collabs",
+      "statement pieces"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_46",
+    "text": "Djokovic in that boxing game was GOAT #Sports",
+    "author": {
+      "username": "researcher_488",
+      "display_name": "Researcher 58",
+      "verified": true,
+      "followers": 24726,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-07T17:50:34.235242",
+    "engagement": {
+      "likes": 33635,
+      "retweets": 19453,
+      "replies": 446,
+      "bookmarks": 462
+    },
+    "sentiment": "positive",
+    "category": "sports",
+    "topics": [
+      "boxing"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_47",
+    "text": "Hot take: soccer — robbed",
+    "author": {
+      "username": "developer_391",
+      "display_name": "Developer 77",
+      "verified": false,
+      "followers": 4446,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-10T21:50:34.235258",
+    "engagement": {
+      "likes": 9663,
+      "retweets": 7433,
+      "replies": 517,
+      "bookmarks": 309
+    },
+    "sentiment": "negative",
+    "category": "sports",
+    "topics": [
+      "soccer"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_48",
+    "text": "This slow fashion moment is flop",
+    "author": {
+      "username": "developer_977",
+      "display_name": "Developer 20",
+      "verified": false,
+      "followers": 3985,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-21T11:50:34.235269",
+    "engagement": {
+      "likes": 2199,
+      "retweets": 1494,
+      "replies": 851,
+      "bookmarks": 43
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "slow fashion"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_49",
+    "text": "The tax reform conversation is heating up. out of touch #Democracy",
+    "author": {
+      "username": "regular_user_520",
+      "display_name": "Regular_User 28",
+      "verified": false,
+      "followers": 168,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-12T07:50:34.235281",
+    "engagement": {
+      "likes": 7900,
+      "retweets": 1837,
+      "replies": 433,
+      "bookmarks": 27
+    },
+    "sentiment": "negative",
+    "category": "politics",
+    "topics": [
+      "tax reform",
+      "elections"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_50",
+    "text": "Everyone talking about infrastructure but nobody saying dangerous precedent #Politics",
+    "author": {
+      "username": "regular_user_674",
+      "display_name": "Regular_User 52",
+      "verified": false,
+      "followers": 81,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-07T18:50:34.235295",
+    "engagement": {
+      "likes": 2324,
+      "retweets": 251,
+      "replies": 46,
+      "bookmarks": 191
+    },
+    "sentiment": "negative",
+    "category": "politics",
+    "topics": [
+      "infrastructure",
+      "foreign policy"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_51",
+    "text": "Hot take: contemporary art — meh #Art",
+    "author": {
+      "username": "journalist_425",
+      "display_name": "Journalist 35",
+      "verified": true,
+      "followers": 61510,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-10T21:50:34.235308",
+    "engagement": {
+      "likes": 24737,
+      "retweets": 8394,
+      "replies": 233,
+      "bookmarks": 353
+    },
+    "sentiment": "negative",
+    "category": "art",
+    "topics": [
+      "contemporary art",
+      "street art",
+      "museums"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_52",
+    "text": "Thoughts on tennis: rigged #RespectTheGame #Ball",
+    "author": {
+      "username": "journalist_180",
+      "display_name": "Journalist 17",
+      "verified": true,
+      "followers": 104669,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-06T03:50:34.235322",
+    "engagement": {
+      "likes": 17451,
+      "retweets": 11528,
+      "replies": 471,
+      "bookmarks": 512
+    },
+    "sentiment": "negative",
+    "category": "sports",
+    "topics": [
+      "tennis",
+      "boxing"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_53",
+    "text": "Everyone talking about voting rights but nobody saying dangerous precedent",
+    "author": {
+      "username": "journalist_852",
+      "display_name": "Journalist 89",
+      "verified": true,
+      "followers": 99857,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-10T06:50:34.235335",
+    "engagement": {
+      "likes": 2887,
+      "retweets": 7155,
+      "replies": 216,
+      "bookmarks": 249
+    },
+    "sentiment": "negative",
+    "category": "politics",
+    "topics": [
+      "voting rights",
+      "elections"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_54",
+    "text": "Just read a disappointed paper on Space Tech",
+    "author": {
+      "username": "influencer_242",
+      "display_name": "Influencer 14",
+      "verified": true,
+      "followers": 163557,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-19T04:50:34.235348",
+    "engagement": {
+      "likes": 33550,
+      "retweets": 12928,
+      "replies": 1421,
+      "bookmarks": 1233
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "Space Tech",
+      "JavaScript",
+      "Cybersecurity"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_55",
+    "text": "public art take: conversation starter",
+    "author": {
+      "username": "journalist_453",
+      "display_name": "Journalist 81",
+      "verified": true,
+      "followers": 84382,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-12T08:50:34.235361",
+    "engagement": {
+      "likes": 26094,
+      "retweets": 4500,
+      "replies": 1211,
+      "bookmarks": 57
+    },
+    "sentiment": "neutral",
+    "category": "art",
+    "topics": [
+      "public art",
+      "art market",
+      "museums"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_56",
+    "text": "Deep dive into Quantum Computing: interesting findings",
+    "author": {
+      "username": "researcher_461",
+      "display_name": "Researcher 74",
+      "verified": true,
+      "followers": 43718,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-07T20:50:34.235375",
+    "engagement": {
+      "likes": 12336,
+      "retweets": 10535,
+      "replies": 2478,
+      "bookmarks": 487
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "Quantum Computing",
+      "Space Tech",
+      "Climate Tech"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_57",
+    "text": "Street style x Paris Fashion Week: iconic",
+    "author": {
+      "username": "journalist_419",
+      "display_name": "Journalist 100",
+      "verified": true,
+      "followers": 93700,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-21T14:50:34.235387",
+    "engagement": {
+      "likes": 22246,
+      "retweets": 9795,
+      "replies": 107,
+      "bookmarks": 342
+    },
+    "sentiment": "positive",
+    "category": "fashion",
+    "topics": [
+      "Paris Fashion Week",
+      "minimalism",
+      "statement pieces"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_58",
+    "text": "streaming is fascinating #Culture #Movies",
+    "author": {
+      "username": "regular_user_726",
+      "display_name": "Regular_User 11",
+      "verified": false,
+      "followers": 327,
+      "author_type": "regular_user"
+    },
+    "created_at": "2025-12-28T20:50:34.235399",
+    "engagement": {
+      "likes": 9157,
+      "retweets": 3085,
+      "replies": 329,
+      "bookmarks": 84
+    },
+    "sentiment": "neutral",
+    "category": "entertainment",
+    "topics": [
+      "streaming",
+      "concert tours"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_59",
+    "text": "Messi en tennis — malo",
+    "author": {
+      "username": "regular_user_135",
+      "display_name": "Regular_User 77",
+      "verified": false,
+      "followers": 395,
+      "author_type": "regular_user"
+    },
+    "created_at": "2025-12-30T05:50:34.235412",
+    "engagement": {
+      "likes": 2527,
+      "retweets": 1329,
+      "replies": 92,
+      "bookmarks": 177
+    },
+    "sentiment": "negative",
+    "category": "sports",
+    "topics": [
+      "tennis"
+    ],
+    "language": "es",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_60",
+    "text": "TV shows is fascinating #Culture #Streaming",
+    "author": {
+      "username": "journalist_926",
+      "display_name": "Journalist 25",
+      "verified": true,
+      "followers": 101427,
+      "author_type": "journalist"
+    },
+    "created_at": "2025-12-30T15:50:34.235424",
+    "engagement": {
+      "likes": 22226,
+      "retweets": 9345,
+      "replies": 902,
+      "bookmarks": 472
+    },
+    "sentiment": "neutral",
+    "category": "entertainment",
+    "topics": [
+      "TV shows",
+      "concert tours"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_61",
+    "text": "Kanye otra vez demostrando por qué es el mejor. overrated",
+    "author": {
+      "username": "influencer_396",
+      "display_name": "Influencer 11",
+      "verified": true,
+      "followers": 403124,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-20T02:50:34.235440",
+    "engagement": {
+      "likes": 29430,
+      "retweets": 1847,
+      "replies": 2610,
+      "bookmarks": 1906
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "haute couture"
+    ],
+    "language": "es",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_62",
+    "text": "slow fashion never misses. see how it ages #Fashion #FashionWeek",
+    "author": {
+      "username": "researcher_20",
+      "display_name": "Researcher 33",
+      "verified": true,
+      "followers": 15133,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-10T21:50:34.235450",
+    "engagement": {
+      "likes": 9798,
+      "retweets": 17983,
+      "replies": 2493,
+      "bookmarks": 540
+    },
+    "sentiment": "neutral",
+    "category": "fashion",
+    "topics": [
+      "slow fashion"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_63",
+    "text": "Hot take: minimalism — divisive #StreetStyle",
+    "author": {
+      "username": "kanye_46",
+      "display_name": "Kanye",
+      "verified": true,
+      "followers": 16643992,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-07T13:50:34.235464",
+    "engagement": {
+      "likes": 299192,
+      "retweets": 109200,
+      "replies": 6137,
+      "bookmarks": 1402
+    },
+    "sentiment": "neutral",
+    "category": "fashion",
+    "topics": [
+      "minimalism",
+      "streetwear",
+      "NYFW"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_64",
+    "text": "Was haltet ihr von Pelosi? unglaublich #Policy #Civics",
+    "author": {
+      "username": "influencer_65",
+      "display_name": "Influencer 92",
+      "verified": true,
+      "followers": 823894,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-22T18:50:34.235481",
+    "engagement": {
+      "likes": 59988,
+      "retweets": 2423,
+      "replies": 2403,
+      "bookmarks": 412
+    },
+    "sentiment": "positive",
+    "category": "politics",
+    "topics": [
+      "local government",
+      "infrastructure"
+    ],
+    "language": "de",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_65",
+    "text": "Incrível o que Drake faz. lendário #Culture",
+    "author": {
+      "username": "journalist_762",
+      "display_name": "Journalist 57",
+      "verified": true,
+      "followers": 106356,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-12T08:50:34.235494",
+    "engagement": {
+      "likes": 11109,
+      "retweets": 3060,
+      "replies": 1016,
+      "bookmarks": 509
+    },
+    "sentiment": "positive",
+    "category": "entertainment",
+    "topics": [
+      "TV shows",
+      "gaming"
+    ],
+    "language": "pt",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_66",
+    "text": "Anyone else concerned about Masters?",
+    "author": {
+      "username": "developer_457",
+      "display_name": "Developer 78",
+      "verified": false,
+      "followers": 3590,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-22T01:50:34.235507",
+    "engagement": {
+      "likes": 5460,
+      "retweets": 7272,
+      "replies": 359,
+      "bookmarks": 228
+    },
+    "sentiment": "positive",
+    "category": "sports",
+    "topics": [
+      "Masters",
+      "boxing"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_67",
+    "text": "Nothing like NFL season. stats don't lie",
+    "author": {
+      "username": "influencer_69",
+      "display_name": "Influencer 31",
+      "verified": true,
+      "followers": 826332,
+      "author_type": "influencer"
+    },
+    "created_at": "2025-12-24T06:50:34.235519",
+    "engagement": {
+      "likes": 84562,
+      "retweets": 24007,
+      "replies": 2966,
+      "bookmarks": 784
+    },
+    "sentiment": "neutral",
+    "category": "sports",
+    "topics": [
+      "NFL"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_68",
+    "text": "Bernie on Supreme Court: dangerous precedent",
+    "author": {
+      "username": "journalist_936",
+      "display_name": "Journalist 72",
+      "verified": true,
+      "followers": 35870,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-17T05:50:34.235532",
+    "engagement": {
+      "likes": 8577,
+      "retweets": 12697,
+      "replies": 533,
+      "bookmarks": 456
+    },
+    "sentiment": "negative",
+    "category": "politics",
+    "topics": [
+      "Supreme Court",
+      "infrastructure"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_69",
+    "text": "That Bernie moment — out of touch",
+    "author": {
+      "username": "influencer_810",
+      "display_name": "Influencer 64",
+      "verified": true,
+      "followers": 37560,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-09T07:50:34.235548",
+    "engagement": {
+      "likes": 47303,
+      "retweets": 36308,
+      "replies": 4688,
+      "bookmarks": 755
+    },
+    "sentiment": "negative",
+    "category": "politics",
+    "topics": [
+      "climate policy",
+      "infrastructure",
+      "healthcare reform"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_70",
+    "text": "Nobody's talking about podcasts enough. grew on me #Music",
+    "author": {
+      "username": "researcher_852",
+      "display_name": "Researcher 16",
+      "verified": true,
+      "followers": 34954,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-13T02:50:34.235562",
+    "engagement": {
+      "likes": 10028,
+      "retweets": 9965,
+      "replies": 674,
+      "bookmarks": 165
+    },
+    "sentiment": "neutral",
+    "category": "entertainment",
+    "topics": [
+      "podcasts",
+      "streaming"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_71",
+    "text": "Anyone else curious about celebrity culture?",
+    "author": {
+      "username": "regular_user_272",
+      "display_name": "Regular_User 84",
+      "verified": false,
+      "followers": 225,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-23T09:50:34.235578",
+    "engagement": {
+      "likes": 9373,
+      "retweets": 3412,
+      "replies": 316,
+      "bookmarks": 163
+    },
+    "sentiment": "positive",
+    "category": "entertainment",
+    "topics": [
+      "celebrity culture",
+      "movies"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_72",
+    "text": "Hot take: baseball — robbed",
+    "author": {
+      "username": "developer_883",
+      "display_name": "Developer 92",
+      "verified": false,
+      "followers": 2715,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-12T08:50:34.235591",
+    "engagement": {
+      "likes": 11317,
+      "retweets": 6532,
+      "replies": 133,
+      "bookmarks": 389
+    },
+    "sentiment": "negative",
+    "category": "sports",
+    "topics": [
+      "baseball",
+      "golf"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_73",
+    "text": "The Supreme Court conversation is important. accountability",
+    "author": {
+      "username": "developer_195",
+      "display_name": "Developer 98",
+      "verified": false,
+      "followers": 1405,
+      "author_type": "developer"
+    },
+    "created_at": "2025-12-26T15:50:34.235603",
+    "engagement": {
+      "likes": 16327,
+      "retweets": 8433,
+      "replies": 478,
+      "bookmarks": 255
+    },
+    "sentiment": "positive",
+    "category": "politics",
+    "topics": [
+      "Supreme Court",
+      "Congress",
+      "healthcare reform"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_74",
+    "text": "Thoughts on minimalism: flop",
+    "author": {
+      "username": "journalist_138",
+      "display_name": "Journalist 34",
+      "verified": true,
+      "followers": 195711,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-22T12:50:34.235616",
+    "engagement": {
+      "likes": 11985,
+      "retweets": 12515,
+      "replies": 825,
+      "bookmarks": 374
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "minimalism",
+      "slow fashion",
+      "Paris Fashion Week"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_75",
+    "text": "This digital art piece is genius",
+    "author": {
+      "username": "developer_572",
+      "display_name": "Developer 47",
+      "verified": false,
+      "followers": 1281,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-07T23:50:34.235628",
+    "engagement": {
+      "likes": 6522,
+      "retweets": 9870,
+      "replies": 521,
+      "bookmarks": 205
+    },
+    "sentiment": "positive",
+    "category": "art",
+    "topics": [
+      "digital art",
+      "NFT art",
+      "public art"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_76",
+    "text": "Anyone else curious about NFT art? #Art",
+    "author": {
+      "username": "journalist_726",
+      "display_name": "Journalist 73",
+      "verified": true,
+      "followers": 83588,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-13T03:50:34.235643",
+    "engagement": {
+      "likes": 15561,
+      "retweets": 13365,
+      "replies": 34,
+      "bookmarks": 377
+    },
+    "sentiment": "negative",
+    "category": "art",
+    "topics": [
+      "NFT art",
+      "art market"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_77",
+    "text": "MVP-level golf discourse today. depends on the matchup",
+    "author": {
+      "username": "researcher_196",
+      "display_name": "Researcher 3",
+      "verified": true,
+      "followers": 29903,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-01T18:50:34.235657",
+    "engagement": {
+      "likes": 20558,
+      "retweets": 13722,
+      "replies": 620,
+      "bookmarks": 422
+    },
+    "sentiment": "neutral",
+    "category": "sports",
+    "topics": [
+      "golf",
+      "World Cup",
+      "tennis"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_78",
+    "text": "That baseball game was we'll see #Ball #Sports",
+    "author": {
+      "username": "developer_625",
+      "display_name": "Developer 62",
+      "verified": false,
+      "followers": 1675,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-16T15:50:34.235669",
+    "engagement": {
+      "likes": 8077,
+      "retweets": 4571,
+      "replies": 571,
+      "bookmarks": 152
+    },
+    "sentiment": "neutral",
+    "category": "sports",
+    "topics": [
+      "baseball",
+      "boxing",
+      "March Madness"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_79",
+    "text": "biennials is excited",
+    "author": {
+      "username": "journalist_672",
+      "display_name": "Journalist 33",
+      "verified": true,
+      "followers": 130587,
+      "author_type": "journalist"
+    },
+    "created_at": "2025-12-25T07:50:34.235683",
+    "engagement": {
+      "likes": 7011,
+      "retweets": 3310,
+      "replies": 1103,
+      "bookmarks": 277
+    },
+    "sentiment": "positive",
+    "category": "art",
+    "topics": [
+      "biennials",
+      "museums"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_80",
+    "text": "Satya Nadella et LLMs — maestro",
+    "author": {
+      "username": "influencer_775",
+      "display_name": "Influencer 37",
+      "verified": true,
+      "followers": 346768,
+      "author_type": "influencer"
+    },
+    "created_at": "2025-12-30T22:50:34.235697",
+    "engagement": {
+      "likes": 37409,
+      "retweets": 42329,
+      "replies": 484,
+      "bookmarks": 1859
+    },
+    "sentiment": "positive",
+    "category": "tech",
+    "topics": [
+      "LLMs"
+    ],
+    "language": "fr",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_81",
+    "text": "Personne comme Elon Musk. faible",
+    "author": {
+      "username": "journalist_807",
+      "display_name": "Journalist 64",
+      "verified": true,
+      "followers": 53840,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-23T15:50:34.235708",
+    "engagement": {
+      "likes": 24543,
+      "retweets": 14291,
+      "replies": 592,
+      "bookmarks": 38
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "Cloud Computing"
+    ],
+    "language": "fr",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_82",
+    "text": "Vous en pensez quoi de Pelosi? bof",
+    "author": {
+      "username": "researcher_339",
+      "display_name": "Researcher 21",
+      "verified": true,
+      "followers": 48914,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-19T00:50:34.235718",
+    "engagement": {
+      "likes": 30075,
+      "retweets": 21243,
+      "replies": 1053,
+      "bookmarks": 735
+    },
+    "sentiment": "negative",
+    "category": "politics",
+    "topics": [
+      "Congress",
+      "education policy",
+      "infrastructure"
+    ],
+    "language": "fr",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_83",
+    "text": "MVP-level World Cup discourse today. choke",
+    "author": {
+      "username": "influencer_144",
+      "display_name": "Influencer 62",
+      "verified": true,
+      "followers": 349320,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-16T10:50:34.235728",
+    "engagement": {
+      "likes": 32512,
+      "retweets": 447,
+      "replies": 2136,
+      "bookmarks": 785
+    },
+    "sentiment": "negative",
+    "category": "sports",
+    "topics": [
+      "World Cup",
+      "Masters"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_84",
+    "text": "Oscar season — underrated #Music",
+    "author": {
+      "username": "developer_707",
+      "display_name": "Developer 16",
+      "verified": false,
+      "followers": 2516,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-08T20:50:34.235741",
+    "engagement": {
+      "likes": 12043,
+      "retweets": 3618,
+      "replies": 224,
+      "bookmarks": 68
+    },
+    "sentiment": "positive",
+    "category": "entertainment",
+    "topics": [
+      "Oscar season",
+      "concert tours"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_85",
+    "text": "galleries take: polarizing",
+    "author": {
+      "username": "researcher_64",
+      "display_name": "Researcher 71",
+      "verified": true,
+      "followers": 34127,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-18T14:50:34.235755",
+    "engagement": {
+      "likes": 13248,
+      "retweets": 18766,
+      "replies": 2198,
+      "bookmarks": 153
+    },
+    "sentiment": "neutral",
+    "category": "art",
+    "topics": [
+      "galleries",
+      "emerging artists",
+      "art market"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_86",
+    "text": "Rihanna and Paris Fashion Week: overpriced #FashionWeek #Fashion",
+    "author": {
+      "username": "researcher_764",
+      "display_name": "Researcher 28",
+      "verified": true,
+      "followers": 38900,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-01T22:50:34.235768",
+    "engagement": {
+      "likes": 4786,
+      "retweets": 1484,
+      "replies": 1735,
+      "bookmarks": 352
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "Paris Fashion Week",
+      "streetwear",
+      "minimalism"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_87",
+    "text": "podcasts: Tom Cruise siempre ni fu ni fa",
+    "author": {
+      "username": "influencer_746",
+      "display_name": "Influencer 29",
+      "verified": true,
+      "followers": 885373,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-09T03:50:34.235783",
+    "engagement": {
+      "likes": 455,
+      "retweets": 49556,
+      "replies": 186,
+      "bookmarks": 611
+    },
+    "sentiment": "neutral",
+    "category": "entertainment",
+    "topics": [
+      "podcasts"
+    ],
+    "language": "es",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_88",
+    "text": "Hot take: baseball — overrated",
+    "author": {
+      "username": "researcher_33",
+      "display_name": "Researcher 85",
+      "verified": true,
+      "followers": 28475,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-21T21:50:34.235793",
+    "engagement": {
+      "likes": 40299,
+      "retweets": 512,
+      "replies": 985,
+      "bookmarks": 211
+    },
+    "sentiment": "negative",
+    "category": "sports",
+    "topics": [
+      "baseball",
+      "tennis"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_89",
+    "text": "Deep dive into Python: concerning findings #Innovation #AI",
+    "author": {
+      "username": "developer_243",
+      "display_name": "Developer 39",
+      "verified": false,
+      "followers": 1273,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-15T23:50:34.235807",
+    "engagement": {
+      "likes": 17080,
+      "retweets": 3621,
+      "replies": 423,
+      "bookmarks": 153
+    },
+    "sentiment": "neutral",
+    "category": "tech",
+    "topics": [
+      "Python",
+      "Blockchain",
+      "Web3"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_90",
+    "text": "Thoughts on sustainable fashion: never misses",
+    "author": {
+      "username": "journalist_937",
+      "display_name": "Journalist 8",
+      "verified": true,
+      "followers": 152426,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-19T12:50:34.235821",
+    "engagement": {
+      "likes": 13522,
+      "retweets": 6824,
+      "replies": 1141,
+      "bookmarks": 542
+    },
+    "sentiment": "positive",
+    "category": "fashion",
+    "topics": [
+      "sustainable fashion",
+      "NYFW",
+      "designer collabs"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_91",
+    "text": "Thoughts on Web3: early days #AI #BuildInPublic",
+    "author": {
+      "username": "influencer_824",
+      "display_name": "Influencer 98",
+      "verified": true,
+      "followers": 626126,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-08T18:50:34.235832",
+    "engagement": {
+      "likes": 94936,
+      "retweets": 44004,
+      "replies": 4578,
+      "bookmarks": 444
+    },
+    "sentiment": "neutral",
+    "category": "tech",
+    "topics": [
+      "Web3",
+      "Neural Networks"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_92",
+    "text": "Anyone else excited about World Cup?",
+    "author": {
+      "username": "developer_316",
+      "display_name": "Developer 34",
+      "verified": false,
+      "followers": 3046,
+      "author_type": "developer"
+    },
+    "created_at": "2025-12-29T01:50:34.235845",
+    "engagement": {
+      "likes": 16803,
+      "retweets": 8147,
+      "replies": 477,
+      "bookmarks": 50
+    },
+    "sentiment": "neutral",
+    "category": "sports",
+    "topics": [
+      "World Cup"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_93",
+    "text": "Yayoi Kusama em photography — ok #Art",
+    "author": {
+      "username": "journalist_472",
+      "display_name": "Journalist 22",
+      "verified": true,
+      "followers": 197091,
+      "author_type": "journalist"
+    },
+    "created_at": "2025-12-31T07:50:34.235861",
+    "engagement": {
+      "likes": 26049,
+      "retweets": 5770,
+      "replies": 346,
+      "bookmarks": 143
+    },
+    "sentiment": "neutral",
+    "category": "art",
+    "topics": [
+      "photography",
+      "art market"
+    ],
+    "language": "pt",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_94",
+    "text": "Just read a amazing paper on Cybersecurity",
+    "author": {
+      "username": "influencer_70",
+      "display_name": "Influencer 91",
+      "verified": true,
+      "followers": 168366,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-12T23:50:34.235872",
+    "engagement": {
+      "likes": 1198,
+      "retweets": 14334,
+      "replies": 4142,
+      "bookmarks": 933
+    },
+    "sentiment": "positive",
+    "category": "tech",
+    "topics": [
+      "Cybersecurity",
+      "AI",
+      "Data Science"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_95",
+    "text": "Hot take: NFT art — overpriced",
+    "author": {
+      "username": "journalist_826",
+      "display_name": "Journalist 23",
+      "verified": true,
+      "followers": 33053,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-17T05:50:34.235884",
+    "engagement": {
+      "likes": 3156,
+      "retweets": 8591,
+      "replies": 304,
+      "bookmarks": 246
+    },
+    "sentiment": "negative",
+    "category": "art",
+    "topics": [
+      "NFT art",
+      "emerging artists"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_96",
+    "text": "No hay nadie como BTS. habrá que ver #Movies",
+    "author": {
+      "username": "journalist_58",
+      "display_name": "Journalist 82",
+      "verified": true,
+      "followers": 7477,
+      "author_type": "journalist"
+    },
+    "created_at": "2025-12-27T11:50:34.235898",
+    "engagement": {
+      "likes": 23030,
+      "retweets": 2807,
+      "replies": 169,
+      "bookmarks": 511
+    },
+    "sentiment": "neutral",
+    "category": "entertainment",
+    "topics": [
+      "TV shows",
+      "Oscar season"
+    ],
+    "language": "es",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_97",
+    "text": "Incrível o que Tom Cruise faz. genial",
+    "author": {
+      "username": "influencer_952",
+      "display_name": "Influencer 41",
+      "verified": true,
+      "followers": 26418,
+      "author_type": "influencer"
+    },
+    "created_at": "2025-12-28T02:50:34.235910",
+    "engagement": {
+      "likes": 27152,
+      "retweets": 38471,
+      "replies": 1181,
+      "bookmarks": 1540
+    },
+    "sentiment": "positive",
+    "category": "entertainment",
+    "topics": [
+      "celebrity culture",
+      "music"
+    ],
+    "language": "pt",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_98",
+    "text": "Anyone else concerned about biennials? #Art #Museums",
+    "author": {
+      "username": "developer_55",
+      "display_name": "Developer 13",
+      "verified": false,
+      "followers": 3680,
+      "author_type": "developer"
+    },
+    "created_at": "2025-12-30T05:50:34.235921",
+    "engagement": {
+      "likes": 7606,
+      "retweets": 1245,
+      "replies": 348,
+      "bookmarks": 309
+    },
+    "sentiment": "negative",
+    "category": "art",
+    "topics": [
+      "biennials",
+      "art market",
+      "museums"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_99",
+    "text": "Hot take: soccer — choke",
+    "author": {
+      "username": "influencer_758",
+      "display_name": "Influencer 50",
+      "verified": true,
+      "followers": 342061,
+      "author_type": "influencer"
+    },
+    "created_at": "2025-12-24T15:50:34.235937",
+    "engagement": {
+      "likes": 47277,
+      "retweets": 6982,
+      "replies": 749,
+      "bookmarks": 10
+    },
+    "sentiment": "negative",
+    "category": "sports",
+    "topics": [
+      "soccer"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_0",
+    "text": "AI is fantastic",
+    "author": {
+      "username": "journalist_13",
+      "display_name": "Journalist 38",
+      "verified": true,
+      "followers": 113477,
+      "author_type": "journalist"
+    },
+    "created_at": "2025-12-26T17:50:34.235949",
+    "engagement": {
+      "likes": 12707,
+      "retweets": 12765,
+      "replies": 173,
+      "bookmarks": 572
+    },
+    "sentiment": "positive",
+    "category": "tech",
+    "topics": [
+      "AI"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_1",
+    "text": "Deep dive into AI: concerning findings #Innovation",
+    "author": {
+      "username": "journalist_609",
+      "display_name": "Journalist 79",
+      "verified": true,
+      "followers": 56261,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-23T12:50:34.235962",
+    "engagement": {
+      "likes": 15003,
+      "retweets": 1752,
+      "replies": 277,
+      "bookmarks": 311
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "AI"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": true,
+    "reply_to": "post_0"
+  },
+  {
+    "id": "post_2",
+    "text": "Não tem como Satya Nadella. medíocre",
+    "author": {
+      "username": "influencer_334",
+      "display_name": "Influencer 49",
+      "verified": true,
+      "followers": 303916,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-05T18:50:34.235976",
+    "engagement": {
+      "likes": 51502,
+      "retweets": 23921,
+      "replies": 932,
+      "bookmarks": 1908
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "AI"
+    ],
+    "language": "pt",
+    "has_media": true,
+    "is_reply": true,
+    "reply_to": "post_0"
+  },
+  {
+    "id": "post_3",
+    "text": "Sam Altman und AI — legende #Tech #AI",
+    "author": {
+      "username": "developer_852",
+      "display_name": "Developer 89",
+      "verified": false,
+      "followers": 666,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-14T17:50:34.235984",
+    "engagement": {
+      "likes": 13406,
+      "retweets": 8180,
+      "replies": 142,
+      "bookmarks": 324
+    },
+    "sentiment": "positive",
+    "category": "tech",
+    "topics": [
+      "AI"
+    ],
+    "language": "de",
+    "has_media": true,
+    "is_reply": true,
+    "reply_to": "post_0"
+  },
+  {
+    "id": "post_4",
+    "text": "Deep dive into AI: interesting findings #BuildInPublic #AI",
+    "author": {
+      "username": "journalist_557",
+      "display_name": "Journalist 5",
+      "verified": true,
+      "followers": 99248,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-20T17:50:34.235994",
+    "engagement": {
+      "likes": 22991,
+      "retweets": 14671,
+      "replies": 1099,
+      "bookmarks": 87
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "AI"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": true,
+    "reply_to": "post_0"
+  },
+  {
+    "id": "post_1000",
+    "text": "Thoughts on healthcare reform: nuance needed #Democracy",
+    "author": {
+      "username": "regular_user_227",
+      "display_name": "Regular_User 58",
+      "verified": false,
+      "followers": 393,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-05T02:50:34.236006",
+    "engagement": {
+      "likes": 6408,
+      "retweets": 3793,
+      "replies": 395,
+      "bookmarks": 173
+    },
+    "sentiment": "neutral",
+    "category": "politics",
+    "topics": [
+      "healthcare reform"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_1001",
+    "text": "healthcare reform is concerned",
+    "author": {
+      "username": "developer_488",
+      "display_name": "Developer 13",
+      "verified": false,
+      "followers": 3689,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-22T02:50:34.236020",
+    "engagement": {
+      "likes": 14825,
+      "retweets": 5225,
+      "replies": 68,
+      "bookmarks": 153
+    },
+    "sentiment": "negative",
+    "category": "politics",
+    "topics": [
+      "healthcare reform"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": true,
+    "reply_to": "post_1000"
+  },
+  {
+    "id": "post_2000",
+    "text": "runway is overhyped",
+    "author": {
+      "username": "regular_user_905",
+      "display_name": "Regular_User 26",
+      "verified": false,
+      "followers": 470,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-01T18:50:34.236032",
+    "engagement": {
+      "likes": 9702,
+      "retweets": 3518,
+      "replies": 199,
+      "bookmarks": 1
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "runway"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_2001",
+    "text": "Pharrell em runway — interessante",
+    "author": {
+      "username": "researcher_357",
+      "display_name": "Researcher 46",
+      "verified": true,
+      "followers": 31006,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-04T06:50:34.236047",
+    "engagement": {
+      "likes": 40459,
+      "retweets": 5653,
+      "replies": 1218,
+      "bookmarks": 940
+    },
+    "sentiment": "neutral",
+    "category": "fashion",
+    "topics": [
+      "runway"
+    ],
+    "language": "pt",
+    "has_media": false,
+    "is_reply": true,
+    "reply_to": "post_2000"
+  },
+  {
+    "id": "post_2002",
+    "text": "runway is excited",
+    "author": {
+      "username": "regular_user_398",
+      "display_name": "Regular_User 54",
+      "verified": false,
+      "followers": 620,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-18T09:50:34.236055",
+    "engagement": {
+      "likes": 2258,
+      "retweets": 4708,
+      "replies": 196,
+      "bookmarks": 108
+    },
+    "sentiment": "positive",
+    "category": "fashion",
+    "topics": [
+      "runway"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": true,
+    "reply_to": "post_2000"
+  },
+  {
+    "id": "post_2003",
+    "text": "Virgil Abloh otra vez demostrando por qué es el mejor. ídolo",
+    "author": {
+      "username": "regular_user_518",
+      "display_name": "Regular_User 84",
+      "verified": false,
+      "followers": 516,
+      "author_type": "regular_user"
+    },
+    "created_at": "2025-12-28T10:50:34.236066",
+    "engagement": {
+      "likes": 6703,
+      "retweets": 4028,
+      "replies": 212,
+      "bookmarks": 181
+    },
+    "sentiment": "positive",
+    "category": "fashion",
+    "topics": [
+      "runway"
+    ],
+    "language": "es",
+    "has_media": false,
+    "is_reply": true,
+    "reply_to": "post_2000"
+  },
+  {
+    "id": "post_2004",
+    "text": "Pharrell and runway: that fit",
+    "author": {
+      "username": "journalist_580",
+      "display_name": "Journalist 96",
+      "verified": true,
+      "followers": 134843,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-20T16:50:34.236074",
+    "engagement": {
+      "likes": 18013,
+      "retweets": 8369,
+      "replies": 231,
+      "bookmarks": 586
+    },
+    "sentiment": "positive",
+    "category": "fashion",
+    "topics": [
+      "runway"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": true,
+    "reply_to": "post_2000"
+  },
+  {
+    "id": "post_3000",
+    "text": "haute couture is fire",
+    "author": {
+      "username": "developer_882",
+      "display_name": "Developer 91",
+      "verified": false,
+      "followers": 3607,
+      "author_type": "developer"
+    },
+    "created_at": "2025-12-28T18:50:34.236088",
+    "engagement": {
+      "likes": 5438,
+      "retweets": 2281,
+      "replies": 803,
+      "bookmarks": 105
+    },
+    "sentiment": "positive",
+    "category": "fashion",
+    "topics": [
+      "haute couture"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_3001",
+    "text": "haute couture never misses. overpriced",
+    "author": {
+      "username": "regular_user_922",
+      "display_name": "Regular_User 87",
+      "verified": false,
+      "followers": 844,
+      "author_type": "regular_user"
+    },
+    "created_at": "2025-12-29T11:50:34.236098",
+    "engagement": {
+      "likes": 1560,
+      "retweets": 1110,
+      "replies": 492,
+      "bookmarks": 192
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "haute couture"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": true,
+    "reply_to": "post_3000"
+  },
+  {
+    "id": "post_4000",
+    "text": "sustainable fashion never misses. interesting choice #Fashion #StreetStyle",
+    "author": {
+      "username": "journalist_463",
+      "display_name": "Journalist 10",
+      "verified": true,
+      "followers": 171101,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-07T01:50:34.236109",
+    "engagement": {
+      "likes": 26037,
+      "retweets": 14419,
+      "replies": 190,
+      "bookmarks": 412
+    },
+    "sentiment": "neutral",
+    "category": "fashion",
+    "topics": [
+      "sustainable fashion"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_4001",
+    "text": "Unglaublich, was Anna Wintour wieder macht. enttäuschend #Fashion #FashionWeek",
+    "author": {
+      "username": "regular_user_134",
+      "display_name": "Regular_User 73",
+      "verified": false,
+      "followers": 882,
+      "author_type": "regular_user"
+    },
+    "created_at": "2025-12-30T23:50:34.236122",
+    "engagement": {
+      "likes": 7951,
+      "retweets": 2815,
+      "replies": 457,
+      "bookmarks": 174
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "sustainable fashion"
+    ],
+    "language": "de",
+    "has_media": true,
+    "is_reply": true,
+    "reply_to": "post_4000"
+  },
+  {
+    "id": "post_4002",
+    "text": "Hot take: sustainable fashion — never misses",
+    "author": {
+      "username": "influencer_904",
+      "display_name": "Influencer 84",
+      "verified": true,
+      "followers": 326528,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-12T16:50:34.236133",
+    "engagement": {
+      "likes": 20837,
+      "retweets": 17958,
+      "replies": 764,
+      "bookmarks": 1340
+    },
+    "sentiment": "positive",
+    "category": "fashion",
+    "topics": [
+      "sustainable fashion"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": true,
+    "reply_to": "post_4000"
+  },
+  {
+    "id": "post_4003",
+    "text": "Anyone else curious about sustainable fashion?",
+    "author": {
+      "username": "researcher_713",
+      "display_name": "Researcher 44",
+      "verified": true,
+      "followers": 8903,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-21T17:50:34.236145",
+    "engagement": {
+      "likes": 27676,
+      "retweets": 22742,
+      "replies": 541,
+      "bookmarks": 489
+    },
+    "sentiment": "positive",
+    "category": "fashion",
+    "topics": [
+      "sustainable fashion"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": true,
+    "reply_to": "post_4000"
+  },
+  {
+    "id": "post_4004",
+    "text": "Thoughts on sustainable fashion: never misses",
+    "author": {
+      "username": "researcher_544",
+      "display_name": "Researcher 73",
+      "verified": true,
+      "followers": 1555,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-12T01:50:34.236155",
+    "engagement": {
+      "likes": 39997,
+      "retweets": 21299,
+      "replies": 672,
+      "bookmarks": 450
+    },
+    "sentiment": "positive",
+    "category": "fashion",
+    "topics": [
+      "sustainable fashion"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": true,
+    "reply_to": "post_4000"
+  },
+  {
+    "id": "post_5000",
+    "text": "AOC and Supreme Court: concerning",
+    "author": {
+      "username": "regular_user_615",
+      "display_name": "Regular_User 93",
+      "verified": false,
+      "followers": 632,
+      "author_type": "regular_user"
+    },
+    "created_at": "2025-12-26T15:50:34.236166",
+    "engagement": {
+      "likes": 4668,
+      "retweets": 219,
+      "replies": 434,
+      "bookmarks": 168
+    },
+    "sentiment": "negative",
+    "category": "politics",
+    "topics": [
+      "Supreme Court"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_5001",
+    "text": "Trudeau em Supreme Court — lendário",
+    "author": {
+      "username": "regular_user_700",
+      "display_name": "Regular_User 23",
+      "verified": false,
+      "followers": 791,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-22T00:50:34.236179",
+    "engagement": {
+      "likes": 7717,
+      "retweets": 597,
+      "replies": 8,
+      "bookmarks": 150
+    },
+    "sentiment": "positive",
+    "category": "politics",
+    "topics": [
+      "Supreme Court"
+    ],
+    "language": "pt",
+    "has_media": false,
+    "is_reply": true,
+    "reply_to": "post_5000"
+  },
+  {
+    "id": "post_5002",
+    "text": "The Supreme Court conversation is heating up. corrupt",
+    "author": {
+      "username": "regular_user_786",
+      "display_name": "Regular_User 54",
+      "verified": false,
+      "followers": 443,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-06T05:50:34.236187",
+    "engagement": {
+      "likes": 6590,
+      "retweets": 675,
+      "replies": 327,
+      "bookmarks": 137
+    },
+    "sentiment": "negative",
+    "category": "politics",
+    "topics": [
+      "Supreme Court"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": true,
+    "reply_to": "post_5000"
+  },
+  {
+    "id": "post_5003",
+    "text": "Pelosi on Supreme Court: nuance needed #Politics #Policy",
+    "author": {
+      "username": "influencer_60",
+      "display_name": "Influencer 32",
+      "verified": true,
+      "followers": 100400,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-04T23:50:34.236197",
+    "engagement": {
+      "likes": 56948,
+      "retweets": 7601,
+      "replies": 3714,
+      "bookmarks": 1253
+    },
+    "sentiment": "neutral",
+    "category": "politics",
+    "topics": [
+      "Supreme Court"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": true,
+    "reply_to": "post_5000"
+  },
+  {
+    "id": "post_5004",
+    "text": "Nobody does it like Trudeau. concerning #Politics",
+    "author": {
+      "username": "journalist_467",
+      "display_name": "Journalist 66",
+      "verified": true,
+      "followers": 99404,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-12T19:50:34.236211",
+    "engagement": {
+      "likes": 1816,
+      "retweets": 8185,
+      "replies": 1160,
+      "bookmarks": 170
+    },
+    "sentiment": "negative",
+    "category": "politics",
+    "topics": [
+      "Supreme Court"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": true,
+    "reply_to": "post_5000"
+  },
+  {
+    "id": "post_6000",
+    "text": "Nothing like boxing season. best in the league",
+    "author": {
+      "username": "developer_846",
+      "display_name": "Developer 10",
+      "verified": false,
+      "followers": 4782,
+      "author_type": "developer"
+    },
+    "created_at": "2025-12-26T23:50:34.236225",
+    "engagement": {
+      "likes": 12216,
+      "retweets": 1956,
+      "replies": 514,
+      "bookmarks": 344
+    },
+    "sentiment": "positive",
+    "category": "sports",
+    "topics": [
+      "boxing"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_6001",
+    "text": "boxing is questionable",
+    "author": {
+      "username": "developer_206",
+      "display_name": "Developer 38",
+      "verified": false,
+      "followers": 4718,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-05T09:50:34.236235",
+    "engagement": {
+      "likes": 9958,
+      "retweets": 3974,
+      "replies": 475,
+      "bookmarks": 188
+    },
+    "sentiment": "negative",
+    "category": "sports",
+    "topics": [
+      "boxing"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": true,
+    "reply_to": "post_6000"
+  },
+  {
+    "id": "post_6002",
+    "text": "Incrível o que Djokovic faz. curioso",
+    "author": {
+      "username": "developer_107",
+      "display_name": "Developer 27",
+      "verified": false,
+      "followers": 4440,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-19T02:50:34.236246",
+    "engagement": {
+      "likes": 7804,
+      "retweets": 6878,
+      "replies": 503,
+      "bookmarks": 30
+    },
+    "sentiment": "neutral",
+    "category": "sports",
+    "topics": [
+      "boxing"
+    ],
+    "language": "pt",
+    "has_media": false,
+    "is_reply": true,
+    "reply_to": "post_6000"
+  },
+  {
+    "id": "post_6003",
+    "text": "Nothing like boxing season. we'll see",
+    "author": {
+      "username": "journalist_998",
+      "display_name": "Journalist 96",
+      "verified": true,
+      "followers": 27256,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-03T12:50:34.236254",
+    "engagement": {
+      "likes": 19030,
+      "retweets": 1565,
+      "replies": 1035,
+      "bookmarks": 136
+    },
+    "sentiment": "neutral",
+    "category": "sports",
+    "topics": [
+      "boxing"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": true,
+    "reply_to": "post_6000"
+  },
+  {
+    "id": "post_6004",
+    "text": "O que acharam de Serena? ok",
+    "author": {
+      "username": "influencer_140",
+      "display_name": "Influencer 100",
+      "verified": true,
+      "followers": 817557,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-18T10:50:34.236264",
+    "engagement": {
+      "likes": 76638,
+      "retweets": 7141,
+      "replies": 1273,
+      "bookmarks": 216
+    },
+    "sentiment": "neutral",
+    "category": "sports",
+    "topics": [
+      "boxing"
+    ],
+    "language": "pt",
+    "has_media": false,
+    "is_reply": true,
+    "reply_to": "post_6000"
+  },
+  {
+    "id": "post_7000",
+    "text": "Hot take: designer collabs — flop",
+    "author": {
+      "username": "developer_847",
+      "display_name": "Developer 91",
+      "verified": false,
+      "followers": 430,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-01T17:50:34.236274",
+    "engagement": {
+      "likes": 7045,
+      "retweets": 5370,
+      "replies": 151,
+      "bookmarks": 46
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "designer collabs"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_7001",
+    "text": "designer collabs never misses. that fit",
+    "author": {
+      "username": "journalist_382",
+      "display_name": "Journalist 88",
+      "verified": true,
+      "followers": 170228,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-15T22:50:34.236313",
+    "engagement": {
+      "likes": 21125,
+      "retweets": 1376,
+      "replies": 1192,
+      "bookmarks": 600
+    },
+    "sentiment": "positive",
+    "category": "fashion",
+    "topics": [
+      "designer collabs"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": true,
+    "reply_to": "post_7000"
+  },
+  {
+    "id": "post_7002",
+    "text": "Hot take: designer collabs — dated #Fashion #FashionWeek",
+    "author": {
+      "username": "influencer_363",
+      "display_name": "Influencer 28",
+      "verified": true,
+      "followers": 962426,
+      "author_type": "influencer"
+    },
+    "created_at": "2025-12-26T20:50:34.236326",
+    "engagement": {
+      "likes": 24530,
+      "retweets": 18021,
+      "replies": 2292,
+      "bookmarks": 913
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "designer collabs"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": true,
+    "reply_to": "post_7000"
+  },
+  {
+    "id": "post_8000",
+    "text": "Pharrellどう思う？様子見",
+    "author": {
+      "username": "journalist_801",
+      "display_name": "Journalist 92",
+      "verified": true,
+      "followers": 99139,
+      "author_type": "journalist"
+    },
+    "created_at": "2025-12-25T06:50:34.236339",
+    "engagement": {
+      "likes": 15718,
+      "retweets": 8921,
+      "replies": 992,
+      "bookmarks": 352
+    },
+    "sentiment": "neutral",
+    "category": "fashion",
+    "topics": [
+      "runway"
+    ],
+    "language": "ja",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_8001",
+    "text": "runway never misses. overpriced",
+    "author": {
+      "username": "annawintour_61",
+      "display_name": "Anna Wintour",
+      "verified": true,
+      "followers": 36029599,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-18T21:50:34.236347",
+    "engagement": {
+      "likes": 187397,
+      "retweets": 201023,
+      "replies": 19136,
+      "bookmarks": 3813
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "runway"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": true,
+    "reply_to": "post_8000"
+  },
+  {
+    "id": "post_8002",
+    "text": "Increíble lo de Anna Wintour hoy. decepcionante",
+    "author": {
+      "username": "regular_user_146",
+      "display_name": "Regular_User 73",
+      "verified": false,
+      "followers": 981,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-18T09:50:34.236360",
+    "engagement": {
+      "likes": 3084,
+      "retweets": 4032,
+      "replies": 277,
+      "bookmarks": 79
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "runway"
+    ],
+    "language": "es",
+    "has_media": false,
+    "is_reply": true,
+    "reply_to": "post_8000"
+  },
+  {
+    "id": "post_9000",
+    "text": "Saw a installations show recently. masterpiece",
+    "author": {
+      "username": "influencer_349",
+      "display_name": "Influencer 92",
+      "verified": true,
+      "followers": 196080,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-05T02:50:34.236368",
+    "engagement": {
+      "likes": 42413,
+      "retweets": 3903,
+      "replies": 179,
+      "bookmarks": 302
+    },
+    "sentiment": "positive",
+    "category": "art",
+    "topics": [
+      "installations"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_9001",
+    "text": "Was haltet ihr von Yayoi Kusama? stark #ContemporaryArt #Art",
+    "author": {
+      "username": "influencer_725",
+      "display_name": "Influencer 72",
+      "verified": true,
+      "followers": 737250,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-05T19:50:34.236380",
+    "engagement": {
+      "likes": 80440,
+      "retweets": 23384,
+      "replies": 1828,
+      "bookmarks": 1363
+    },
+    "sentiment": "positive",
+    "category": "art",
+    "topics": [
+      "installations"
+    ],
+    "language": "de",
+    "has_media": true,
+    "is_reply": true,
+    "reply_to": "post_9000"
+  },
+  {
+    "id": "post_137",
+    "text": "JavaScript is intriguing",
+    "author": {
+      "username": "samaltman_11",
+      "display_name": "Sam Altman",
+      "verified": true,
+      "followers": 38603549,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-17T05:23:52.107489",
+    "engagement": {
+      "likes": 31086,
+      "retweets": 8429,
+      "replies": 23006,
+      "bookmarks": 4156
+    },
+    "sentiment": "neutral",
+    "category": "tech",
+    "topics": [
+      "JavaScript"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_138",
+    "text": "Hot take: JavaScript — game changer #AI #BuildInPublic",
+    "author": {
+      "username": "developer_25",
+      "display_name": "Developer 26",
+      "verified": true,
+      "followers": 4198,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-21T00:23:52.107489",
+    "engagement": {
+      "likes": 8608,
+      "retweets": 8960,
+      "replies": 3808,
+      "bookmarks": 30
+    },
+    "sentiment": "positive",
+    "category": "tech",
+    "topics": [
+      "JavaScript"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_139",
+    "text": "Just read a worth considering paper on JavaScript",
+    "author": {
+      "username": "influencer_414",
+      "display_name": "Influencer 36",
+      "verified": true,
+      "followers": 901398,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-18T06:23:52.107489",
+    "engagement": {
+      "likes": 8972,
+      "retweets": 7802,
+      "replies": 1865,
+      "bookmarks": 209
+    },
+    "sentiment": "neutral",
+    "category": "tech",
+    "topics": [
+      "JavaScript"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_140",
+    "text": "Just read a concerned paper on JavaScript",
+    "author": {
+      "username": "samaltman_19",
+      "display_name": "Sam Altman",
+      "verified": true,
+      "followers": 16994575,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-18T17:23:52.107489",
+    "engagement": {
+      "likes": 23215,
+      "retweets": 13449,
+      "replies": 3099,
+      "bookmarks": 939
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "JavaScript"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_141",
+    "text": "Thoughts on JavaScript: game changer",
+    "author": {
+      "username": "researcher_902",
+      "display_name": "Researcher 80",
+      "verified": true,
+      "followers": 31653,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-17T11:23:52.107489",
+    "engagement": {
+      "likes": 31513,
+      "retweets": 6483,
+      "replies": 3557,
+      "bookmarks": 1653
+    },
+    "sentiment": "positive",
+    "category": "tech",
+    "topics": [
+      "JavaScript"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_142",
+    "text": "Just read a overrated paper on JavaScript #Tech #BuildInPublic",
+    "author": {
+      "username": "developer_630",
+      "display_name": "Developer 68",
+      "verified": true,
+      "followers": 972,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-23T10:23:52.107489",
+    "engagement": {
+      "likes": 32163,
+      "retweets": 15834,
+      "replies": 65,
+      "bookmarks": 799
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "JavaScript"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_143",
+    "text": "Just read a love this paper on JavaScript #Tech #BuildInPublic",
+    "author": {
+      "username": "samaltman_18",
+      "display_name": "Sam Altman",
+      "verified": true,
+      "followers": 23942781,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-18T07:23:52.107489",
+    "engagement": {
+      "likes": 42295,
+      "retweets": 4485,
+      "replies": 8855,
+      "bookmarks": 6548
+    },
+    "sentiment": "positive",
+    "category": "tech",
+    "topics": [
+      "JavaScript"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_144",
+    "text": "Just read a concerned paper on JavaScript",
+    "author": {
+      "username": "journalist_273",
+      "display_name": "Journalist 52",
+      "verified": true,
+      "followers": 178503,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-23T14:23:52.107489",
+    "engagement": {
+      "likes": 30908,
+      "retweets": 11502,
+      "replies": 4178,
+      "bookmarks": 1520
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "JavaScript"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_145",
+    "text": "Just read a interesting paper on Python #AI",
+    "author": {
+      "username": "andrejkarpathy_44",
+      "display_name": "Andrej Karpathy",
+      "verified": true,
+      "followers": 15499306,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-18T08:23:52.107489",
+    "engagement": {
+      "likes": 43275,
+      "retweets": 6970,
+      "replies": 9042,
+      "bookmarks": 7680
+    },
+    "sentiment": "neutral",
+    "category": "tech",
+    "topics": [
+      "Python"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_146",
+    "text": "Just read a not sure paper on Python",
+    "author": {
+      "username": "journalist_137",
+      "display_name": "Journalist 8",
+      "verified": true,
+      "followers": 115900,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-18T18:23:52.107489",
+    "engagement": {
+      "likes": 42311,
+      "retweets": 18923,
+      "replies": 3136,
+      "bookmarks": 1789
+    },
+    "sentiment": "neutral",
+    "category": "tech",
+    "topics": [
+      "Python"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_147",
+    "text": "Python is skeptical",
+    "author": {
+      "username": "researcher_720",
+      "display_name": "Researcher 96",
+      "verified": true,
+      "followers": 4189,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-22T03:23:52.107489",
+    "engagement": {
+      "likes": 40063,
+      "retweets": 15022,
+      "replies": 479,
+      "bookmarks": 1489
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "Python"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_148",
+    "text": "Deep dive into Python: concerning findings",
+    "author": {
+      "username": "andrejkarpathy_54",
+      "display_name": "Andrej Karpathy",
+      "verified": true,
+      "followers": 33608813,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-19T15:23:52.107489",
+    "engagement": {
+      "likes": 15757,
+      "retweets": 1224,
+      "replies": 21715,
+      "bookmarks": 7199
+    },
+    "sentiment": "positive",
+    "category": "tech",
+    "topics": [
+      "Python"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_149",
+    "text": "Thoughts on Python: build in public",
+    "author": {
+      "username": "regular_user_17",
+      "display_name": "Regular_User 67",
+      "verified": true,
+      "followers": 582,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-20T05:23:52.107489",
+    "engagement": {
+      "likes": 11961,
+      "retweets": 10314,
+      "replies": 2462,
+      "bookmarks": 680
+    },
+    "sentiment": "positive",
+    "category": "tech",
+    "topics": [
+      "Python"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_150",
+    "text": "Just read a excited paper on Python #Tech #AI",
+    "author": {
+      "username": "journalist_816",
+      "display_name": "Journalist 34",
+      "verified": true,
+      "followers": 23999,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-20T20:23:52.107489",
+    "engagement": {
+      "likes": 10840,
+      "retweets": 2569,
+      "replies": 3097,
+      "bookmarks": 506
+    },
+    "sentiment": "positive",
+    "category": "tech",
+    "topics": [
+      "Python"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_151",
+    "text": "Just read a fire paper on Python",
+    "author": {
+      "username": "andrejkarpathy_37",
+      "display_name": "Andrej Karpathy",
+      "verified": true,
+      "followers": 20141982,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-23T20:23:52.107489",
+    "engagement": {
+      "likes": 43694,
+      "retweets": 9858,
+      "replies": 16877,
+      "bookmarks": 221
+    },
+    "sentiment": "positive",
+    "category": "tech",
+    "topics": [
+      "Python"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_152",
+    "text": "Thoughts on Python: vaporware",
+    "author": {
+      "username": "developer_319",
+      "display_name": "Developer 44",
+      "verified": true,
+      "followers": 940,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-21T12:23:52.107489",
+    "engagement": {
+      "likes": 20690,
+      "retweets": 11100,
+      "replies": 1058,
+      "bookmarks": 1985
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "Python"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_153",
+    "text": "Anyone else concerned about NBA?",
+    "author": {
+      "username": "serena_66",
+      "display_name": "Serena",
+      "verified": true,
+      "followers": 48823442,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-20T02:23:52.107489",
+    "engagement": {
+      "likes": 176335,
+      "retweets": 35537,
+      "replies": 2053,
+      "bookmarks": 1891
+    },
+    "sentiment": "neutral",
+    "category": "sports",
+    "topics": [
+      "NBA"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_154",
+    "text": "MVP-level NBA discourse today. hot take",
+    "author": {
+      "username": "lebron_28",
+      "display_name": "LeBron",
+      "verified": true,
+      "followers": 6591499,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-22T02:23:52.107489",
+    "engagement": {
+      "likes": 74475,
+      "retweets": 48776,
+      "replies": 2150,
+      "bookmarks": 1133
+    },
+    "sentiment": "neutral",
+    "category": "sports",
+    "topics": [
+      "NBA"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_155",
+    "text": "Thoughts on soccer: robbed",
+    "author": {
+      "username": "messi_88",
+      "display_name": "Messi",
+      "verified": true,
+      "followers": 11449482,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-22T02:23:52.107489",
+    "engagement": {
+      "likes": 117722,
+      "retweets": 36054,
+      "replies": 871,
+      "bookmarks": 476
+    },
+    "sentiment": "negative",
+    "category": "sports",
+    "topics": [
+      "soccer"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_156",
+    "text": "Thoughts on soccer: hot take",
+    "author": {
+      "username": "lebron_59",
+      "display_name": "LeBron",
+      "verified": true,
+      "followers": 10151172,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-16T02:23:52.107489",
+    "engagement": {
+      "likes": 101580,
+      "retweets": 15652,
+      "replies": 929,
+      "bookmarks": 944
+    },
+    "sentiment": "neutral",
+    "category": "sports",
+    "topics": [
+      "soccer"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_157",
+    "text": "That soccer game was GOAT",
+    "author": {
+      "username": "serena_89",
+      "display_name": "Serena",
+      "verified": true,
+      "followers": 23437561,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-22T02:23:52.107489",
+    "engagement": {
+      "likes": 36840,
+      "retweets": 34262,
+      "replies": 4444,
+      "bookmarks": 623
+    },
+    "sentiment": "positive",
+    "category": "sports",
+    "topics": [
+      "soccer"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_158",
+    "text": "Hot take: tennis — depends on the matchup #Ball",
+    "author": {
+      "username": "serena_61",
+      "display_name": "Serena",
+      "verified": true,
+      "followers": 20871874,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-15T02:23:52.107489",
+    "engagement": {
+      "likes": 147932,
+      "retweets": 39039,
+      "replies": 675,
+      "bookmarks": 732
+    },
+    "sentiment": "neutral",
+    "category": "sports",
+    "topics": [
+      "tennis"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_159",
+    "text": "MVP-level soccer discourse today. absolute scenes",
+    "author": {
+      "username": "lebron_49",
+      "display_name": "LeBron",
+      "verified": true,
+      "followers": 6695466,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-23T02:23:52.107489",
+    "engagement": {
+      "likes": 186769,
+      "retweets": 9740,
+      "replies": 2182,
+      "bookmarks": 479
+    },
+    "sentiment": "positive",
+    "category": "sports",
+    "topics": [
+      "soccer"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_160",
+    "text": "Hot take: NBA — legacy game",
+    "author": {
+      "username": "messi_73",
+      "display_name": "Messi",
+      "verified": true,
+      "followers": 42585647,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-23T02:23:52.107489",
+    "engagement": {
+      "likes": 68045,
+      "retweets": 44705,
+      "replies": 503,
+      "bookmarks": 1069
+    },
+    "sentiment": "positive",
+    "category": "sports",
+    "topics": [
+      "NBA"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_161",
+    "text": "Hot take: soccer — best in the league #Sports #RespectTheGame",
+    "author": {
+      "username": "serena_62",
+      "display_name": "Serena",
+      "verified": true,
+      "followers": 1514171,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-24T02:23:52.107489",
+    "engagement": {
+      "likes": 29307,
+      "retweets": 12417,
+      "replies": 3556,
+      "bookmarks": 689
+    },
+    "sentiment": "positive",
+    "category": "sports",
+    "topics": [
+      "soccer"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_162",
+    "text": "Nothing like Premier League season. robbed",
+    "author": {
+      "username": "messi_50",
+      "display_name": "Messi",
+      "verified": true,
+      "followers": 10609582,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-19T02:23:52.107489",
+    "engagement": {
+      "likes": 93349,
+      "retweets": 31537,
+      "replies": 2166,
+      "bookmarks": 1795
+    },
+    "sentiment": "negative",
+    "category": "sports",
+    "topics": [
+      "Premier League"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_163",
+    "text": "Deep dive into Python: interesting findings",
+    "author": {
+      "username": "influencer_962",
+      "display_name": "Influencer 49",
+      "verified": true,
+      "followers": 600326,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-23T00:23:52.107489",
+    "engagement": {
+      "likes": 4419,
+      "retweets": 7010,
+      "replies": 1113,
+      "bookmarks": 935
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "Python"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_164",
+    "text": "Important thread on elections. out of touch #Democracy",
+    "author": {
+      "username": "influencer_656",
+      "display_name": "Influencer 24",
+      "verified": true,
+      "followers": 383123,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-24T01:23:52.107489",
+    "engagement": {
+      "likes": 8767,
+      "retweets": 1079,
+      "replies": 659,
+      "bookmarks": 593
+    },
+    "sentiment": "negative",
+    "category": "politics",
+    "topics": [
+      "elections"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_165",
+    "text": "Deep dive into LLMs: interesting findings #AI",
+    "author": {
+      "username": "influencer_977",
+      "display_name": "Influencer 87",
+      "verified": true,
+      "followers": 416373,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-19T13:23:52.107489",
+    "engagement": {
+      "likes": 11575,
+      "retweets": 5166,
+      "replies": 319,
+      "bookmarks": 357
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "LLMs"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_166",
+    "text": "Anyone else concerned about Oscar season?",
+    "author": {
+      "username": "developer_102",
+      "display_name": "Developer 57",
+      "verified": false,
+      "followers": 4961,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-21T22:23:52.107489",
+    "engagement": {
+      "likes": 7792,
+      "retweets": 1391,
+      "replies": 992,
+      "bookmarks": 94
+    },
+    "sentiment": "negative",
+    "category": "entertainment",
+    "topics": [
+      "Oscar season"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_167",
+    "text": "Thoughts on local government: backwards #Policy #Politics",
+    "author": {
+      "username": "researcher_69",
+      "display_name": "Researcher 34",
+      "verified": true,
+      "followers": 42924,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-17T04:23:52.107489",
+    "engagement": {
+      "likes": 4461,
+      "retweets": 3223,
+      "replies": 1779,
+      "bookmarks": 538
+    },
+    "sentiment": "negative",
+    "category": "politics",
+    "topics": [
+      "local government"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_168",
+    "text": "Just read a problematic paper on Cloud Computing",
+    "author": {
+      "username": "researcher_204",
+      "display_name": "Researcher 29",
+      "verified": true,
+      "followers": 48148,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-23T08:23:52.107489",
+    "engagement": {
+      "likes": 2804,
+      "retweets": 4180,
+      "replies": 1881,
+      "bookmarks": 623
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "Cloud Computing"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_169",
+    "text": "Nobody's talking about K-pop enough. mid",
+    "author": {
+      "username": "regular_user_237",
+      "display_name": "Regular_User 97",
+      "verified": false,
+      "followers": 794,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-21T19:23:52.107489",
+    "engagement": {
+      "likes": 4438,
+      "retweets": 927,
+      "replies": 244,
+      "bookmarks": 66
+    },
+    "sentiment": "negative",
+    "category": "entertainment",
+    "topics": [
+      "K-pop"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_170",
+    "text": "Thoughts on music: fell off",
+    "author": {
+      "username": "regular_user_606",
+      "display_name": "Regular_User 15",
+      "verified": false,
+      "followers": 786,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-23T17:23:52.107489",
+    "engagement": {
+      "likes": 9716,
+      "retweets": 969,
+      "replies": 43,
+      "bookmarks": 86
+    },
+    "sentiment": "negative",
+    "category": "entertainment",
+    "topics": [
+      "music"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_171",
+    "text": "Thoughts on streaming: mid",
+    "author": {
+      "username": "journalist_958",
+      "display_name": "Journalist 50",
+      "verified": true,
+      "followers": 45324,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-21T13:23:52.107489",
+    "engagement": {
+      "likes": 14233,
+      "retweets": 7131,
+      "replies": 626,
+      "bookmarks": 549
+    },
+    "sentiment": "negative",
+    "category": "entertainment",
+    "topics": [
+      "streaming"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_172",
+    "text": "Anyone else curious about Data Science? #Innovation #BuildInPublic",
+    "author": {
+      "username": "influencer_921",
+      "display_name": "Influencer 8",
+      "verified": true,
+      "followers": 42063,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-22T10:23:52.107489",
+    "engagement": {
+      "likes": 8513,
+      "retweets": 2850,
+      "replies": 2160,
+      "bookmarks": 1826
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "Data Science"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_173",
+    "text": "Deep dive into Climate Tech: concerning findings",
+    "author": {
+      "username": "researcher_265",
+      "display_name": "Researcher 48",
+      "verified": true,
+      "followers": 33957,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-17T22:23:52.107489",
+    "engagement": {
+      "likes": 8403,
+      "retweets": 3702,
+      "replies": 1730,
+      "bookmarks": 157
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "Climate Tech"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_174",
+    "text": "Anyone else excited about emerging artists?",
+    "author": {
+      "username": "regular_user_621",
+      "display_name": "Regular_User 13",
+      "verified": false,
+      "followers": 545,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-20T02:23:52.107489",
+    "engagement": {
+      "likes": 7842,
+      "retweets": 7182,
+      "replies": 179,
+      "bookmarks": 137
+    },
+    "sentiment": "negative",
+    "category": "art",
+    "topics": [
+      "emerging artists"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_175",
+    "text": "Oscar season is overhyped",
+    "author": {
+      "username": "journalist_540",
+      "display_name": "Journalist 68",
+      "verified": true,
+      "followers": 166296,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-22T03:23:52.107489",
+    "engagement": {
+      "likes": 5712,
+      "retweets": 7535,
+      "replies": 35,
+      "bookmarks": 107
+    },
+    "sentiment": "negative",
+    "category": "entertainment",
+    "topics": [
+      "Oscar season"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_176",
+    "text": "That gaming drop was overhyped #Movies",
+    "author": {
+      "username": "researcher_333",
+      "display_name": "Researcher 64",
+      "verified": true,
+      "followers": 11145,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-21T07:23:52.107489",
+    "engagement": {
+      "likes": 6318,
+      "retweets": 7602,
+      "replies": 1360,
+      "bookmarks": 451
+    },
+    "sentiment": "negative",
+    "category": "entertainment",
+    "topics": [
+      "gaming"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_177",
+    "text": "That tennis game was rigged #SZN #Sports",
+    "author": {
+      "username": "regular_user_519",
+      "display_name": "Regular_User 95",
+      "verified": false,
+      "followers": 995,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-18T14:23:52.107489",
+    "engagement": {
+      "likes": 5480,
+      "retweets": 605,
+      "replies": 206,
+      "bookmarks": 185
+    },
+    "sentiment": "negative",
+    "category": "sports",
+    "topics": [
+      "tennis"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_178",
+    "text": "Scorsese's take on TV shows is overhyped",
+    "author": {
+      "username": "scorsese_76",
+      "display_name": "Scorsese",
+      "verified": true,
+      "followers": 47908296,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-15T02:23:52.107489",
+    "engagement": {
+      "likes": 24341,
+      "retweets": 244972,
+      "replies": 10438,
+      "bookmarks": 2047
+    },
+    "sentiment": "negative",
+    "category": "entertainment",
+    "topics": [
+      "TV shows"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_179",
+    "text": "Scorsese and Oscar season: underrated #Music",
+    "author": {
+      "username": "scorsese_47",
+      "display_name": "Scorsese",
+      "verified": true,
+      "followers": 20391848,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-14T02:23:52.107489",
+    "engagement": {
+      "likes": 48975,
+      "retweets": 205739,
+      "replies": 12894,
+      "bookmarks": 2812
+    },
+    "sentiment": "positive",
+    "category": "entertainment",
+    "topics": [
+      "Oscar season"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_180",
+    "text": "TV shows — underrated #Culture #Streaming",
+    "author": {
+      "username": "scorsese_71",
+      "display_name": "Scorsese",
+      "verified": true,
+      "followers": 19114236,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-08T02:23:52.107489",
+    "engagement": {
+      "likes": 23935,
+      "retweets": 229296,
+      "replies": 853,
+      "bookmarks": 9895
+    },
+    "sentiment": "positive",
+    "category": "entertainment",
+    "topics": [
+      "TV shows"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_181",
+    "text": "Hot take: TV shows — peak cinema",
+    "author": {
+      "username": "scorsese_92",
+      "display_name": "Scorsese",
+      "verified": true,
+      "followers": 1166033,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-11T02:23:52.107489",
+    "engagement": {
+      "likes": 83452,
+      "retweets": 241142,
+      "replies": 8919,
+      "bookmarks": 2556
+    },
+    "sentiment": "positive",
+    "category": "entertainment",
+    "topics": [
+      "TV shows"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_182",
+    "text": "Scorsese and movies: cash grab #Music",
+    "author": {
+      "username": "scorsese_7",
+      "display_name": "Scorsese",
+      "verified": true,
+      "followers": 2174586,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-10T02:23:52.107489",
+    "engagement": {
+      "likes": 17526,
+      "retweets": 102990,
+      "replies": 4431,
+      "bookmarks": 3399
+    },
+    "sentiment": "negative",
+    "category": "entertainment",
+    "topics": [
+      "movies"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_183",
+    "text": "That TV shows drop was underrated",
+    "author": {
+      "username": "scorsese_81",
+      "display_name": "Scorsese",
+      "verified": true,
+      "followers": 35399153,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-13T02:23:52.107489",
+    "engagement": {
+      "likes": 73771,
+      "retweets": 37081,
+      "replies": 14233,
+      "bookmarks": 193
+    },
+    "sentiment": "positive",
+    "category": "entertainment",
+    "topics": [
+      "TV shows"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_184",
+    "text": "Scorsese's take on Oscar season is not for everyone",
+    "author": {
+      "username": "scorsese_1",
+      "display_name": "Scorsese",
+      "verified": true,
+      "followers": 5082893,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-05T02:23:52.107489",
+    "engagement": {
+      "likes": 43962,
+      "retweets": 176658,
+      "replies": 13393,
+      "bookmarks": 2898
+    },
+    "sentiment": "neutral",
+    "category": "entertainment",
+    "topics": [
+      "Oscar season"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_185",
+    "text": "Scorsese on Oscar season — cash grab",
+    "author": {
+      "username": "scorsese_37",
+      "display_name": "Scorsese",
+      "verified": true,
+      "followers": 33341591,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-23T02:23:52.107489",
+    "engagement": {
+      "likes": 43231,
+      "retweets": 94064,
+      "replies": 7168,
+      "bookmarks": 6328
+    },
+    "sentiment": "negative",
+    "category": "entertainment",
+    "topics": [
+      "Oscar season"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_186",
+    "text": "sustainable fashion is concerned",
+    "author": {
+      "username": "researcher_642",
+      "display_name": "Researcher 19",
+      "verified": true,
+      "followers": 7676,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-09T02:23:52.107489",
+    "engagement": {
+      "likes": 45028,
+      "retweets": 8862,
+      "replies": 1619,
+      "bookmarks": 674
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "sustainable fashion"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_187",
+    "text": "Anyone else curious about sustainable fashion?",
+    "author": {
+      "username": "regular_user_167",
+      "display_name": "Regular_User 99",
+      "verified": false,
+      "followers": 366,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-08T02:23:52.107489",
+    "engagement": {
+      "likes": 5178,
+      "retweets": 525,
+      "replies": 411,
+      "bookmarks": 57
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "sustainable fashion"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_188",
+    "text": "Street style x sustainable fashion: basic #StreetStyle #FashionWeek",
+    "author": {
+      "username": "regular_user_974",
+      "display_name": "Regular_User 48",
+      "verified": false,
+      "followers": 576,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-14T02:23:52.107489",
+    "engagement": {
+      "likes": 4235,
+      "retweets": 430,
+      "replies": 345,
+      "bookmarks": 180
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "sustainable fashion"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_189",
+    "text": "Hot take: sustainable fashion — see how it ages",
+    "author": {
+      "username": "researcher_662",
+      "display_name": "Researcher 47",
+      "verified": true,
+      "followers": 8699,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-01T02:23:52.107489",
+    "engagement": {
+      "likes": 9018,
+      "retweets": 23449,
+      "replies": 341,
+      "bookmarks": 916
+    },
+    "sentiment": "neutral",
+    "category": "fashion",
+    "topics": [
+      "sustainable fashion"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_190",
+    "text": "Street style x runway: basic",
+    "author": {
+      "username": "journalist_887",
+      "display_name": "Journalist 79",
+      "verified": true,
+      "followers": 35889,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-12T02:23:52.107489",
+    "engagement": {
+      "likes": 20155,
+      "retweets": 2696,
+      "replies": 1281,
+      "bookmarks": 463
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "runway"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_191",
+    "text": "Thoughts on sustainable fashion: trying too hard",
+    "author": {
+      "username": "developer_695",
+      "display_name": "Developer 28",
+      "verified": false,
+      "followers": 311,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-09T02:23:52.107489",
+    "engagement": {
+      "likes": 18846,
+      "retweets": 9070,
+      "replies": 621,
+      "bookmarks": 162
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "sustainable fashion"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_192",
+    "text": "Hot take: sustainable fashion — flop",
+    "author": {
+      "username": "developer_267",
+      "display_name": "Developer 33",
+      "verified": false,
+      "followers": 1887,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-20T02:23:52.107489",
+    "engagement": {
+      "likes": 17895,
+      "retweets": 489,
+      "replies": 911,
+      "bookmarks": 366
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "sustainable fashion"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_193",
+    "text": "Street style x runway: interesting choice",
+    "author": {
+      "username": "influencer_675",
+      "display_name": "Influencer 71",
+      "verified": true,
+      "followers": 764319,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-15T02:23:52.107489",
+    "engagement": {
+      "likes": 26708,
+      "retweets": 36116,
+      "replies": 4633,
+      "bookmarks": 187
+    },
+    "sentiment": "neutral",
+    "category": "fashion",
+    "topics": [
+      "runway"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_194",
+    "text": "This sustainable fashion moment is obsessed",
+    "author": {
+      "username": "regular_user_718",
+      "display_name": "Regular_User 47",
+      "verified": false,
+      "followers": 723,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-11T02:23:52.107489",
+    "engagement": {
+      "likes": 4446,
+      "retweets": 1812,
+      "replies": 435,
+      "bookmarks": 98
+    },
+    "sentiment": "positive",
+    "category": "fashion",
+    "topics": [
+      "sustainable fashion"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_195",
+    "text": "Street style x sustainable fashion: obsessed",
+    "author": {
+      "username": "researcher_885",
+      "display_name": "Researcher 87",
+      "verified": true,
+      "followers": 11685,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-01T02:23:52.107489",
+    "engagement": {
+      "likes": 46029,
+      "retweets": 12586,
+      "replies": 255,
+      "bookmarks": 63
+    },
+    "sentiment": "positive",
+    "category": "fashion",
+    "topics": [
+      "sustainable fashion"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_196",
+    "text": "Thoughts on runway: trying too hard",
+    "author": {
+      "username": "journalist_441",
+      "display_name": "Journalist 89",
+      "verified": true,
+      "followers": 78022,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-12T02:23:52.107489",
+    "engagement": {
+      "likes": 9046,
+      "retweets": 4933,
+      "replies": 1180,
+      "bookmarks": 85
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "runway"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_197",
+    "text": "runway is overrated #Fashion #StreetStyle",
+    "author": {
+      "username": "regular_user_378",
+      "display_name": "Regular_User 60",
+      "verified": false,
+      "followers": 852,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-18T02:23:52.107489",
+    "engagement": {
+      "likes": 7157,
+      "retweets": 163,
+      "replies": 26,
+      "bookmarks": 187
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "runway"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_198",
+    "text": "Anna Wintour en runway — a ver #StreetStyle",
+    "author": {
+      "username": "rihanna_90",
+      "display_name": "Rihanna",
+      "verified": true,
+      "followers": 2335455,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-14T02:23:52.107489",
+    "engagement": {
+      "likes": 215278,
+      "retweets": 52127,
+      "replies": 3268,
+      "bookmarks": 7722
+    },
+    "sentiment": "neutral",
+    "category": "fashion",
+    "topics": [
+      "runway"
+    ],
+    "language": "es",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_199",
+    "text": "runway: Rihanna siempre malo #Fashion #FashionWeek",
+    "author": {
+      "username": "regular_user_776",
+      "display_name": "Regular_User 20",
+      "verified": false,
+      "followers": 777,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-16T02:23:52.107489",
+    "engagement": {
+      "likes": 4788,
+      "retweets": 1661,
+      "replies": 171,
+      "bookmarks": 163
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "runway"
+    ],
+    "language": "es",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_200",
+    "text": "Rihanna en sustainable fashion — regular",
+    "author": {
+      "username": "journalist_17",
+      "display_name": "Journalist 48",
+      "verified": true,
+      "followers": 60619,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-10T02:23:52.107489",
+    "engagement": {
+      "likes": 24784,
+      "retweets": 9538,
+      "replies": 475,
+      "bookmarks": 321
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "sustainable fashion"
+    ],
+    "language": "es",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_201",
+    "text": "No hay nadie como Rihanna. ídolo",
+    "author": {
+      "username": "pharrell_95",
+      "display_name": "Pharrell",
+      "verified": true,
+      "followers": 35290447,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-05T02:23:52.107489",
+    "engagement": {
+      "likes": 202985,
+      "retweets": 216187,
+      "replies": 12423,
+      "bookmarks": 760
+    },
+    "sentiment": "positive",
+    "category": "fashion",
+    "topics": [
+      "haute couture"
+    ],
+    "language": "es",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_202",
+    "text": "No hay nadie como Rihanna. interesante #OOTD #Fashion",
+    "author": {
+      "username": "journalist_805",
+      "display_name": "Journalist 7",
+      "verified": true,
+      "followers": 160274,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-24T02:23:52.107489",
+    "engagement": {
+      "likes": 17497,
+      "retweets": 9715,
+      "replies": 125,
+      "bookmarks": 498
+    },
+    "sentiment": "neutral",
+    "category": "fashion",
+    "topics": [
+      "sustainable fashion"
+    ],
+    "language": "es",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_203",
+    "text": "No hay nadie como Pharrell. a ver",
+    "author": {
+      "username": "journalist_708",
+      "display_name": "Journalist 56",
+      "verified": true,
+      "followers": 21630,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-17T02:23:52.107489",
+    "engagement": {
+      "likes": 8087,
+      "retweets": 197,
+      "replies": 125,
+      "bookmarks": 159
+    },
+    "sentiment": "neutral",
+    "category": "fashion",
+    "topics": [
+      "sustainable fashion"
+    ],
+    "language": "es",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_204",
+    "text": "Qué opinan de Anna Wintour y streetwear? curioso",
+    "author": {
+      "username": "rihanna_7",
+      "display_name": "Rihanna",
+      "verified": true,
+      "followers": 11305276,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-18T02:23:52.107489",
+    "engagement": {
+      "likes": 88371,
+      "retweets": 168439,
+      "replies": 17797,
+      "bookmarks": 3663
+    },
+    "sentiment": "neutral",
+    "category": "fashion",
+    "topics": [
+      "streetwear"
+    ],
+    "language": "es",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_205",
+    "text": "Anna Wintour en haute couture — ídolo",
+    "author": {
+      "username": "influencer_869",
+      "display_name": "Influencer 13",
+      "verified": true,
+      "followers": 233552,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-23T02:23:52.107489",
+    "engagement": {
+      "likes": 26724,
+      "retweets": 41066,
+      "replies": 419,
+      "bookmarks": 125
+    },
+    "sentiment": "positive",
+    "category": "fashion",
+    "topics": [
+      "haute couture"
+    ],
+    "language": "es",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_206",
+    "text": "Increíble lo de Rihanna hoy. habrá que ver",
+    "author": {
+      "username": "researcher_35",
+      "display_name": "Researcher 27",
+      "verified": true,
+      "followers": 9586,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-23T02:23:52.107489",
+    "engagement": {
+      "likes": 31091,
+      "retweets": 6226,
+      "replies": 741,
+      "bookmarks": 265
+    },
+    "sentiment": "neutral",
+    "category": "fashion",
+    "topics": [
+      "haute couture"
+    ],
+    "language": "es",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_207",
+    "text": "No hay nadie como Rihanna. regular #Fashion #FashionWeek",
+    "author": {
+      "username": "pharrell_20",
+      "display_name": "Pharrell",
+      "verified": true,
+      "followers": 17437360,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-16T02:23:52.107489",
+    "engagement": {
+      "likes": 41883,
+      "retweets": 234588,
+      "replies": 23372,
+      "bookmarks": 2521
+    },
+    "sentiment": "negative",
+    "category": "fashion",
+    "topics": [
+      "sustainable fashion"
+    ],
+    "language": "es",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_208",
+    "text": "Incroyable ce que fait Jeff Koons. correct",
+    "author": {
+      "username": "banksy_75",
+      "display_name": "Banksy",
+      "verified": true,
+      "followers": 15991827,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-20T02:23:52.107489",
+    "engagement": {
+      "likes": 37673,
+      "retweets": 67685,
+      "replies": 24928,
+      "bookmarks": 4664
+    },
+    "sentiment": "neutral",
+    "category": "art",
+    "topics": [
+      "art market"
+    ],
+    "language": "fr",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_209",
+    "text": "Damien Hirst et contemporary art — pas mal #ContemporaryArt",
+    "author": {
+      "username": "influencer_292",
+      "display_name": "Influencer 11",
+      "verified": true,
+      "followers": 110293,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-16T02:23:52.107489",
+    "engagement": {
+      "likes": 56518,
+      "retweets": 37826,
+      "replies": 166,
+      "bookmarks": 1177
+    },
+    "sentiment": "neutral",
+    "category": "art",
+    "topics": [
+      "contemporary art"
+    ],
+    "language": "fr",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_210",
+    "text": "art market: Jeff Koons encore à voir",
+    "author": {
+      "username": "regular_user_675",
+      "display_name": "Regular_User 23",
+      "verified": false,
+      "followers": 60,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-23T02:23:52.107489",
+    "engagement": {
+      "likes": 5626,
+      "retweets": 3300,
+      "replies": 220,
+      "bookmarks": 71
+    },
+    "sentiment": "neutral",
+    "category": "art",
+    "topics": [
+      "art market"
+    ],
+    "language": "fr",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_211",
+    "text": "Personne comme Banksy. overrated",
+    "author": {
+      "username": "banksy_7",
+      "display_name": "Banksy",
+      "verified": true,
+      "followers": 24772675,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-11T02:23:52.107489",
+    "engagement": {
+      "likes": 21221,
+      "retweets": 196267,
+      "replies": 5076,
+      "bookmarks": 779
+    },
+    "sentiment": "negative",
+    "category": "art",
+    "topics": [
+      "museums"
+    ],
+    "language": "fr",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_212",
+    "text": "Banksy et museums — magique",
+    "author": {
+      "username": "journalist_256",
+      "display_name": "Journalist 41",
+      "verified": true,
+      "followers": 82109,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-05T02:23:52.107489",
+    "engagement": {
+      "likes": 1671,
+      "retweets": 12600,
+      "replies": 532,
+      "bookmarks": 381
+    },
+    "sentiment": "positive",
+    "category": "art",
+    "topics": [
+      "museums"
+    ],
+    "language": "fr",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_213",
+    "text": "art market: Banksy encore énorme",
+    "author": {
+      "username": "regular_user_726",
+      "display_name": "Regular_User 29",
+      "verified": false,
+      "followers": 389,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-04T02:23:52.107489",
+    "engagement": {
+      "likes": 4110,
+      "retweets": 2349,
+      "replies": 407,
+      "bookmarks": 188
+    },
+    "sentiment": "positive",
+    "category": "art",
+    "topics": [
+      "art market"
+    ],
+    "language": "fr",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_214",
+    "text": "Incroyable ce que fait Banksy. intéressant",
+    "author": {
+      "username": "banksy_90",
+      "display_name": "Banksy",
+      "verified": true,
+      "followers": 43429020,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-04T02:23:52.107489",
+    "engagement": {
+      "likes": 425477,
+      "retweets": 197828,
+      "replies": 18540,
+      "bookmarks": 1034
+    },
+    "sentiment": "neutral",
+    "category": "art",
+    "topics": [
+      "museums"
+    ],
+    "language": "fr",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_215",
+    "text": "Incroyable ce que fait Banksy. faible",
+    "author": {
+      "username": "influencer_188",
+      "display_name": "Influencer 11",
+      "verified": true,
+      "followers": 430303,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-22T02:23:52.107489",
+    "engagement": {
+      "likes": 55846,
+      "retweets": 5652,
+      "replies": 464,
+      "bookmarks": 1610
+    },
+    "sentiment": "negative",
+    "category": "art",
+    "topics": [
+      "galleries"
+    ],
+    "language": "fr",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_216",
+    "text": "Incroyable ce que fait Banksy. maestro #Art",
+    "author": {
+      "username": "influencer_896",
+      "display_name": "Influencer 76",
+      "verified": true,
+      "followers": 815609,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-06T02:23:52.107489",
+    "engagement": {
+      "likes": 52149,
+      "retweets": 29709,
+      "replies": 1011,
+      "bookmarks": 1693
+    },
+    "sentiment": "positive",
+    "category": "art",
+    "topics": [
+      "galleries"
+    ],
+    "language": "fr",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_217",
+    "text": "Jeff Koons et museums — intéressant #ArtWorld #Museums",
+    "author": {
+      "username": "damienhirst_14",
+      "display_name": "Damien Hirst",
+      "verified": true,
+      "followers": 3943862,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-22T02:23:52.107489",
+    "engagement": {
+      "likes": 348102,
+      "retweets": 125779,
+      "replies": 6813,
+      "bookmarks": 5043
+    },
+    "sentiment": "neutral",
+    "category": "art",
+    "topics": [
+      "museums"
+    ],
+    "language": "fr",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_218",
+    "text": "Incrível o que Ronaldo faz. ruim #RespectTheGame",
+    "author": {
+      "username": "messi_93",
+      "display_name": "Messi",
+      "verified": true,
+      "followers": 27507312,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-07T02:23:52.107489",
+    "engagement": {
+      "likes": 377101,
+      "retweets": 186435,
+      "replies": 1127,
+      "bookmarks": 4512
+    },
+    "sentiment": "negative",
+    "category": "sports",
+    "topics": [
+      "World Cup"
+    ],
+    "language": "pt",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_219",
+    "text": "Incrível o que Ronaldo faz. fraco",
+    "author": {
+      "username": "researcher_300",
+      "display_name": "Researcher 6",
+      "verified": true,
+      "followers": 30751,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-08T02:23:52.107489",
+    "engagement": {
+      "likes": 23550,
+      "retweets": 4364,
+      "replies": 2126,
+      "bookmarks": 46
+    },
+    "sentiment": "negative",
+    "category": "sports",
+    "topics": [
+      "F1"
+    ],
+    "language": "pt",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_220",
+    "text": "Ronaldo em soccer — incrível",
+    "author": {
+      "username": "researcher_184",
+      "display_name": "Researcher 93",
+      "verified": true,
+      "followers": 42855,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-04T02:23:52.107489",
+    "engagement": {
+      "likes": 25403,
+      "retweets": 673,
+      "replies": 100,
+      "bookmarks": 150
+    },
+    "sentiment": "positive",
+    "category": "sports",
+    "topics": [
+      "soccer"
+    ],
+    "language": "pt",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_221",
+    "text": "World Cup e Messi. mais ou menos",
+    "author": {
+      "username": "ronaldo_7",
+      "display_name": "Ronaldo",
+      "verified": true,
+      "followers": 13183163,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-10T02:23:52.107489",
+    "engagement": {
+      "likes": 96052,
+      "retweets": 52328,
+      "replies": 8128,
+      "bookmarks": 9270
+    },
+    "sentiment": "neutral",
+    "category": "sports",
+    "topics": [
+      "World Cup"
+    ],
+    "language": "pt",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_222",
+    "text": "Messi em F1 — fraco #RespectTheGame #Ball",
+    "author": {
+      "username": "journalist_574",
+      "display_name": "Journalist 5",
+      "verified": true,
+      "followers": 60338,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-04T02:23:52.107489",
+    "engagement": {
+      "likes": 18090,
+      "retweets": 12594,
+      "replies": 469,
+      "bookmarks": 320
+    },
+    "sentiment": "negative",
+    "category": "sports",
+    "topics": [
+      "F1"
+    ],
+    "language": "pt",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_223",
+    "text": "Mbappé em Premier League — interessante",
+    "author": {
+      "username": "influencer_258",
+      "display_name": "Influencer 57",
+      "verified": true,
+      "followers": 369938,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-05T02:23:52.107489",
+    "engagement": {
+      "likes": 44489,
+      "retweets": 45379,
+      "replies": 1299,
+      "bookmarks": 378
+    },
+    "sentiment": "neutral",
+    "category": "sports",
+    "topics": [
+      "Premier League"
+    ],
+    "language": "pt",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_224",
+    "text": "Ronaldo em Premier League — lendário #SZN",
+    "author": {
+      "username": "messi_44",
+      "display_name": "Messi",
+      "verified": true,
+      "followers": 37070830,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-18T02:23:52.107489",
+    "engagement": {
+      "likes": 103799,
+      "retweets": 98229,
+      "replies": 7480,
+      "bookmarks": 8531
+    },
+    "sentiment": "positive",
+    "category": "sports",
+    "topics": [
+      "Premier League"
+    ],
+    "language": "pt",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_225",
+    "text": "Premier League e Messi. fraco",
+    "author": {
+      "username": "regular_user_917",
+      "display_name": "Regular_User 67",
+      "verified": false,
+      "followers": 506,
+      "author_type": "regular_user"
+    },
+    "created_at": "2026-01-16T02:23:52.107489",
+    "engagement": {
+      "likes": 46,
+      "retweets": 26,
+      "replies": 25,
+      "bookmarks": 28
+    },
+    "sentiment": "negative",
+    "category": "sports",
+    "topics": [
+      "Premier League"
+    ],
+    "language": "pt",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_226",
+    "text": "Incrível o que Messi faz. lendário #RespectTheGame",
+    "author": {
+      "username": "researcher_827",
+      "display_name": "Researcher 31",
+      "verified": true,
+      "followers": 9992,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-13T02:23:52.107489",
+    "engagement": {
+      "likes": 45296,
+      "retweets": 18233,
+      "replies": 1509,
+      "bookmarks": 484
+    },
+    "sentiment": "positive",
+    "category": "sports",
+    "topics": [
+      "tennis"
+    ],
+    "language": "pt",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_227",
+    "text": "Não tem como Messi. decepcionante #Ball #SZN",
+    "author": {
+      "username": "ronaldo_16",
+      "display_name": "Ronaldo",
+      "verified": true,
+      "followers": 8475323,
+      "author_type": "celebrity"
+    },
+    "created_at": "2026-01-23T02:23:52.107489",
+    "engagement": {
+      "likes": 209713,
+      "retweets": 71425,
+      "replies": 15708,
+      "bookmarks": 5915
+    },
+    "sentiment": "negative",
+    "category": "sports",
+    "topics": [
+      "World Cup"
+    ],
+    "language": "pt",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_228",
+    "text": "Deep dive into AI: concerning findings #BuildInPublic #AI",
+    "author": {
+      "username": "researcher_732",
+      "display_name": "Researcher 17",
+      "verified": true,
+      "followers": 6204,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-12T02:23:52.107489",
+    "engagement": {
+      "likes": 23976,
+      "retweets": 4475,
+      "replies": 1307,
+      "bookmarks": 377
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "AI"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_229",
+    "text": "Anyone else concerned about AI?",
+    "author": {
+      "username": "journalist_756",
+      "display_name": "Journalist 29",
+      "verified": true,
+      "followers": 195821,
+      "author_type": "journalist"
+    },
+    "created_at": "2026-01-17T02:23:52.107489",
+    "engagement": {
+      "likes": 732,
+      "retweets": 11278,
+      "replies": 1065,
+      "bookmarks": 487
+    },
+    "sentiment": "neutral",
+    "category": "tech",
+    "topics": [
+      "AI"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_230",
+    "text": "Just read a breakthrough paper on AI",
+    "author": {
+      "username": "developer_926",
+      "display_name": "Developer 56",
+      "verified": false,
+      "followers": 109,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-24T02:23:52.107489",
+    "engagement": {
+      "likes": 15260,
+      "retweets": 1937,
+      "replies": 700,
+      "bookmarks": 147
+    },
+    "sentiment": "positive",
+    "category": "tech",
+    "topics": [
+      "AI"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_231",
+    "text": "Just read a problematic paper on AI #BuildInPublic",
+    "author": {
+      "username": "researcher_53",
+      "display_name": "Researcher 54",
+      "verified": true,
+      "followers": 43530,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-20T02:23:52.107489",
+    "engagement": {
+      "likes": 14033,
+      "retweets": 20695,
+      "replies": 2001,
+      "bookmarks": 736
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "AI"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_232",
+    "text": "Anyone else curious about AI? #Innovation #Tech",
+    "author": {
+      "username": "researcher_441",
+      "display_name": "Researcher 26",
+      "verified": true,
+      "followers": 24227,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-23T02:23:52.107489",
+    "engagement": {
+      "likes": 22929,
+      "retweets": 14757,
+      "replies": 1865,
+      "bookmarks": 62
+    },
+    "sentiment": "positive",
+    "category": "tech",
+    "topics": [
+      "AI"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_233",
+    "text": "AI is love this",
+    "author": {
+      "username": "influencer_646",
+      "display_name": "Influencer 75",
+      "verified": true,
+      "followers": 945801,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-22T02:23:52.107489",
+    "engagement": {
+      "likes": 81116,
+      "retweets": 21358,
+      "replies": 151,
+      "bookmarks": 194
+    },
+    "sentiment": "positive",
+    "category": "tech",
+    "topics": [
+      "AI"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_234",
+    "text": "AI is excited #Innovation #Tech",
+    "author": {
+      "username": "influencer_748",
+      "display_name": "Influencer 93",
+      "verified": true,
+      "followers": 85483,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-09T02:23:52.107489",
+    "engagement": {
+      "likes": 27412,
+      "retweets": 22854,
+      "replies": 3375,
+      "bookmarks": 1274
+    },
+    "sentiment": "positive",
+    "category": "tech",
+    "topics": [
+      "AI"
+    ],
+    "language": "en",
+    "has_media": true,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_235",
+    "text": "Just read a overrated paper on AI #Tech",
+    "author": {
+      "username": "developer_480",
+      "display_name": "Developer 16",
+      "verified": false,
+      "followers": 1689,
+      "author_type": "developer"
+    },
+    "created_at": "2026-01-12T02:23:52.107489",
+    "engagement": {
+      "likes": 8450,
+      "retweets": 678,
+      "replies": 654,
+      "bookmarks": 3
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "AI"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_236",
+    "text": "Just read a risky paper on AI #BuildInPublic #Innovation",
+    "author": {
+      "username": "researcher_78",
+      "display_name": "Researcher 52",
+      "verified": true,
+      "followers": 47530,
+      "author_type": "researcher"
+    },
+    "created_at": "2026-01-10T02:23:52.107489",
+    "engagement": {
+      "likes": 9129,
+      "retweets": 14523,
+      "replies": 2053,
+      "bookmarks": 716
+    },
+    "sentiment": "negative",
+    "category": "tech",
+    "topics": [
+      "AI"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  },
+  {
+    "id": "post_237",
+    "text": "Anyone else curious about AI? #AI",
+    "author": {
+      "username": "influencer_662",
+      "display_name": "Influencer 33",
+      "verified": true,
+      "followers": 241078,
+      "author_type": "influencer"
+    },
+    "created_at": "2026-01-16T02:23:52.107489",
+    "engagement": {
+      "likes": 53410,
+      "retweets": 31585,
+      "replies": 338,
+      "bookmarks": 1064
+    },
+    "sentiment": "positive",
+    "category": "tech",
+    "topics": [
+      "AI"
+    ],
+    "language": "en",
+    "has_media": false,
+    "is_reply": false,
+    "reply_to": null
+  }
+]

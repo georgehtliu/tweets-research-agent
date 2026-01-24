@@ -267,14 +267,34 @@ def compare_models_query(request: ModelComparisonQueryRequest):
                     comparison_summary['results'][model_name] = {'error': results[model_name]['error']}
                 else:
                     result = results[model_name]['result']
-                    comparison_summary['results'][model_name] = {
-                        'success': True,
-                        'confidence': result.get('analysis', {}).get('confidence', 0),
-                        'execution_steps': result.get('execution_steps', 0),
-                        'replan_count': result.get('replan_count', 0),
-                        'summary': result.get('final_summary', ''),
-                        'logs': results[model_name]['logs']
-                    }
+                    # Defensive check: ensure result is a dict
+                    if result is None:
+                        comparison_summary['results'][model_name] = {
+                            'error': 'No result returned from workflow',
+                            'logs': results[model_name]['logs']
+                        }
+                    elif not isinstance(result, dict):
+                        comparison_summary['results'][model_name] = {
+                            'error': f'Invalid result format: expected dict, got {type(result).__name__}',
+                            'raw_result': str(result)[:200] if result else 'None',  # Truncate for safety
+                            'logs': results[model_name]['logs']
+                        }
+                    else:
+                        # Safely extract analysis (might be None or not a dict)
+                        analysis = result.get('analysis')
+                        if isinstance(analysis, dict):
+                            confidence = analysis.get('confidence', 0)
+                        else:
+                            confidence = 0
+                        
+                        comparison_summary['results'][model_name] = {
+                            'success': True,
+                            'confidence': confidence,
+                            'execution_steps': result.get('execution_steps', 0),
+                            'replan_count': result.get('replan_count', 0),
+                            'summary': result.get('final_summary', ''),
+                            'logs': results[model_name]['logs']
+                        }
             
             # Find best performers
             successful = {k: v for k, v in comparison_summary['results'].items() if v.get('success')}
