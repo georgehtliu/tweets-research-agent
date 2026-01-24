@@ -154,10 +154,10 @@ python main.py --query "Your question" --data path/to/data.json
 
 #### API Endpoints
 
-The API server provides REST endpoints:
+The API server provides REST endpoints (FastAPI):
 
 - `GET /` - Web UI
-- `POST /api/query` - Submit research query
+- `POST /api/query` - Submit research query (returns SSE stream)
   ```json
   {
     "query": "What are people saying about AI?"
@@ -165,13 +165,15 @@ The API server provides REST endpoints:
   ```
 - `GET /api/health` - Health check
 - `GET /api/examples` - Get example queries
+- `GET /docs` - Swagger UI documentation
+- `GET /redoc` - ReDoc documentation
 
 ## 📁 Project Structure
 
 ```
 Grok-takehome/
 ├── server/                 # Server-side code
-│   ├── api_server.py       # Flask API server
+│   ├── api_server.py       # FastAPI server entry point
 │   ├── main.py             # CLI entry point
 │   ├── agent.py            # Core agentic workflow
 │   ├── grok_client.py      # Grok API client

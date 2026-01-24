@@ -44,7 +44,7 @@ function setLoading(loading) {
         btnText.textContent = 'Processing...';
         btnSpinner.classList.remove('hidden');
     } else {
-        btnText.textContent = 'Ask';
+        btnText.textContent = 'Generate';
         btnSpinner.classList.add('hidden');
     }
 }
@@ -81,6 +81,10 @@ function formatResult(result) {
         <div class="meta-value">${result.refinement_iterations || 0}</div>
     </div>`;
     html += `<div class="meta-item">
+        <div class="meta-label">Replan Cycles</div>
+        <div class="meta-value">${result.replan_count || 0}</div>
+    </div>`;
+    html += `<div class="meta-item">
         <div class="meta-label">Total Steps</div>
         <div class="meta-value">${result.execution_steps || 0}</div>
     </div>`;
@@ -93,15 +97,56 @@ function formatResult(result) {
     // Summary section
     if (result.final_summary) {
         html += '<div class="summary-section">';
-        html += '<h3>📝 Final Summary</h3>';
-        html += `<div class="summary-text">${escapeHtml(result.final_summary)}</div>`;
+        html += '<h3>Final Summary</h3>';
+        // Convert markdown to HTML
+        const markdownHtml = convertMarkdownToHtml(result.final_summary);
+        html += `<div class="summary-text">${markdownHtml}</div>`;
+        html += '</div>';
+    }
+    
+    // Critique section
+    if (result.critique) {
+        html += '<div class="summary-section critique-section">';
+        html += '<h3>Quality Review (Critique)</h3>';
+        
+        const critique = result.critique;
+        const passed = critique.critique_passed !== false;
+        
+        html += `<p class="critique-status ${passed ? 'passed' : 'failed'}">`;
+        html += passed ? '✓ Critique Passed' : '⚠ Critique Found Issues';
+        html += '</p>';
+        
+        if (critique.hallucinations && critique.hallucinations.length > 0) {
+            html += '<p><strong>Hallucinations Detected:</strong></p><ul>';
+            critique.hallucinations.forEach(h => {
+                html += `<li>${escapeHtml(h)}</li>`;
+            });
+            html += '</ul>';
+        }
+        
+        if (critique.biases && critique.biases.length > 0) {
+            html += '<p><strong>Biases Identified:</strong></p><ul>';
+            critique.biases.forEach(b => {
+                html += `<li>${escapeHtml(b)}</li>`;
+            });
+            html += '</ul>';
+        }
+        
+        if (critique.corrections && critique.corrections.length > 0) {
+            html += '<p><strong>Corrections Applied:</strong></p><ul>';
+            critique.corrections.forEach(c => {
+                html += `<li>${escapeHtml(c)}</li>`;
+            });
+            html += '</ul>';
+        }
+        
         html += '</div>';
     }
     
     // Analysis section
     if (result.analysis) {
         html += '<div class="summary-section">';
-        html += '<h3>🔍 Analysis</h3>';
+        html += '<h3>Analysis</h3>';
         
         if (result.analysis.main_themes && result.analysis.main_themes.length > 0) {
             html += '<p><strong>Main Themes:</strong> ' + result.analysis.main_themes.join(', ') + '</p>';
@@ -131,7 +176,7 @@ function formatResult(result) {
     // Plan section
     if (result.plan && result.plan.steps) {
         html += '<div class="plan-section">';
-        html += '<h3>📋 Execution Plan</h3>';
+        html += '<h3>Execution Plan</h3>';
         result.plan.steps.forEach((step, index) => {
             html += `<div class="step-item">`;
             html += `<strong>Step ${step.step_number || index + 1}:</strong> ${escapeHtml(step.description || step.action || 'N/A')}`;
@@ -149,12 +194,126 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+function convertMarkdownToHtml(markdown) {
+    if (!markdown) return '';
+    
+    // Split into lines for processing
+    let lines = markdown.split('\n');
+    let html = '';
+    let inList = false;
+    let listType = null;
+    
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i].trim();
+        
+        if (!line) {
+            // Close any open list
+            if (inList) {
+                html += listType === 'ol' ? '</ol>' : '</ul>';
+                inList = false;
+                listType = null;
+            }
+            html += '\n';
+            continue;
+        }
+        
+        // Headers (must be at start of line)
+        if (line.startsWith('### ')) {
+            if (inList) {
+                html += listType === 'ol' ? '</ol>' : '</ul>';
+                inList = false;
+            }
+            html += `<h4>${escapeHtml(line.substring(4))}</h4>\n`;
+            continue;
+        }
+        if (line.startsWith('## ')) {
+            if (inList) {
+                html += listType === 'ol' ? '</ol>' : '</ul>';
+                inList = false;
+            }
+            html += `<h3>${escapeHtml(line.substring(3))}</h3>\n`;
+            continue;
+        }
+        if (line.startsWith('# ')) {
+            if (inList) {
+                html += listType === 'ol' ? '</ol>' : '</ul>';
+                inList = false;
+            }
+            html += `<h2>${escapeHtml(line.substring(2))}</h2>\n`;
+            continue;
+        }
+        
+        // Numbered lists
+        const numberedMatch = line.match(/^(\d+)\.\s+(.*)$/);
+        if (numberedMatch) {
+            if (!inList || listType !== 'ol') {
+                if (inList) html += listType === 'ul' ? '</ul>' : '';
+                html += '<ol>';
+                inList = true;
+                listType = 'ol';
+            }
+            html += `<li>${escapeHtml(numberedMatch[2])}</li>\n`;
+            continue;
+        }
+        
+        // Bullet lists
+        const bulletMatch = line.match(/^[-*]\s+(.*)$/);
+        if (bulletMatch) {
+            if (!inList || listType !== 'ul') {
+                if (inList) html += listType === 'ol' ? '</ol>' : '';
+                html += '<ul>';
+                inList = true;
+                listType = 'ul';
+            }
+            html += `<li>${escapeHtml(bulletMatch[1])}</li>\n`;
+            continue;
+        }
+        
+        // Regular paragraph
+        if (inList) {
+            html += listType === 'ol' ? '</ol>' : '</ul>';
+            inList = false;
+            listType = null;
+        }
+        
+        // Process inline markdown
+        let processedLine = escapeHtml(line);
+        // Bold (must be ** or __) - process first
+        processedLine = processedLine.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        processedLine = processedLine.replace(/__(.*?)__/g, '<strong>$1</strong>');
+        // Italic (single * or _) - only process if not already inside strong tags
+        // Split by strong tags, process italic in non-strong parts
+        const parts = processedLine.split(/(<strong>.*?<\/strong>)/g);
+        processedLine = parts.map(part => {
+            if (part.startsWith('<strong>')) {
+                return part; // Don't process italic inside strong tags
+            }
+            // Process italic in this part
+            part = part.replace(/\*([^*\n]+?)\*/g, '<em>$1</em>');
+            part = part.replace(/_([^_\n]+?)_/g, '<em>$1</em>');
+            return part;
+        }).join('');
+        
+        html += `<p>${processedLine}</p>\n`;
+    }
+    
+    // Close any remaining list
+    if (inList) {
+        html += listType === 'ol' ? '</ol>' : '</ul>';
+    }
+    
+    return html;
+}
+
 // Progress tracking
 const progressState = {
     planning: { status: 'pending', step: null },
     executing: { status: 'pending', step: null },
     analyzing: { status: 'pending', step: null },
+    evaluating: { status: 'pending', step: null },
+    replanning: { status: 'pending', step: null },
     refining: { status: 'pending', step: null },
+    critiquing: { status: 'pending', step: null },
     summarizing: { status: 'pending', step: null }
 };
 
@@ -163,8 +322,11 @@ function updateProgressStep(stepType, data) {
         'planning': { icon: '📋', title: 'Planning', order: 1 },
         'executing': { icon: '⚙️', title: 'Executing', order: 2 },
         'analyzing': { icon: '🔍', title: 'Analyzing', order: 3 },
-        'refining': { icon: '🔄', title: 'Refining', order: 4 },
-        'summarizing': { icon: '📝', title: 'Summarizing', order: 5 }
+        'evaluating': { icon: '🔎', title: 'Evaluating Strategy', order: 4 },
+        'replanning': { icon: '🔄', title: 'Replanning', order: 4.5 },
+        'refining': { icon: '🔄', title: 'Refining', order: 5 },
+        'critiquing': { icon: '🔬', title: 'Critiquing', order: 6 },
+        'summarizing': { icon: '📝', title: 'Summarizing', order: 7 }
     };
     
     if (stepNames[stepType]) {
@@ -178,17 +340,29 @@ function renderProgressSteps() {
         { key: 'planning', icon: '📋', title: 'Planning' },
         { key: 'executing', icon: '⚙️', title: 'Executing' },
         { key: 'analyzing', icon: '🔍', title: 'Analyzing' },
+        { key: 'evaluating', icon: '🔎', title: 'Evaluating Strategy' },
+        { key: 'replanning', icon: '🔄', title: 'Replanning', conditional: true },
         { key: 'refining', icon: '🔄', title: 'Refining' },
+        { key: 'critiquing', icon: '🔬', title: 'Critiquing' },
         { key: 'summarizing', icon: '📝', title: 'Summarizing' }
     ];
     
-    progressSteps.innerHTML = steps.map(step => {
+    // Filter out conditional steps that haven't been activated
+    const visibleSteps = steps.filter(step => {
+        if (step.conditional) {
+            const state = progressState[step.key];
+            return state.status !== 'pending';
+        }
+        return true;
+    });
+    
+    progressSteps.innerHTML = visibleSteps.map(step => {
         const state = progressState[step.key];
         let statusClass = 'pending';
         let message = '';
         let details = '';
         
-        if (state.status === 'started' || state.status === 'checking' || state.status === 'refining') {
+        if (state.status === 'started' || state.status === 'checking' || state.status === 'refining' || state.status === 'replanning') {
             statusClass = 'active';
             message = state.message || `${step.title} in progress...`;
         } else if (state.status === 'completed' || state.status === 'updated') {
@@ -203,24 +377,35 @@ function renderProgressSteps() {
             } else if (step.key === 'analyzing' && state.confidence !== undefined) {
                 details = `Confidence: ${(state.confidence * 100).toFixed(0)}%`;
                 if (state.main_themes && state.main_themes.length > 0) {
-                    details += ` | Themes: ${state.main_themes.join(', ')}`;
+                    details += ` | Themes: ${state.main_themes.slice(0, 2).join(', ')}`;
                 }
+            } else if (step.key === 'evaluating') {
+                details = state.reason || 'Strategy evaluation completed';
+            } else if (step.key === 'replanning' && state.attempt) {
+                details = `Attempt ${state.attempt} | ${state.reason || 'Replanning strategy'}`;
             } else if (step.key === 'refining' && state.iteration) {
                 details = `Iteration ${state.iteration}`;
                 if (state.reason) {
                     details += ` | ${state.reason}`;
                 }
+            } else if (step.key === 'critiquing') {
+                details = state.critique_passed !== undefined 
+                    ? (state.critique_passed ? 'No issues found' : 'Issues detected')
+                    : 'Review completed';
             }
         }
         
+        const iconStyle = statusClass === 'completed' ? '✓' : statusClass === 'active' ? '→' : '○';
+        const phaseSummary = state.summary || '';
         return `
             <div class="progress-step ${statusClass}">
                 <div class="progress-step-title">
-                    <span class="icon">${step.icon}</span>
+                    <span class="icon" style="font-weight: 600;">${iconStyle}</span>
                     <span>${step.title}</span>
                 </div>
                 ${message ? `<div class="progress-step-message">${message}</div>` : ''}
                 ${details ? `<div class="progress-step-details">${details}</div>` : ''}
+                ${phaseSummary ? `<div class="progress-step-summary">${escapeHtml(phaseSummary)}</div>` : ''}
             </div>
         `;
     }).join('');
