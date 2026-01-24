@@ -628,17 +628,81 @@ function updateModelLogsDisplay(modelLogs, models = null) {
     } else {
         logs.forEach(log => {
             const logType = log.type || 'info';
+            const timestamp = new Date((log.timestamp || Date.now() / 1000) * 1000);
+            
             html += `<div class="log-entry log-${logType}">`;
-            html += `<span class="log-time">${new Date((log.timestamp || Date.now() / 1000) * 1000).toLocaleTimeString()}</span>`;
+            html += `<span class="log-time">${timestamp.toLocaleTimeString()}</span>`;
             html += `<span class="log-type">${logType}</span>`;
+            
+            // Extract and display key information
+            let logMessage = '';
             const logData = {...log};
             delete logData.timestamp;
             delete logData.model;
             delete logData.type;
-            const logMessage = Object.keys(logData).length > 0 
-                ? JSON.stringify(logData, null, 2)
-                : 'No additional data';
-            html += `<span class="log-message">${escapeHtml(logMessage)}</span>`;
+            
+            // Handle tool calling information
+            if (log.tool_calling_mode && log.tool_calls && log.tool_calls.length > 0) {
+                logMessage += '<div class="log-tool-calls">';
+                logMessage += '<div class="log-tool-header">🔧 Tools Used:</div>';
+                log.tool_calls.forEach((toolCall, idx) => {
+                    const successIcon = toolCall.success ? '✓' : '✗';
+                    const successClass = toolCall.success ? 'tool-success' : 'tool-failed';
+                    logMessage += `<div class="log-tool-item ${successClass}">`;
+                    logMessage += `<span class="tool-icon">${successIcon}</span>`;
+                    logMessage += `<span class="tool-name">${escapeHtml(toolCall.name)}</span>`;
+                    if (toolCall.results_count !== undefined) {
+                        logMessage += `<span class="tool-results">(${toolCall.results_count} results)</span>`;
+                    }
+                    if (toolCall.arguments && Object.keys(toolCall.arguments).length > 0) {
+                        logMessage += `<div class="tool-args">Args: ${escapeHtml(JSON.stringify(toolCall.arguments, null, 2))}</div>`;
+                    }
+                    if (toolCall.message) {
+                        logMessage += `<div class="tool-message">${escapeHtml(toolCall.message)}</div>`;
+                    }
+                    logMessage += '</div>';
+                });
+                logMessage += '</div>';
+            }
+            
+            // Handle current tool being executed
+            if (log.current_tool) {
+                logMessage += '<div class="log-current-tool">';
+                logMessage += `🔧 Executing: <strong>${escapeHtml(log.current_tool.name)}</strong>`;
+                if (log.current_tool.arguments) {
+                    logMessage += ` with args: ${escapeHtml(JSON.stringify(log.current_tool.arguments))}`;
+                }
+                logMessage += '</div>';
+            }
+            
+            // Display message if present
+            if (log.message) {
+                logMessage += `<div class="log-main-message">${escapeHtml(log.message)}</div>`;
+            }
+            
+            // Display summary if present
+            if (log.summary) {
+                logMessage += `<div class="log-summary">${escapeHtml(log.summary)}</div>`;
+            }
+            
+            // Display other data as formatted JSON
+            const remainingData = {};
+            const skipKeys = ['tool_calling_mode', 'tool_calls', 'current_tool', 'message', 'summary', 'status'];
+            for (const [key, value] of Object.entries(logData)) {
+                if (!skipKeys.includes(key) && value !== undefined && value !== null) {
+                    remainingData[key] = value;
+                }
+            }
+            
+            if (Object.keys(remainingData).length > 0) {
+                logMessage += `<div class="log-extra-data"><pre>${escapeHtml(JSON.stringify(remainingData, null, 2))}</pre></div>`;
+            }
+            
+            if (!logMessage) {
+                logMessage = '<span class="log-empty">No additional data</span>';
+            }
+            
+            html += `<div class="log-message">${logMessage}</div>`;
             html += `</div>`;
         });
     }
