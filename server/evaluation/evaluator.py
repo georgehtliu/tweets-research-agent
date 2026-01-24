@@ -182,65 +182,6 @@ class BatchEvaluator:
         
         total_time = time.time() - start_time
         return self._finalize_evaluation(queries, total_time)
-            query_id = query_data.get("id", f"query_{i}")
-            query_text = query_data.get("query", "")
-            category = query_data.get("category", "unknown")
-            complexity = query_data.get("complexity", "unknown")
-            
-            print(f"[{i}/{len(queries)}] Running: {query_id} ({category}, {complexity})")
-            print(f"   Query: {query_text[:80]}...")
-            
-            try:
-                # Initialize agent
-                agent_instance, _ = self.agent_service.initialize_agent()
-                
-                # Run workflow
-                query_start = time.time()
-                result = agent_instance.run_workflow(query_text)
-                query_time = time.time() - query_start
-                
-                # Add metadata
-                result["query_id"] = query_id
-                result["query"] = query_text
-                result["query_category"] = category
-                result["query_complexity"] = complexity
-                result["query_time_seconds"] = round(query_time, 2)
-                result["success"] = bool(result.get("final_summary"))
-                
-                self.results.append(result)
-                
-                # Save individual result if requested
-                if save_individual_results:
-                    results_dir = self.project_root / "server" / "evaluation" / "results"
-                    results_dir.mkdir(exist_ok=True)
-                    result_file = results_dir / f"{query_id}_result.json"
-                    with open(result_file, 'w', encoding='utf-8') as f:
-                        json.dump(result, f, indent=2, ensure_ascii=False, default=str)
-                
-                print(f"   ✅ Completed in {query_time:.2f}s")
-                print(f"   Confidence: {result.get('analysis', {}).get('confidence', 0):.2f}")
-                print()
-                
-            except Exception as e:
-                print(f"   ❌ Error: {str(e)}")
-                error_result = {
-                    "query_id": query_id,
-                    "query": query_text,
-                    "query_category": category,
-                    "query_complexity": complexity,
-                    "error": str(e),
-                    "success": False,
-                    "timestamp": datetime.now().isoformat()
-                }
-                self.results.append(error_result)
-                print()
-            
-            # Delay between queries to avoid rate limits
-            if i < len(queries) and delay_between_queries > 0:
-                time.sleep(delay_between_queries)
-        
-        total_time = time.time() - start_time
-        return self._finalize_evaluation(queries, total_time)
     
     def _run_parallel(
         self,

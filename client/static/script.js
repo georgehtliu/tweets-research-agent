@@ -66,123 +66,105 @@ function closeResults() {
 function formatResult(result) {
     let html = '';
     
-    // Metadata section
-    html += '<div class="result-meta">';
-    html += `<div class="meta-item">
-        <div class="meta-label">Query Type</div>
-        <div class="meta-value">${result.plan?.query_type || 'N/A'}</div>
-    </div>`;
-    html += `<div class="meta-item">
-        <div class="meta-label">Results Found</div>
-        <div class="meta-value">${result.results_count || 0}</div>
-    </div>`;
-    html += `<div class="meta-item">
-        <div class="meta-label">Refinement Iterations</div>
-        <div class="meta-value">${result.refinement_iterations || 0}</div>
-    </div>`;
-    html += `<div class="meta-item">
-        <div class="meta-label">Replan Cycles</div>
-        <div class="meta-value">${result.replan_count || 0}</div>
-    </div>`;
-    html += `<div class="meta-item">
-        <div class="meta-label">Total Steps</div>
-        <div class="meta-value">${result.execution_steps || 0}</div>
-    </div>`;
-    html += `<div class="meta-item">
-        <div class="meta-label">Confidence</div>
-        <div class="meta-value">${(Math.max(0, Number(result.analysis?.confidence) || 0) * 100).toFixed(0)}%</div>
-    </div>`;
+    // Compact metadata bar
+    const conf = Math.max(0, Number(result.analysis?.confidence) || 0) * 100;
+    const confColor = conf >= 80 ? '#10b981' : conf >= 60 ? '#f59e0b' : '#f87171';
+    
+    html += '<div class="result-meta-bar">';
+    html += `<span class="meta-badge"><span class="meta-badge-label">Results</span><span class="meta-badge-value">${result.results_count || 0}</span></span>`;
+    html += `<span class="meta-badge"><span class="meta-badge-label">Confidence</span><span class="meta-badge-value" style="color: ${confColor}">${conf.toFixed(0)}%</span></span>`;
+    if (result.execution_steps) {
+        html += `<span class="meta-badge"><span class="meta-badge-label">Steps</span><span class="meta-badge-value">${result.execution_steps}</span></span>`;
+    }
+    if (result.replan_count > 0) {
+        html += `<span class="meta-badge"><span class="meta-badge-label">Replans</span><span class="meta-badge-value">${result.replan_count}</span></span>`;
+    }
     html += '</div>';
     
-    // Summary section
+    // Summary section (primary content)
     if (result.final_summary) {
-        html += '<div class="summary-section">';
-        html += '<h3>Final Summary</h3>';
-        // Convert markdown to HTML
+        html += '<div class="result-section-primary">';
+        html += '<div class="section-header">';
+        html += '<span class="section-icon">📄</span>';
+        html += '<h3>Summary</h3>';
+        html += '</div>';
         const markdownHtml = convertMarkdownToHtml(result.final_summary);
         html += `<div class="summary-text">${markdownHtml}</div>`;
         html += '</div>';
     }
     
-    // Critique section
-    if (result.critique) {
-        html += '<div class="summary-section critique-section">';
-        html += '<h3>Quality Review (Critique)</h3>';
+    // Key insights (simplified)
+    if (result.analysis?.key_insights && result.analysis.key_insights.length > 0) {
+        html += '<div class="result-section-secondary">';
+        html += '<div class="section-header">';
+        html += '<span class="section-icon">💡</span>';
+        html += '<h3>Key Insights</h3>';
+        html += '</div>';
+        html += '<ul class="insights-list">';
+        result.analysis.key_insights.slice(0, 5).forEach(insight => {
+            html += `<li>${escapeHtml(insight)}</li>`;
+        });
+        html += '</ul>';
+        html += '</div>';
+    }
+    
+    // Themes & Sentiment (compact)
+    if (result.analysis) {
+        const themes = result.analysis.main_themes || [];
+        const sent = result.analysis.sentiment_analysis || {};
         
+        if (themes.length > 0 || Object.keys(sent).length > 0) {
+            html += '<div class="result-section-tertiary">';
+            html += '<div class="section-header">';
+            html += '<span class="section-icon">📊</span>';
+            html += '<h3>Analysis</h3>';
+            html += '</div>';
+            
+            if (themes.length > 0) {
+                html += '<div class="analysis-item">';
+                html += '<span class="analysis-label">Themes:</span>';
+                html += `<span class="analysis-value">${themes.slice(0, 3).join(', ')}</span>`;
+                html += '</div>';
+            }
+            
+            if (sent.positive !== undefined || sent.negative !== undefined || sent.neutral !== undefined) {
+                html += '<div class="analysis-item">';
+                html += '<span class="analysis-label">Sentiment:</span>';
+                const sentParts = [];
+                if (sent.positive) sentParts.push(`<span style="color: #10b981">+${sent.positive}</span>`);
+                if (sent.negative) sentParts.push(`<span style="color: #f87171">-${sent.negative}</span>`);
+                if (sent.neutral) sentParts.push(`<span style="color: #94a3b8">~${sent.neutral}</span>`);
+                html += `<span class="analysis-value">${sentParts.join(' ')}</span>`;
+                html += '</div>';
+            }
+            
+            html += '</div>';
+        }
+    }
+    
+    // Critique (simplified, only show if issues found)
+    if (result.critique) {
         const critique = result.critique;
         const passed = critique.critique_passed !== false;
+        const hasIssues = (critique.hallucinations && critique.hallucinations.length > 0) ||
+                         (critique.biases && critique.biases.length > 0);
         
-        html += `<p class="critique-status ${passed ? 'passed' : 'failed'}">`;
-        html += passed ? '✓ Critique Passed' : '⚠ Critique Found Issues';
-        html += '</p>';
-        
-        if (critique.hallucinations && critique.hallucinations.length > 0) {
-            html += '<p><strong>Hallucinations Detected:</strong></p><ul>';
-            critique.hallucinations.forEach(h => {
-                html += `<li>${escapeHtml(h)}</li>`;
-            });
-            html += '</ul>';
+        if (!passed || hasIssues) {
+            html += '<div class="result-section-critique">';
+            html += '<div class="section-header">';
+            html += '<span class="section-icon">🔬</span>';
+            html += '<h3>Quality Check</h3>';
+            html += `<span class="critique-badge ${passed ? 'passed' : 'failed'}">${passed ? '✓ Passed' : '⚠ Issues Found'}</span>`;
+            html += '</div>';
+            
+            if (critique.hallucinations && critique.hallucinations.length > 0) {
+                html += '<div class="critique-item"><span class="critique-label">Hallucinations:</span> ' + critique.hallucinations.length + '</div>';
+            }
+            if (critique.biases && critique.biases.length > 0) {
+                html += '<div class="critique-item"><span class="critique-label">Biases:</span> ' + critique.biases.length + '</div>';
+            }
+            html += '</div>';
         }
-        
-        if (critique.biases && critique.biases.length > 0) {
-            html += '<p><strong>Biases Identified:</strong></p><ul>';
-            critique.biases.forEach(b => {
-                html += `<li>${escapeHtml(b)}</li>`;
-            });
-            html += '</ul>';
-        }
-        
-        if (critique.corrections && critique.corrections.length > 0) {
-            html += '<p><strong>Corrections Applied:</strong></p><ul>';
-            critique.corrections.forEach(c => {
-                html += `<li>${escapeHtml(c)}</li>`;
-            });
-            html += '</ul>';
-        }
-        
-        html += '</div>';
-    }
-    
-    // Analysis section
-    if (result.analysis) {
-        html += '<div class="summary-section">';
-        html += '<h3>Analysis</h3>';
-        
-        if (result.analysis.main_themes && result.analysis.main_themes.length > 0) {
-            html += '<p><strong>Main Themes:</strong> ' + result.analysis.main_themes.join(', ') + '</p>';
-        }
-        
-        if (result.analysis.key_insights && result.analysis.key_insights.length > 0) {
-            html += '<p><strong>Key Insights:</strong></p><ul>';
-            result.analysis.key_insights.forEach(insight => {
-                html += `<li>${escapeHtml(insight)}</li>`;
-            });
-            html += '</ul>';
-        }
-        
-        if (result.analysis.sentiment_analysis) {
-            const sent = result.analysis.sentiment_analysis;
-            html += '<p><strong>Sentiment Distribution:</strong></p>';
-            html += '<ul>';
-            if (sent.positive !== undefined) html += `<li>Positive: ${sent.positive}</li>`;
-            if (sent.negative !== undefined) html += `<li>Negative: ${sent.negative}</li>`;
-            if (sent.neutral !== undefined) html += `<li>Neutral: ${sent.neutral}</li>`;
-            html += '</ul>';
-        }
-        
-        html += '</div>';
-    }
-    
-    // Plan section
-    if (result.plan && result.plan.steps) {
-        html += '<div class="plan-section">';
-        html += '<h3>Execution Plan</h3>';
-        result.plan.steps.forEach((step, index) => {
-            html += `<div class="step-item">`;
-            html += `<strong>Step ${step.step_number || index + 1}:</strong> ${escapeHtml(step.description || step.action || 'N/A')}`;
-            html += `</div>`;
-        });
-        html += '</div>';
     }
     
     return html;
@@ -369,34 +351,31 @@ function renderProgressSteps() {
             statusClass = 'completed';
             message = state.status === 'skipped' ? `${step.title} skipped` : `${step.title} completed`;
             
-            // Add details based on step type
+            // Add details based on step type (simplified)
             if (step.key === 'planning' && state.query_type) {
-                details = `Type: ${state.query_type} | Steps: ${state.steps_count || 0}`;
+                details = `${state.query_type} · ${state.steps_count || 0} steps`;
             } else if (step.key === 'executing') {
                 if (state.tool_calling_mode && state.tool_calls && state.tool_calls.length > 0) {
-                    details = `Dynamic tool calling: ${state.total_tool_calls || state.tool_calls.length} tool call(s) | ${state.total_results || state.results_count || 0} results`;
+                    details = `${state.total_tool_calls || state.tool_calls.length} tools · ${state.total_results || state.results_count || 0} results`;
                 } else if (state.results_count !== undefined) {
-                    details = `Retrieved ${state.results_count} items`;
+                    details = `${state.results_count} items`;
                 }
             } else if (step.key === 'analyzing' && state.confidence !== undefined) {
                 const conf = Number(state.confidence);
-                details = `Confidence: ${(isNaN(conf) ? 0 : conf * 100).toFixed(0)}%`;
+                details = `${(isNaN(conf) ? 0 : conf * 100).toFixed(0)}% confidence`;
                 if (state.main_themes && state.main_themes.length > 0) {
-                    details += ` | Themes: ${state.main_themes.slice(0, 2).join(', ')}`;
+                    details += ` · ${state.main_themes.slice(0, 2).join(', ')}`;
                 }
             } else if (step.key === 'evaluating') {
-                details = state.reason || 'Strategy evaluation completed';
+                details = state.reason ? state.reason.slice(0, 60) : 'Strategy checked';
             } else if (step.key === 'replanning' && state.attempt) {
-                details = `Attempt ${state.attempt} | ${state.reason || 'Replanning strategy'}`;
+                details = `Attempt ${state.attempt}`;
             } else if (step.key === 'refining' && state.iteration) {
                 details = `Iteration ${state.iteration}`;
-                if (state.reason) {
-                    details += ` | ${state.reason}`;
-                }
             } else if (step.key === 'critiquing') {
                 details = state.critique_passed !== undefined 
-                    ? (state.critique_passed ? 'No issues found' : 'Issues detected')
-                    : 'Review completed';
+                    ? (state.critique_passed ? '✓ Passed' : '⚠ Issues')
+                    : 'Reviewed';
             }
         }
         

@@ -200,11 +200,10 @@ main {
 }
 
 .examples-label {
-    font-size: 14px;
-    color: #94a3b8;
-    margin-bottom: 12px;
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 10px;
     font-weight: 500;
-    text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
@@ -215,24 +214,24 @@ main {
 }
 
 .example-btn {
-    padding: 10px 18px;
-    font-size: 14px;
+    padding: 8px 16px;
+    font-size: 13px;
     font-family: 'Inter', sans-serif;
-    background: rgba(2, 6, 23, 0.6);
-    border: 1px solid rgba(148, 163, 184, 0.2);
-    border-radius: 20px;
+    background: rgba(59, 130, 246, 0.08);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
-    color: #94a3b8;
-    font-weight: 400;
+    color: #93c5fd;
     font-weight: 500;
 }
 
 .example-btn:hover {
-    background: rgba(2, 6, 23, 0.8);
-    border-color: rgba(148, 163, 184, 0.4);
-    color: #ffffff;
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: #bfdbfe;
     transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
 
 .progress-section {
@@ -258,8 +257,8 @@ main {
 
 .progress-section h3 {
     color: #ffffff;
-    margin-bottom: 24px;
-    font-size: 1.5em;
+    margin-bottom: 20px;
+    font-size: 1.3em;
     font-weight: 600;
 }
 
@@ -279,13 +278,13 @@ main {
 
 .progress-step.active {
     border-left-color: #3b82f6;
-    background: rgba(59, 130, 246, 0.1);
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.15) 0%, rgba(2, 6, 23, 0.8) 100%);
     box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
 }
 
 .progress-step.completed {
     border-left-color: #10b981;
-    background: rgba(16, 185, 129, 0.05);
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, rgba(2, 6, 23, 0.8) 100%);
 }
 
 .progress-step-title {
@@ -496,55 +495,212 @@ main {
     color: #ffffff;
 }
 
-.result-meta {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    margin-bottom: 28px;
+/* Compact metadata bar */
+.result-meta-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
 }
 
-.meta-item {
-    background: rgba(2, 6, 23, 0.8);
-    padding: 20px;
-    border-radius: 12px;
-    border-left: 2px solid rgba(59, 130, 246, 0.5);
-    border: 1px solid rgba(148, 163, 184, 0.2);
+.meta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 13px;
 }
 
-.meta-label {
-    font-size: 12px;
+.meta-badge-label {
     color: #94a3b8;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    letter-spacing: 0.05em;
     font-weight: 500;
 }
 
-.meta-value {
-    font-size: 18px;
+.meta-badge-value {
+    color: #3b82f6;
+    font-weight: 600;
+}
+
+/* Section headers */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid rgba(148, 163, 184, 0.15);
+}
+
+.section-icon {
+    font-size: 1.3em;
+    line-height: 1;
+}
+
+.section-header h3 {
+    flex: 1;
+    margin: 0;
+    font-size: 1.2em;
     font-weight: 600;
     color: #ffffff;
 }
 
+/* Primary section (Summary) */
+.result-section-primary {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(2, 6, 23, 0.8) 100%);
+    border-left: 4px solid #3b82f6;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.result-section-primary .section-header {
+    border-bottom-color: rgba(59, 130, 246, 0.2);
+}
+
+/* Secondary section (Insights) */
+.result-section-secondary {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(2, 6, 23, 0.8) 100%);
+    border-left: 4px solid #10b981;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.result-section-secondary .section-header {
+    border-bottom-color: rgba(16, 185, 129, 0.2);
+}
+
+.insights-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.insights-list li {
+    padding: 10px 0;
+    padding-left: 24px;
+    position: relative;
+    color: #e2e8f0;
+    line-height: 1.6;
+}
+
+.insights-list li:before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: #10b981;
+    font-weight: 600;
+}
+
+.insights-list li:not(:last-child) {
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+/* Tertiary section (Analysis) */
+.result-section-tertiary {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(2, 6, 23, 0.8) 100%);
+    border-left: 4px solid #8b5cf6;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.result-section-tertiary .section-header {
+    border-bottom-color: rgba(139, 92, 246, 0.2);
+}
+
+.analysis-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    align-items: baseline;
+}
+
+.analysis-item:not(:last-child) {
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.analysis-label {
+    color: #94a3b8;
+    font-weight: 500;
+    font-size: 0.9em;
+    min-width: 80px;
+}
+
+.analysis-value {
+    color: #e2e8f0;
+    flex: 1;
+}
+
+/* Critique section */
+.result-section-critique {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(2, 6, 23, 0.8) 100%);
+    border-left: 4px solid #f59e0b;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.result-section-critique .section-header {
+    border-bottom-color: rgba(245, 158, 11, 0.2);
+}
+
+.critique-badge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.85em;
+    font-weight: 600;
+}
+
+.critique-badge.passed {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.critique-badge.failed {
+    background: rgba(248, 113, 113, 0.2);
+    color: #f87171;
+    border: 1px solid rgba(248, 113, 113, 0.3);
+}
+
+.critique-item {
+    padding: 8px 0;
+    color: #e2e8f0;
+    font-size: 0.9em;
+}
+
+.critique-label {
+    color: #94a3b8;
+    font-weight: 500;
+    margin-right: 8px;
+}
+
+/* Legacy summary-section (kept for backward compatibility) */
 .summary-section {
     background: rgba(2, 6, 23, 0.8);
-    padding: 28px;
-    border-radius: 16px;
-    margin-top: 24px;
+    padding: 24px;
+    border-radius: 12px;
+    margin-top: 20px;
     border: 1px solid rgba(148, 163, 184, 0.2);
+    border-left: 4px solid rgba(59, 130, 246, 0.5);
 }
 
 .summary-section h3 {
     color: #ffffff;
     margin-bottom: 16px;
-    font-size: 1.3em;
+    font-size: 1.2em;
     font-weight: 600;
 }
 
 .summary-text {
     white-space: pre-wrap;
     line-height: 1.8;
-    color: #94a3b8;
+    color: #e2e8f0;
+    font-size: 0.95em;
 }
 
 .summary-text h2 {
@@ -577,19 +733,20 @@ main {
 
 .summary-text p {
     margin-bottom: 12px;
-    color: #94a3b8;
+    color: #e2e8f0;
+    line-height: 1.7;
 }
 
 .summary-text ul,
 .summary-text ol {
     margin: 12px 0;
     padding-left: 24px;
-    color: #94a3b8;
+    color: #cbd5e1;
 }
 
 .summary-text li {
     margin-bottom: 8px;
-    line-height: 1.6;
+    line-height: 1.7;
 }
 
 .summary-text strong {
@@ -717,9 +874,10 @@ footer {
 }
 
 .section-description {
-    color: #94a3b8;
-    margin-bottom: 24px;
-    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 20px;
+    font-size: 13px;
+    font-weight: 400;
 }
 
 .evaluation-controls {
@@ -1150,5 +1308,35 @@ footer {
     .tab-btn.active {
         border-left-color: #3b82f6;
         border-bottom-color: rgba(148, 163, 184, 0.2);
+    }
+    
+    .result-meta-bar {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .meta-badge {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .result-section-primary,
+    .result-section-secondary,
+    .result-section-tertiary,
+    .result-section-critique {
+        padding: 16px;
+    }
+    
+    .section-header {
+        flex-wrap: wrap;
+    }
+    
+    .analysis-item {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .analysis-label {
+        min-width: auto;
     }
 }
