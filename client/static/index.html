@@ -11,6 +11,9 @@
         <header>
             <h1>Grok Research Agent</h1>
             <p class="subtitle">Intelligent research on X/Twitter data</p>
+            <nav style="margin-top: 16px;">
+                <a href="/tweets" style="color: #60a5fa; text-decoration: none; font-size: 14px;">🐦 Browse Tweets</a>
+            </nav>
         </header>
 
         <main>
@@ -115,68 +118,30 @@
                 </div>
             </div>
 
-            <!-- Tweets section (always visible) -->
-            <div class="tweets-section" id="tweetsSection">
-                <h2 class="tweets-section-title">🐦 Tweets</h2>
-                <div id="tweetsContainer" class="tweets-container">
-                    <div class="tweets-header">
-                        <p class="tweets-section-desc">Browse all tweets from the dataset</p>
-                        <div class="tweets-filters">
-                            <select id="tweetsCategoryFilter" onchange="loadTweets(true)">
-                                <option value="">All Categories</option>
-                                <option value="tech">Tech</option>
-                                <option value="sports">Sports</option>
-                                <option value="politics">Politics</option>
-                                <option value="fashion">Fashion</option>
-                                <option value="art">Art</option>
-                                <option value="entertainment">Entertainment</option>
-                            </select>
-                            <select id="tweetsLanguageFilter" onchange="loadTweets(true)">
-                                <option value="">All Languages</option>
-                                <option value="en">English</option>
-                                <option value="es">Spanish</option>
-                                <option value="fr">French</option>
-                                <option value="pt">Portuguese</option>
-                                <option value="de">German</option>
-                                <option value="ja">Japanese</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div id="tweetsList" class="tweets-list">
-                        <!-- Tweets will be inserted here -->
-                    </div>
-                    <div class="tweets-pagination">
-                        <button id="tweetsPrevBtn" onclick="changeTweetsPage(-1)" disabled>‹ Previous</button>
-                        <span id="tweetsPageInfo">Page 1</span>
-                        <button id="tweetsNextBtn" onclick="changeTweetsPage(1)">Next ›</button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Results/Logs Tabs (shown after model comparison) -->
+            <!-- Results/Logs Tabs (shown immediately when query starts) -->
             <div class="results-tabs-container hidden" id="resultsTabsContainer">
                 <div id="modelProgressBars" class="model-progress-container hidden">
                     <!-- Progress bars will be inserted here -->
                 </div>
                 
                 <div class="results-tabs">
-                    <button class="results-tab-btn active" onclick="switchResultsTab('summary')" id="summaryTab">
-                        📊 Summary
-                    </button>
-                    <button class="results-tab-btn" onclick="switchResultsTab('logs')" id="logsTab">
+                    <button class="results-tab-btn active" onclick="switchResultsTab('logs')" id="logsTab">
                         📝 Logs
+                    </button>
+                    <button class="results-tab-btn" onclick="switchResultsTab('summary')" id="summaryTab">
+                        📊 Summary
                     </button>
                 </div>
                 
-                <div id="summaryTabContent" class="results-tab-content">
-                    <div id="comparisonSummary" class="comparison-summary">
-                        <!-- Comparison summary will be inserted here -->
+                <div id="logsTabContent" class="results-tab-content">
+                    <div id="modelLogs" class="model-logs">
+                        <div class="log-info">Waiting for logs...</div>
                     </div>
                 </div>
                 
-                <div id="logsTabContent" class="results-tab-content hidden">
-                    <div id="modelLogs" class="model-logs">
-                        <!-- Model logs will be inserted here -->
+                <div id="summaryTabContent" class="results-tab-content hidden">
+                    <div id="comparisonSummary" class="comparison-summary">
+                        <!-- Comparison summary will be inserted here -->
                     </div>
                 </div>
             </div>

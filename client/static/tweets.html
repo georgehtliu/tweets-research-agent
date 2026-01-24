@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tweets - Grok Research Agent</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐦 Browse Tweets</h1>
+            <p class="subtitle">Explore all tweets from the dataset</p>
+            <nav style="margin-top: 16px;">
+                <a href="/" style="color: #60a5fa; text-decoration: none; font-size: 14px;">← Back to Query</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="tweets-section" id="tweetsSection">
+                <div id="tweetsContainer" class="tweets-container">
+                    <div class="tweets-header">
+                        <p class="tweets-section-desc">Browse all tweets from the dataset</p>
+                        <div class="tweets-filters">
+                            <select id="tweetsCategoryFilter" onchange="loadTweets(true)">
+                                <option value="">All Categories</option>
+                                <option value="tech">Tech</option>
+                                <option value="sports">Sports</option>
+                                <option value="politics">Politics</option>
+                                <option value="fashion">Fashion</option>
+                                <option value="art">Art</option>
+                                <option value="entertainment">Entertainment</option>
+                            </select>
+                            <select id="tweetsLanguageFilter" onchange="loadTweets(true)">
+                                <option value="">All Languages</option>
+                                <option value="en">English</option>
+                                <option value="es">Spanish</option>
+                                <option value="fr">French</option>
+                                <option value="pt">Portuguese</option>
+                                <option value="de">German</option>
+                                <option value="ja">Japanese</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="tweetsList" class="tweets-list">
+                        <!-- Tweets will be inserted here -->
+                    </div>
+                    <div class="tweets-pagination">
+                        <button id="tweetsPrevBtn" onclick="changeTweetsPage(-1)" disabled>‹ Previous</button>
+                        <span id="tweetsPageInfo">Page 1</span>
+                        <button id="tweetsNextBtn" onclick="changeTweetsPage(1)">Next ›</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Powered by Grok · Agentic Research Workflow</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Ensure API_BASE is available and load tweets when page loads
+        function initTweets() {
+            // Make sure API_BASE is set
+            if (typeof API_BASE === 'undefined') {
+                window.API_BASE = getApiBase();
+            }
+            console.log('API_BASE:', typeof API_BASE !== 'undefined' ? API_BASE : getApiBase());
+            
+            // Check if loadTweets function exists
+            if (typeof loadTweets === 'function') {
+                loadTweets();
+            } else {
+                console.error('loadTweets function not found');
+                const tweetsList = document.getElementById('tweetsList');
+                if (tweetsList) {
+                    tweetsList.innerHTML = '<div class="tweets-error">Error: loadTweets function not found. Check console.</div>';
+                }
+            }
+        }
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initTweets);
+        } else {
+            initTweets();
+        }
+    </script>
+</body>
+</html>

@@ -31,6 +31,36 @@ async def index():
         raise HTTPException(status_code=500, detail={"error": str(e), "path": str(index_path)})
 
 
+@main_router.get("/tweets", response_class=HTMLResponse)
+async def tweets():
+    """Serve the tweets browsing page"""
+    from app import get_client_dir
+    
+    tweets_path = get_client_dir() / 'static' / 'tweets.html'
+    if not tweets_path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "error": "Tweets page not found",
+                "path": str(tweets_path),
+                "exists": tweets_path.exists()
+            }
+        )
+    
+    try:
+        with open(tweets_path, 'r', encoding='utf-8') as f:
+            html_content = f.read()
+        return HTMLResponse(content=html_content)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail={"error": str(e), "path": str(tweets_path)})
+
+
+@main_router.get("/tweets.html", response_class=HTMLResponse)
+async def tweets_html():
+    """Serve the tweets browsing page (alternative route)"""
+    return await tweets()
+
+
 @main_router.get("/api/health")
 async def health():
     """Health check endpoint"""

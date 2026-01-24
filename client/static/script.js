@@ -1,3 +1,8 @@
+// Tweets pagination state (declare early for global access)
+var currentTweetsPage = 1;
+var tweetsPerPage = 20;
+var totalTweets = 0;
+
 // Get API base URL
 // If opened as file:// (direct file access), use default server URL
 // Otherwise use the same origin as the page
@@ -12,7 +17,7 @@ function getApiBase() {
 
 const API_BASE = getApiBase();
 
-// DOM elements
+// DOM elements (may be null on tweets page)
 const queryInput = document.getElementById('queryInput');
 const submitBtn = document.getElementById('submitBtn');
 const btnText = document.getElementById('btnText');
@@ -22,28 +27,34 @@ const resultContent = document.getElementById('resultContent');
 const errorSection = document.getElementById('errorSection');
 const errorMessage = document.getElementById('errorMessage');
 
-// Allow Enter key to submit
-queryInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter' && !submitBtn.disabled) {
-        submitQuery();
-    }
-});
+// Allow Enter key to submit (only if queryInput exists)
+if (queryInput && submitBtn) {
+    queryInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !submitBtn.disabled) {
+            submitQuery();
+        }
+    });
+}
 
 function useExample(query) {
-    queryInput.value = query;
-    queryInput.focus();
+    if (queryInput) {
+        queryInput.value = query;
+        queryInput.focus();
+    }
 }
 
 function setLoading(loading) {
-    submitBtn.disabled = loading;
-    queryInput.disabled = loading;
+    if (submitBtn) submitBtn.disabled = loading;
+    if (queryInput) queryInput.disabled = loading;
     
-    if (loading) {
-        btnText.textContent = 'Processing...';
-        btnSpinner.classList.remove('hidden');
-    } else {
-        btnText.textContent = 'Generate';
-        btnSpinner.classList.add('hidden');
+    if (btnText && btnSpinner) {
+        if (loading) {
+            btnText.textContent = 'Processing...';
+            btnSpinner.classList.remove('hidden');
+        } else {
+            btnText.textContent = 'Generate';
+            btnSpinner.classList.add('hidden');
+        }
     }
 }
 
@@ -288,10 +299,6 @@ function convertMarkdownToHtml(markdown) {
     return html;
 }
 
-// Tweets pagination state
-let currentTweetsPage = 1;
-const tweetsPerPage = 20;
-let totalTweets = 0;
 
 async function submitQuery() {
     const query = queryInput.value.trim();
@@ -307,10 +314,21 @@ async function submitQuery() {
     // Hide previous results/errors
     resultSection.classList.add('hidden');
     errorSection.classList.add('hidden');
-    document.getElementById('resultsTabsContainer').classList.add('hidden');
     
     // Show loading state
     setLoading(true);
+    
+    // Initialize logs container immediately for both single and comparison queries
+    const logsEl = document.getElementById('modelLogs');
+    if (logsEl) {
+        logsEl.innerHTML = '<div class="log-info">Starting query...</div>';
+    }
+    
+    // Show results container immediately with logs tab active
+    const resultsContainer = document.getElementById('resultsTabsContainer');
+    resultsContainer.classList.remove('hidden');
+    switchResultsTab('logs');
+    resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
     
     try {
         let endpoint, body;
@@ -349,22 +367,17 @@ async function submitQuery() {
         let comparisonData = null;
         const modelResults = {};
         const modelLogs = {}; // model -> array of logs
+        const singleQueryLogs = []; // For single query mode
         
         // Initialize progress tracking for comparison mode
         const modelProgress = {}; // model -> {current, total, status}
         if (selectedModels.length > 0) {
             selectedModels.forEach(model => {
                 modelProgress[model] = { current: 0, total: 0, status: 'waiting' };
+                modelLogs[model] = [];
             });
             // Show progress bars
             showModelProgressBars(selectedModels, modelProgress);
-            // Initialize logs container
-            const logsEl = document.getElementById('modelLogs');
-            if (logsEl) {
-                logsEl.innerHTML = '<div class="log-info">Waiting for logs...</div>';
-            }
-            // Show results container early
-            document.getElementById('resultsTabsContainer').classList.remove('hidden');
         }
         
         while (true) {
@@ -454,11 +467,26 @@ async function submitQuery() {
                                 }
                             }
                             displayComparisonResults(comparisonData);
-                        } else {
-                            // Update progress (for single query mode)
-                            if (!selectedModels.length) {
-                                updateProgressStep(data.type, data);
+                            switchResultsTab('summary');
+                        } else if (!selectedModels.length && data.type) {
+                            // Handle single query progress events
+                            const logEntry = {
+                                type: data.type,
+                                message: data.message || data.summary || `${data.type}...`,
+                                timestamp: data.timestamp || Date.now() / 1000,
+                                model: 'default',
+                                ...data
+                            };
+                            singleQueryLogs.push(logEntry);
+                            
+                            // Store in modelLogs format for consistent display
+                            if (!modelLogs['default']) {
+                                modelLogs['default'] = [];
                             }
+                            modelLogs['default'].push(logEntry);
+                            
+                            // Display single query logs using the same display function
+                            updateModelLogsDisplay(modelLogs, ['default']);
                         }
                     } catch (e) {
                         if (e instanceof SyntaxError) {
@@ -472,15 +500,16 @@ async function submitQuery() {
         }
         
         if (selectedModels.length > 0 && comparisonData) {
-            // Display comparison results
+            // Display comparison results - summary tab already shown
             displayComparisonResults(comparisonData);
-            document.getElementById('resultsTabsContainer').classList.remove('hidden');
-            document.getElementById('resultsTabsContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            switchResultsTab('summary');
         } else if (finalResult) {
-            // Display single result
-            resultContent.innerHTML = formatResult(finalResult);
-            resultSection.classList.remove('hidden');
-            resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Display single result in summary tab
+            const summaryEl = document.getElementById('comparisonSummary');
+            if (summaryEl) {
+                summaryEl.innerHTML = formatResult(finalResult);
+            }
+            switchResultsTab('summary');
         } else {
             throw new Error('No result received');
         }
@@ -1409,7 +1438,10 @@ async function compareModels() {
 // Tweets functions
 async function loadTweets(resetPage = false) {
     const tweetsList = document.getElementById('tweetsList');
-    if (!tweetsList) return;
+    if (!tweetsList) {
+        console.error('tweetsList element not found');
+        return;
+    }
     
     if (resetPage) {
         currentTweetsPage = 1;
@@ -1421,6 +1453,12 @@ async function loadTweets(resetPage = false) {
     tweetsList.innerHTML = '<div class="tweets-loading">Loading tweets...</div>';
     
     try {
+        // Ensure API_BASE is defined
+        if (typeof API_BASE === 'undefined') {
+            const apiBase = getApiBase();
+            window.API_BASE = apiBase;
+        }
+        
         const params = new URLSearchParams({
             page: currentTweetsPage.toString(),
             per_page: tweetsPerPage.toString()
@@ -1428,12 +1466,18 @@ async function loadTweets(resetPage = false) {
         if (category) params.append('category', category);
         if (language) params.append('language', language);
         
-        const response = await fetch(`${API_BASE}/api/tweets?${params}`);
+        const apiUrl = `${typeof API_BASE !== 'undefined' ? API_BASE : getApiBase()}/api/tweets?${params}`;
+        console.log('Loading tweets from:', apiUrl);
+        
+        const response = await fetch(apiUrl);
         if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Tweets API error:', response.status, errorText);
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const data = await response.json();
+        console.log('Tweets loaded:', data.tweets.length, 'tweets');
         totalTweets = data.pagination.total;
         
         // Render tweets
@@ -1494,7 +1538,8 @@ async function loadTweets(resetPage = false) {
         
     } catch (error) {
         console.error('Error loading tweets:', error);
-        tweetsList.innerHTML = `<div class="tweets-error">Error loading tweets: ${escapeHtml(error.message)}</div>`;
+        const errorMsg = error.message || 'Unknown error';
+        tweetsList.innerHTML = `<div class="tweets-error">Error loading tweets: ${escapeHtml(errorMsg)}<br><small>Check browser console for details</small></div>`;
     }
 }
 
@@ -1524,15 +1569,15 @@ function changeTweetsPage(direction) {
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Run health check, load models, and load tweets on page load
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
+// Run health check and load models on page load (only on main page)
+if (document.getElementById('queryInput')) {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            checkHealth();
+            loadModels();
+        });
+    } else {
         checkHealth();
         loadModels();
-        loadTweets();
-    });
-} else {
-    checkHealth();
-    loadModels();
-    loadTweets();
+    }
 }

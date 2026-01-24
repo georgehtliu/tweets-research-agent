@@ -19,46 +19,270 @@ The agent handles various query types:
 - Sentiment analysis
 - And more...
 
-## 🏗️ Architecture
+## 🏗️ Architecture Overview
+
+### System Architecture
+
+The system follows a **state machine pattern** with autonomous decision-making capabilities:
 
 ```
-User Query
-    ↓
-┌─────────────────┐
-│  Grok Planner   │ ← Uses grok-4-fast-reasoning for complex reasoning
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Query Classifier│ ← Classifies query type
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Hybrid Retriever│ ← Semantic + Keyword search
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│  Grok Analyzer  │ ← Deep analysis with grok-4-fast-reasoning
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│   Refiner       │ ← Decides if refinement needed
-└────────┬────────┘
-         │
-    ┌────┴────┐
-    │ Refine? │
-    └────┬────┘
-    Yes  │  No
-    └────┴────┐
-         │
-         ▼
-┌─────────────────┐
-│  Summarizer     │ ← Final summary with grok-4-fast-reasoning
-└─────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                    User Query Input                         │
+└───────────────────────┬─────────────────────────────────────┘
+                        │
+                        ▼
+            ┌───────────────────────┐
+            │   State Machine       │
+            │   Orchestrator        │
+            └───────────┬───────────┘
+                        │
+        ┌───────────────┼───────────────┐
+        │               │               │
+        ▼               ▼               ▼
+┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+│   PLAN       │ │   EXECUTE    │ │   ANALYZE    │
+│              │ │              │ │              │
+│ - Decompose  │ │ - Tool Call  │ │ - Extract    │
+│ - Classify   │ │ - Hybrid     │ │   Themes     │
+│ - Select     │ │   Search     │ │ - Sentiment  │
+│   Tools      │ │ - Filter     │ │ - Confidence │
+└──────┬───────┘ └──────┬───────┘ └──────┬───────┘
+       │                │                 │
+       └────────────────┼─────────────────┘
+                        │
+                        ▼
+            ┌───────────────────────┐
+            │     EVALUATE          │
+            │  (Replan Decision)    │
+            └───────────┬───────────┘
+                        │
+            ┌───────────┴───────────┐
+            │                       │
+        Replan?                  No
+            │                       │
+            ▼                       ▼
+    ┌──────────────┐      ┌──────────────┐
+    │   REFINE     │      │   CRITIQUE   │
+    │              │      │              │
+    │ - Iterative  │      │ - Hallucin.  │
+    │   Improve    │      │   Check      │
+    │ - Expand     │      │ - Bias Check │
+    │   Search     │      │ - Quality    │
+    └──────┬───────┘      └──────┬───────┘
+           │                     │
+           └──────────┬──────────┘
+                      │
+                      ▼
+            ┌───────────────────────┐
+            │    SUMMARIZE          │
+            │                       │
+            │ - Executive Summary   │
+            │ - Key Findings        │
+            │ - Detailed Analysis   │
+            └───────────────────────┘
 ```
+
+### Component Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      Frontend (Web UI)                      │
+│  - React-like vanilla JS                                    │
+│  - Server-Sent Events (SSE) for real-time updates           │
+│  - Model comparison interface                               │
+│  - Tweets browsing page                                     │
+└───────────────────────┬─────────────────────────────────────┘
+                        │ HTTP/SSE
+                        ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    FastAPI Server                            │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
+│  │ Query Routes │  │ Eval Routes  │  │ Main Routes  │     │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘     │
+│         │                 │                  │              │
+│         └─────────────────┼──────────────────┘              │
+│                           │                                  │
+│                           ▼                                  │
+│              ┌───────────────────────┐                      │
+│              │   Agent Service       │                      │
+│              │  (Singleton Pattern)  │                      │
+│              └───────────┬───────────┘                      │
+└──────────────────────────┼──────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│              AgenticResearchAgent (State Machine)            │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
+│  │ Context      │  │ Hybrid       │  │ Tool        │     │
+│  │ Manager      │  │ Retriever    │  │ Registry    │     │
+│  │              │  │              │  │             │     │
+│  │ - History    │  │ - Semantic   │  │ - Keyword   │     │
+│  │ - Steps      │  │   Search     │  │   Search    │     │
+│  │ - Tokens     │  │ - Keyword    │  │ - Temporal   │     │
+│  └──────────────┘  │   Search     │  │ - Profile    │     │
+│                    │ - Hybrid     │  │ - Filter     │     │
+│                    └──────┬───────┘  └──────┬───────┘     │
+│                           │                 │              │
+│                           └────────┬────────┘              │
+│                                    │                       │
+│                                    ▼                       │
+│                          ┌──────────────┐                 │
+│                          │ Grok Client  │                 │
+│                          │              │                 │
+│                          │ - API Calls  │                 │
+│                          │ - Streaming  │                 │
+│                          │ - Tool Call  │                 │
+│                          └──────┬───────┘                 │
+└─────────────────────────────────┼──────────────────────────┘
+                                  │
+                                  ▼
+                        ┌──────────────────┐
+                        │   Grok API      │
+                        │  (xAI Console)   │
+                        └──────────────────┘
+```
+
+## 🎨 Major Design Decisions
+
+### 1. **State Machine Pattern for Workflow Orchestration**
+
+**Decision**: Implemented a state machine with explicit state transitions rather than a linear pipeline.
+
+**Rationale**:
+- **Autonomy**: Enables the agent to make dynamic decisions (e.g., replanning when analysis reveals insufficient data)
+- **Flexibility**: Supports conditional state transitions (e.g., `ANALYZE → EVALUATE → PLAN` if replan needed)
+- **Clarity**: Makes the workflow explicit and debuggable
+- **Extensibility**: Easy to add new states (e.g., `CRITIQUE` state for quality checks)
+
+**Implementation**: `WorkflowState` enum with state transition logic in `run_workflow()` method.
+
+### 2. **Hybrid Retrieval System**
+
+**Decision**: Combined semantic search (embeddings) with keyword search rather than using either alone.
+
+**Rationale**:
+- **Robustness**: Semantic search handles conceptual queries; keyword search handles exact matches
+- **Performance**: Keyword search is fast for specific terms; semantic search finds related content
+- **Coverage**: Handles both "find posts about AI safety" (semantic) and "find posts with #Python" (keyword)
+- **Fallback**: If embeddings fail, keyword search still works
+
+**Implementation**: `HybridRetriever` combines cosine similarity (semantic) with TF-IDF-like scoring (keyword), weighted by `config.HYBRID_SEMANTIC_WEIGHT`.
+
+### 3. **Dynamic Tool Calling**
+
+**Decision**: Implemented OpenAI-style function calling for iterative tool selection, with a fallback to plan-based execution.
+
+**Rationale**:
+- **Adaptability**: Complex queries benefit from iterative tool selection based on intermediate results
+- **Efficiency**: Simple queries use faster plan-based execution (no tool-calling overhead)
+- **Autonomy**: Agent decides which tools to use based on context, not hardcoded logic
+- **Extensibility**: Easy to add new tools without changing core workflow
+
+**Implementation**: `ToolRegistry` provides tool definitions; planner decides `use_tool_calling` flag; `execute_with_tool_calling()` implements iterative loop.
+
+### 4. **Context Management with Token Limits**
+
+**Decision**: Implemented `ContextManager` to track execution history and manage context size.
+
+**Rationale**:
+- **Memory Efficiency**: Prevents context overflow by truncating old steps
+- **Traceability**: Maintains execution history for debugging and analysis
+- **Cost Control**: Tracks token usage to monitor API costs
+- **Quality**: Preserves recent context while summarizing older steps
+
+**Implementation**: `ContextManager` tracks `ExecutionStep` objects, truncates when approaching `MAX_CONTEXT_TOKENS`, uses `create_concise_data_summary()` for compression.
+
+### 5. **Model Selection Strategy**
+
+**Decision**: Use `grok-4-fast-reasoning` for all reasoning tasks rather than mixing models.
+
+**Rationale**:
+- **Cost Efficiency**: 45x cheaper than `grok-3` ($0.20/$0.50 vs $3/$15 per 1M tokens)
+- **Large Context**: 2M token context window (vs 131K) enables better context management
+- **Consistency**: Same model ensures consistent behavior across stages
+- **Simplicity**: Easier configuration and maintenance
+
+**Trade-off**: Could use lighter models for classification, but current approach prioritizes quality and simplicity.
+
+**Implementation**: `ModelConfig` in `config.py` with `model_config` override support for model comparison.
+
+### 6. **Fast Mode for Latency Reduction**
+
+**Decision**: Added `fast_mode` flag to skip `EVALUATE` and `CRITIQUE` states for faster execution.
+
+**Rationale**:
+- **User Control**: Users can choose speed vs. quality trade-off
+- **Use Cases**: Fast mode suitable for exploratory queries; full mode for production
+- **Flexibility**: Can be enabled per-query or globally via config
+
+**Implementation**: `fast_mode` parameter in `run_workflow()` skips `evaluate()` and `critique()` calls.
+
+### 7. **Progress Callback System**
+
+**Decision**: Implemented callback-based progress reporting for real-time UI updates.
+
+**Rationale**:
+- **User Experience**: Provides real-time feedback during long-running queries
+- **Debugging**: Helps identify bottlenecks in the workflow
+- **Flexibility**: Works for both CLI (print) and Web UI (SSE streaming)
+
+**Implementation**: `progress_callback(event_type, data)` called at each workflow step; Web UI uses Server-Sent Events (SSE) for streaming.
+
+### 8. **Modular Router Architecture**
+
+**Decision**: Separated routes into `query_router`, `evaluation_router`, and `main_router`.
+
+**Rationale**:
+- **Separation of Concerns**: Each router handles a specific domain
+- **Maintainability**: Easy to find and modify route handlers
+- **Scalability**: Can add new routers without cluttering main app
+- **Testing**: Each router can be tested independently
+
+**Implementation**: FastAPI routers with prefixes (`/api` for query/eval, `/` for main).
+
+### 9. **Embedding Caching**
+
+**Decision**: Cache embeddings on disk to avoid recomputing for the same dataset.
+
+**Rationale**:
+- **Performance**: Embeddings are expensive to compute; caching saves time on subsequent runs
+- **Cost**: Reduces CPU usage
+- **Stability**: Uses data hash to detect dataset changes
+
+**Implementation**: `HybridRetriever._load_or_build_embeddings()` checks cache directory; invalidates on data change.
+
+### 10. **Parallel Model Comparison**
+
+**Decision**: Run multiple models in parallel for comparison rather than sequentially.
+
+**Rationale**:
+- **Speed**: Parallel execution reduces total time
+- **Fairness**: All models see the same query simultaneously
+- **User Experience**: Faster results for comparison
+
+**Implementation**: `ThreadPoolExecutor` in `/api/query/compare-models` endpoint; progress events streamed via queues.
+
+### 11. **Error Handling and Resilience**
+
+**Decision**: Comprehensive error handling with graceful degradation.
+
+**Rationale**:
+- **Reliability**: System continues operating even if components fail
+- **User Experience**: Clear error messages instead of crashes
+- **Debugging**: Detailed error logging for troubleshooting
+
+**Implementation**: Try-catch blocks at critical points; fallback to keyword-only search if embeddings fail; division-by-zero guards in calculations.
+
+### 12. **Mock Data Generation**
+
+**Decision**: Generate diverse, realistic mock X data with multiple categories, languages, and edge cases.
+
+**Rationale**:
+- **Testing**: Enables testing without real API access
+- **Diversity**: Covers various query types (trends, sentiment, multilingual, etc.)
+- **Realism**: Includes verified accounts, engagement metrics, threads, etc.
+
+**Implementation**: `MockXDataGenerator` with category-specific templates, foreign language support, and celebrity names.
 
 ## 🚀 Quick Start
 
@@ -172,28 +396,63 @@ The API server provides REST endpoints (FastAPI):
 
 ```
 Grok-takehome/
-├── server/                 # Server-side code
-│   ├── api_server.py       # FastAPI server entry point
-│   ├── main.py             # CLI entry point
-│   ├── agent.py            # Core agentic workflow
-│   ├── grok_client.py      # Grok API client
-│   ├── retrieval.py        # Hybrid retrieval system
-│   ├── context_manager.py  # Context and execution tracking
-│   ├── data_generator.py   # Mock X data generator
-│   └── config.py           # Configuration settings
-├── client/                 # Client-side code
-│   └── static/            # Web UI files
-│       ├── index.html      # Main HTML page
-│       ├── style.css       # Styles
-│       └── script.js       # Frontend JavaScript
-├── requirements.txt        # Python dependencies
-├── .env.example            # Environment variables template
-├── README.md               # This file
-├── data/                   # Generated mock data
-│   └── mock_x_data.json
-└── output/                 # Research results
-    └── research_result.json
+├── server/                      # Server-side code
+│   ├── api_server.py            # FastAPI server entry point
+│   ├── main.py                  # CLI entry point
+│   ├── app.py                   # FastAPI app factory
+│   ├── agent.py                 # Core agentic workflow (state machine)
+│   ├── grok_client.py           # Grok API client with tool calling
+│   ├── retrieval.py             # Hybrid retrieval system (semantic + keyword)
+│   ├── context_manager.py       # Context and execution tracking
+│   ├── data_generator.py        # Mock X data generator
+│   ├── config.py                # Configuration settings
+│   ├── tools.py                 # Tool registry and definitions
+│   ├── routes/                  # API route handlers
+│   │   ├── __init__.py          # Router definitions
+│   │   ├── main.py              # Main routes (health, static files)
+│   │   ├── query.py             # Query endpoints (single, compare-models)
+│   │   └── evaluation.py        # Evaluation endpoints
+│   ├── services/                # Business logic services
+│   │   ├── __init__.py
+│   │   └── agent_service.py     # Agent lifecycle management
+│   ├── utils/                   # Utility modules
+│   │   ├── __init__.py
+│   │   ├── errors.py            # Error handling
+│   │   ├── response.py          # Response formatting
+│   │   └── truncation.py        # Text truncation utilities
+│   └── evaluation/              # Evaluation framework
+│       ├── evaluator.py         # Batch evaluation runner
+│       ├── compare_models.py    # Model comparison script
+│       ├── metrics.py           # Metrics collection
+│       ├── test_queries.json    # Test query suite (40 queries)
+│       └── results/             # Evaluation results output
+├── client/                      # Client-side code
+│   └── static/                  # Web UI files
+│       ├── index.html           # Main query interface
+│       ├── tweets.html         # Tweets browsing page
+│       ├── style.css            # Styles
+│       └── script.js            # Frontend JavaScript
+├── data/                        # Generated mock data
+│   ├── mock_x_data.json        # Main dataset (~3800 posts)
+│   └── .embeddings_cache/      # Cached embeddings
+├── output/                      # Research results
+│   └── research_result.json
+├── requirements.txt             # Python dependencies
+├── .env.example                 # Environment variables template
+├── Dockerfile                   # Docker configuration
+├── docker-compose.yml           # Docker Compose configuration
+└── README.md                    # This file
 ```
+
+### Key Components
+
+- **`agent.py`**: Implements the state machine workflow with autonomous decision-making
+- **`retrieval.py`**: Hybrid search combining semantic (embeddings) and keyword matching
+- **`tools.py`**: Dynamic tool calling system (keyword_search, semantic_search, hybrid_search, user_profile_lookup, temporal_trend_analyzer, filter_by_metadata)
+- **`context_manager.py`**: Manages conversation history and token limits
+- **`grok_client.py`**: Handles Grok API calls with streaming and tool calling support
+- **`routes/query.py`**: API endpoints for single queries and parallel model comparison
+- **`client/static/`**: Web UI with real-time progress updates via Server-Sent Events
 
 ## 🔧 Configuration
 

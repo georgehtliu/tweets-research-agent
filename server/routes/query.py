@@ -323,15 +323,20 @@ def get_tweets(page: int = 1, per_page: int = 20, category: Optional[str] = None
     from app import get_agent_service
     
     try:
+        print(f"📊 Tweets API called: page={page}, per_page={per_page}, category={category}, language={language}")
         agent_service = get_agent_service()
         _, data = agent_service.initialize_agent()
+        
+        print(f"✅ Loaded {len(data)} total posts from dataset")
         
         # Apply filters
         filtered_data = data
         if category:
             filtered_data = [p for p in filtered_data if p.get("category") == category]
+            print(f"   Filtered by category '{category}': {len(filtered_data)} posts")
         if language:
             filtered_data = [p for p in filtered_data if p.get("language") == language]
+            print(f"   Filtered by language '{language}': {len(filtered_data)} posts")
         
         # Calculate pagination
         total = len(filtered_data)
@@ -341,6 +346,8 @@ def get_tweets(page: int = 1, per_page: int = 20, category: Optional[str] = None
         
         # Get page of tweets
         page_tweets = filtered_data[start_idx:end_idx]
+        
+        print(f"   Returning page {page}: {len(page_tweets)} tweets (total: {total})")
         
         return {
             "tweets": page_tweets,
