@@ -685,8 +685,8 @@ Return JSON:
     "suggested_strategy": "new approach if replan needed"
 }
 
-Replan if: data fundamentally wrong, strategy misaligned, quality issues require different approach.
-Don't replan if: just need more data, need filters, low confidence but strategy sound."""
+Replan if: confidence < 0.7 (70%) AND (data fundamentally wrong, strategy misaligned, quality issues require different approach).
+Don't replan if: just need more data, need filters, or confidence >= 0.7 with sound strategy."""
         
         # Analyze data quality signals
         sentiment_dist = analysis.get("sentiment_analysis", {}) or {}
@@ -716,7 +716,8 @@ Plan: {json.dumps(plan_summary, separators=(',', ':'))}
 Analysis: {json.dumps(analysis_summary, separators=(',', ':'))}
 Results: {len(results)} items, sarcasm_ratio: {sarcasm_ratio:.2f}
 
-Evaluate: replan needed (fundamental strategy wrong) or refine (more data needed)?"""
+Evaluate: replan needed (fundamental strategy wrong) or refine (more data needed)?
+Consider replanning if confidence < 0.7 (70%) and strategy appears misaligned."""
         
         messages = [{"role": "user", "content": user_prompt}]
         
