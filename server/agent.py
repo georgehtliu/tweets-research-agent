@@ -13,19 +13,26 @@ from retrieval import HybridRetriever
 class AgenticResearchAgent:
     """Main agentic research agent using Grok"""
     
-    def __init__(self, data: List[Dict], api_key: Optional[str] = None):
+    def __init__(self, data: List[Dict], api_key: Optional[str] = None, progress_callback=None):
         """
         Initialize agent
         
         Args:
             data: Dataset to search (list of posts/documents)
             api_key: Optional Grok API key
+            progress_callback: Optional callback function(event_type, data) for progress updates
         """
         self.grok = GrokClient(api_key)
         self.context = ContextManager()
         self.retriever = HybridRetriever(data)
         self.data = data
         self.iteration_count = 0
+        self.progress_callback = progress_callback
+    
+    def _emit_progress(self, event_type: str, data: Dict):
+        """Emit progress event if callback is set"""
+        if self.progress_callback:
+            self.progress_callback(event_type, data)
     
     def plan(self, query: str) -> Dict:
         """
@@ -408,20 +415,35 @@ Create a comprehensive final summary that answers the original query."""
         
         # Step 1: Plan
         print("📋 [1/5] Planning...")
+        self._emit_progress('planning', {'status': 'started', 'message': 'Analyzing query and creating plan...'})
         plan = self.plan(query)
+        self._emit_progress('planning', {
+            'status': 'completed',
+            'query_type': plan.get('query_type', 'unknown'),
+            'steps_count': len(plan.get('steps', [])),
+            'complexity': plan.get('expected_complexity', 'unknown')
+        })
         print(f"   Query Type: {plan.get('query_type', 'unknown')}")
         print(f"   Steps Planned: {len(plan.get('steps', []))}")
         print(f"   Complexity: {plan.get('expected_complexity', 'unknown')}\n")
         
         # Step 2: Execute
         print("⚙️  [2/5] Executing retrieval...")
+        self._emit_progress('executing', {'status': 'started', 'message': 'Retrieving relevant data...'})
         results = self.execute(plan, query)
+        self._emit_progress('executing', {'status': 'completed', 'results_count': len(results)})
         print(f"   Retrieved: {len(results)} items\n")
         
         # Step 3: Analyze
         print("🔍 [3/5] Analyzing results...")
+        self._emit_progress('analyzing', {'status': 'started', 'message': 'Analyzing retrieved data...'})
         analysis = self.analyze(query, results, plan)
         confidence = analysis.get("confidence", 0.5)
+        self._emit_progress('analyzing', {
+            'status': 'completed',
+            'confidence': confidence,
+            'main_themes': analysis.get('main_themes', [])[:3]
+        })
         print(f"   Confidence: {confidence:.2f}")
         print(f"   Main Themes: {', '.join(analysis.get('main_themes', [])[:3])}\n")
         
@@ -434,12 +456,23 @@ Create a comprehensive final summary that answers the original query."""
             self.iteration_count = iteration
             
             print(f"🔄 [4/5] Refinement Check (Iteration {iteration})...")
+            self._emit_progress('refining', {
+                'status': 'checking',
+                'iteration': iteration,
+                'message': f'Checking if refinement needed (iteration {iteration})...'
+            })
             refinement = self.refine(query, analysis, plan)
             refinement_needed = refinement.get("refinement_needed", False)
             
             if refinement_needed:
                 print(f"   Refinement needed: {refinement.get('reason', '')}")
                 print(f"   Next steps: {len(refinement.get('next_steps', []))}")
+                self._emit_progress('refining', {
+                    'status': 'refining',
+                    'iteration': iteration,
+                    'reason': refinement.get('reason', ''),
+                    'next_steps_count': len(refinement.get('next_steps', []))
+                })
                 
                 # Execute refinement steps
                 refinement_plan = {
@@ -452,13 +485,25 @@ Create a comprehensive final summary that answers the original query."""
                 # Re-analyze with new data
                 analysis = self.analyze(query, results, plan)
                 confidence = analysis.get("confidence", 0.5)
+                self._emit_progress('refining', {
+                    'status': 'updated',
+                    'iteration': iteration,
+                    'confidence': confidence
+                })
                 print(f"   Updated Confidence: {confidence:.2f}\n")
             else:
+                self._emit_progress('refining', {
+                    'status': 'completed',
+                    'iteration': iteration,
+                    'reason': refinement.get('reason', '')
+                })
                 print(f"   No refinement needed: {refinement.get('reason', '')}\n")
         
         # Step 5: Summarize
         print("📝 [5/5] Generating final summary...")
+        self._emit_progress('summarizing', {'status': 'started', 'message': 'Generating final summary...'})
         summary = self.summarize(query, analysis, plan)
+        self._emit_progress('summarizing', {'status': 'completed'})
         print("   ✅ Summary complete\n")
         
         # Compile results

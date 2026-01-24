@@ -152,6 +152,72 @@ main {
     transform: translateY(-1px);
 }
 
+.progress-section {
+    margin-top: 30px;
+    border: 2px solid #667eea;
+    border-radius: 15px;
+    padding: 30px;
+    background: #f0f4ff;
+    animation: slideIn 0.3s ease-out;
+}
+
+.progress-section h3 {
+    color: #667eea;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+.progress-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.progress-step {
+    background: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    border-left: 4px solid #ccc;
+    transition: all 0.3s;
+}
+
+.progress-step.active {
+    border-left-color: #667eea;
+    background: #f8f9ff;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+}
+
+.progress-step.completed {
+    border-left-color: #4caf50;
+    background: #f1f8f4;
+}
+
+.progress-step-title {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.progress-step-title .icon {
+    font-size: 1.2em;
+}
+
+.progress-step-message {
+    color: #666;
+    font-size: 0.9em;
+    margin-left: 30px;
+}
+
+.progress-step-details {
+    margin-top: 8px;
+    margin-left: 30px;
+    font-size: 0.85em;
+    color: #888;
+}
+
 .result-section {
     margin-top: 30px;
     border: 2px solid #e0e0e0;

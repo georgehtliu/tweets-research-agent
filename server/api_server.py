@@ -2,11 +2,12 @@
 API Server for Grok Agentic Research Agent
 Provides REST API endpoints for the web UI
 """
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, Response, stream_with_context
 from flask_cors import CORS
 import json
 import os
 import sys
+import time
 from pathlib import Path
 
 # Add server directory to path for imports
@@ -67,12 +68,28 @@ def initialize_agent():
 @app.route('/')
 def index():
     """Serve the main HTML page"""
-    return send_from_directory(str(CLIENT_DIR / 'static'), 'index.html')
+    index_path = CLIENT_DIR / 'static' / 'index.html'
+    if not index_path.exists():
+        return jsonify({
+            "error": "HTML file not found",
+            "path": str(index_path),
+            "client_dir": str(CLIENT_DIR),
+            "exists": index_path.exists()
+        }), 404
+    
+    # Read and return the HTML file
+    try:
+        with open(index_path, 'r', encoding='utf-8') as f:
+            html_content = f.read()
+        from flask import Response
+        return Response(html_content, mimetype='text/html')
+    except Exception as e:
+        return jsonify({"error": str(e), "path": str(index_path)}), 500
 
 @app.route('/api/query', methods=['POST'])
 def query():
     """
-    Main API endpoint for research queries
+    Main API endpoint for research queries with Server-Sent Events
     
     Request body:
         {
@@ -80,56 +97,98 @@ def query():
         }
     
     Returns:
-        {
-            "success": true/false,
-            "result": {...},
-            "error": "error message if any"
-        }
+        Server-Sent Events stream with progress updates and final result
     """
-    try:
-        # Get query from request
-        request_data = request.get_json()
-        if not request_data or 'query' not in request_data:
-            return jsonify({
-                "success": False,
-                "error": "Missing 'query' in request body"
-            }), 400
+    def generate():
+        try:
+            # Get query from request
+            request_data = request.get_json()
+            if not request_data or 'query' not in request_data:
+                yield f"data: {json.dumps({'type': 'error', 'message': 'Missing query in request body'})}\n\n"
+                return
+            
+            query_text = request_data['query'].strip()
+            if not query_text:
+                yield f"data: {json.dumps({'type': 'error', 'message': 'Query cannot be empty'})}\n\n"
+                return
+            
+            # Initialize agent if needed
+            agent_instance, _ = initialize_agent()
+            
+            # Create a queue for progress events
+            import queue
+            progress_queue = queue.Queue()
+            
+            def progress_handler(event_type, data):
+                event_data = {
+                    'type': event_type,
+                    'timestamp': time.time(),
+                    **data
+                }
+                progress_queue.put(event_data)
+            
+            # Set progress callback
+            agent_instance.progress_callback = progress_handler
+            
+            # Start workflow in a thread
+            import threading
+            result_container = {'result': None, 'error': None, 'done': False}
+            
+            def run_workflow():
+                try:
+                    result = agent_instance.run_workflow(query_text)
+                    result_container['result'] = result
+                    
+                    # Save results
+                    output_dir = PROJECT_ROOT / "output"
+                    output_dir.mkdir(exist_ok=True)
+                    output_file = output_dir / "research_result.json"
+                    with open(output_file, 'w', encoding='utf-8') as f:
+                        json.dump(result, f, indent=2, ensure_ascii=False, default=str)
+                except Exception as e:
+                    import traceback
+                    result_container['error'] = str(e)
+                    result_container['traceback'] = traceback.format_exc()
+                finally:
+                    result_container['done'] = True
+            
+            # Start workflow thread
+            workflow_thread = threading.Thread(target=run_workflow, daemon=True)
+            workflow_thread.start()
+            
+            # Stream progress events
+            while not result_container['done'] or not progress_queue.empty():
+                try:
+                    # Get progress event with timeout
+                    event = progress_queue.get(timeout=0.5)
+                    yield f"data: {json.dumps(event)}\n\n"
+                except queue.Empty:
+                    # Check if thread is still alive
+                    if not workflow_thread.is_alive() and result_container['done']:
+                        break
+                    # Send heartbeat to keep connection alive
+                    yield f": heartbeat\n\n"
+                    continue
+            
+            # Wait for thread to complete
+            workflow_thread.join(timeout=1)
+            
+            # Send final result
+            if result_container['error']:
+                yield f"data: {json.dumps({'type': 'error', 'message': result_container['error']})}\n\n"
+            else:
+                yield f"data: {json.dumps({'type': 'complete', 'result': result_container['result']})}\n\n"
         
-        query_text = request_data['query'].strip()
-        if not query_text:
-            return jsonify({
-                "success": False,
-                "error": "Query cannot be empty"
-            }), 400
-        
-        # Initialize agent if needed
-        agent_instance, _ = initialize_agent()
-        
-        # Run workflow
-        result = agent_instance.run_workflow(query_text)
-        
-        # Save results
-        output_dir = PROJECT_ROOT / "output"
-        output_dir.mkdir(exist_ok=True)
-        output_file = output_dir / "research_result.json"
-        with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(result, f, indent=2, ensure_ascii=False, default=str)
-        
-        return jsonify({
-            "success": True,
-            "result": result
-        })
+        except Exception as e:
+            import traceback
+            error_details = traceback.format_exc()
+            print(f"❌ API Error: {error_details}")
+            yield f"data: {json.dumps({'type': 'error', 'message': str(e)})}\n\n"
     
-    except Exception as e:
-        import traceback
-        error_details = traceback.format_exc()
-        print(f"❌ API Error: {error_details}")
-        
-        return jsonify({
-            "success": False,
-            "error": str(e),
-            "details": error_details
-        }), 500
+    return Response(stream_with_context(generate()), mimetype='text/event-stream', headers={
+        'Cache-Control': 'no-cache',
+        'X-Accel-Buffering': 'no'
+    })
 
 @app.route('/api/health', methods=['GET'])
 def health():
@@ -161,6 +220,9 @@ def examples():
     })
 
 if __name__ == '__main__':
+    # Get port from environment variable or use default
+    port = int(os.getenv('PORT', 8080))
+    
     print("\n" + "="*70)
     print("🚀 Starting Grok Agentic Research API Server")
     print("="*70)
@@ -171,6 +233,7 @@ if __name__ == '__main__':
     print("  GET  /api/examples  - Get example queries")
     print(f"\nClient directory: {CLIENT_DIR}")
     print(f"Project root: {PROJECT_ROOT}")
+    print(f"\n🌐 Server running on: http://localhost:{port}")
     print("\n" + "="*70 + "\n")
     
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=port, debug=True)

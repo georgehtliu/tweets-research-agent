@@ -109,8 +109,12 @@ python server/api_server.py
 
 Then open your browser to:
 ```
-http://localhost:5000
+http://localhost:8080
 ```
+
+**Important**: Always access the UI through the server URL (`http://localhost:8080`), not by opening the HTML file directly. The server serves the frontend and handles API requests.
+
+(You can change the port by setting the `PORT` environment variable)
 
 The web interface provides:
 - Simple query input with submit button

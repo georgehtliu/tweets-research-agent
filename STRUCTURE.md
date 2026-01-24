@@ -49,7 +49,7 @@ cd server
 python api_server.py
 ```
 
-Then open: `http://localhost:5000`
+Then open: `http://localhost:8080`
 
 ### CLI Mode
 ```bash

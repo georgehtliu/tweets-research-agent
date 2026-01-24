@@ -14,7 +14,9 @@
    ```
 
 2. **Open your browser:**
-   Navigate to: `http://localhost:5000`
+   Navigate to: `http://localhost:8080`
+   
+   (Default port is 8080. Change it by setting `PORT` environment variable)
 
 3. **Ask a question:**
    - Type your query in the input box
@@ -100,7 +102,7 @@ Get example queries.
 ## Troubleshooting
 
 ### Server won't start
-- Check if port 5000 is already in use
+- Check if port 8080 is already in use (or your custom PORT)
 - Make sure all dependencies are installed: `pip install -r requirements.txt`
 - Verify your `.env` file has `GROK_API_KEY` set
 
@@ -122,9 +124,14 @@ app.run(host='0.0.0.0', port=5000, debug=False)
 ```
 
 ### Custom Port
-Change the port in `api_server.py`:
+Set the `PORT` environment variable:
+```bash
+PORT=3000 python server/api_server.py
+```
+
+Or modify the default in `server/api_server.py`:
 ```python
-app.run(host='0.0.0.0', port=8080, debug=True)
+port = int(os.getenv('PORT', 8080))  # Change 8080 to your preferred port
 ```
 
 ### Static Files
