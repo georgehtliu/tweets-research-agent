@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grok Agentic Research Agent</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 Grok Agentic Research Agent</h1>
+            <p class="subtitle">Ask questions about X/Twitter data and get intelligent research results</p>
+        </header>
+
+        <main>
+            <div class="query-section">
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        id="queryInput" 
+                        placeholder="Enter your research query (e.g., 'What are people saying about AI?')"
+                        autocomplete="off"
+                    >
+                    <button id="submitBtn" onclick="submitQuery()">
+                        <span id="btnText">Ask</span>
+                        <span id="btnSpinner" class="spinner hidden"></span>
+                    </button>
+                </div>
+                
+                <div class="examples-section">
+                    <p class="examples-label">Example queries:</p>
+                    <div class="examples">
+                        <button class="example-btn" onclick="useExample('What are people saying about AI safety?')">
+                            What are people saying about AI safety?
+                        </button>
+                        <button class="example-btn" onclick="useExample('Find the most discussed topics this week')">
+                            Find the most discussed topics this week
+                        </button>
+                        <button class="example-btn" onclick="useExample('Compare sentiment about crypto vs traditional finance')">
+                            Compare sentiment about crypto vs traditional finance
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="resultSection" class="result-section hidden">
+                <div class="result-header">
+                    <h2>Research Results</h2>
+                    <button class="close-btn" onclick="closeResults()">×</button>
+                </div>
+                
+                <div id="resultContent" class="result-content">
+                    <!-- Results will be inserted here -->
+                </div>
+            </div>
+
+            <div id="errorSection" class="error-section hidden">
+                <div class="error-content">
+                    <h3>❌ Error</h3>
+                    <p id="errorMessage"></p>
+                    <button onclick="closeError()">Close</button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Powered by Grok-4-Fast-Reasoning | Built for Agentic Research Workflow</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

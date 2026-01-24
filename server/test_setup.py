@@ -6,6 +6,9 @@ import os
 import sys
 from pathlib import Path
 
+# Add server directory to path
+sys.path.insert(0, str(Path(__file__).parent))
+
 def test_imports():
     """Test that all required modules can be imported"""
     print("Testing imports...")

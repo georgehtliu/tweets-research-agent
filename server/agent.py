@@ -31,7 +31,7 @@ class AgenticResearchAgent:
         """
         Step 1: Plan - Decompose query into actionable steps
         
-        Uses grok-beta (strongest model) for complex reasoning
+        Uses grok-4-fast-reasoning for complex reasoning
         """
         system_prompt = """You are an expert research planner. Break down complex queries into 
         clear, sequential steps. Think step-by-step about what information is needed and how to obtain it.
@@ -179,7 +179,7 @@ Create a comprehensive plan."""
         """
         Step 3: Analyze - Deep analysis of retrieved data
         
-        Uses grok-beta for complex reasoning
+        Uses grok-4-fast-reasoning for complex reasoning
         """
         system_prompt = """You are a research analyst. Analyze the provided data deeply.
         Identify patterns, themes, insights, and anomalies. Think critically and provide detailed analysis.
@@ -262,7 +262,7 @@ Provide comprehensive analysis."""
         """
         Step 4: Refine - Determine if refinement is needed
         
-        Uses grok-beta for decision making
+        Uses grok-4-fast-reasoning for decision making
         """
         confidence = analysis.get("confidence", 0.5)
         
@@ -344,7 +344,7 @@ Evaluate if refinement is needed. Consider:
         """
         Step 5: Summarize - Generate final comprehensive summary
         
-        Uses grok-beta for high-quality summaries
+        Uses grok-4-fast-reasoning for high-quality summaries
         """
         system_prompt = """You are a research summarization expert. Create clear, actionable, 
         and comprehensive summaries of research findings.

@@ -55,6 +55,25 @@ class HybridRetriever:
         
         return " ".join(text_parts)
     
+    def _get_total_engagement(self, post: Dict) -> int:
+        """Safely calculate total engagement, handling various data types"""
+        engagement = post.get("engagement", {})
+        if not isinstance(engagement, dict):
+            return 0
+        
+        total = 0
+        for value in engagement.values():
+            # Handle both int and string values
+            if isinstance(value, (int, float)):
+                total += int(value)
+            elif isinstance(value, str):
+                try:
+                    total += int(value)
+                except (ValueError, TypeError):
+                    pass  # Skip non-numeric strings
+        
+        return total
+    
     def keyword_search(self, query: str, top_k: int = None) -> List[Tuple[Dict, float]]:
         """
         Keyword-based search using TF-IDF-like scoring
@@ -224,10 +243,17 @@ class HybridRetriever:
         
         if "min_engagement" in filters:
             min_eng = filters["min_engagement"]
-            filtered = [
-                p for p in filtered
-                if sum(p.get("engagement", {}).values()) >= min_eng
-            ]
+            # Convert to int/float if it's a string
+            try:
+                min_eng = int(min_eng) if isinstance(min_eng, str) else min_eng
+            except (ValueError, TypeError):
+                # If conversion fails, skip this filter
+                pass
+            else:
+                filtered = [
+                    p for p in filtered
+                    if self._get_total_engagement(p) >= min_eng
+                ]
         
         if "author_type" in filters:
             author_type_filter = filters["author_type"]

@@ -6,14 +6,25 @@ import json
 import os
 import sys
 from pathlib import Path
+
+# Add server directory to path
+sys.path.insert(0, str(Path(__file__).parent))
+
 from data_generator import MockXDataGenerator
 from agent import AgenticResearchAgent
 import config
+
+# Get project root (parent of server/)
+PROJECT_ROOT = Path(__file__).parent.parent
 
 def load_data(data_file: str = None) -> list:
     """Load mock data from file or generate if not exists"""
     if data_file is None:
         data_file = config.DATA_FILE
+    
+    # Make path absolute if relative
+    if not Path(data_file).is_absolute():
+        data_file = PROJECT_ROOT / data_file
     
     data_path = Path(data_file)
     
@@ -36,6 +47,9 @@ def load_data(data_file: str = None) -> list:
 
 def save_results(result: dict, output_file: str = "output/research_result.json"):
     """Save research results to file"""
+    # Make path absolute if relative
+    if not Path(output_file).is_absolute():
+        output_file = PROJECT_ROOT / output_file
     output_path = Path(output_file)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     

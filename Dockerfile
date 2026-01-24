@@ -24,4 +24,4 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app
 
 # Run the application
-CMD ["python", "main.py"]
+CMD ["python", "server/api_server.py"]

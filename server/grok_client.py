@@ -43,7 +43,7 @@ class GrokClient:
         Call Grok API
         
         Args:
-            model: Model name (e.g., "grok-beta")
+            model: Model name (e.g., "grok-4-fast-reasoning")
             messages: List of message dicts with "role" and "content"
             system_prompt: Optional system prompt
             max_tokens: Maximum tokens in response

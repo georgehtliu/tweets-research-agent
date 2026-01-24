@@ -25,7 +25,7 @@ The agent handles various query types:
 User Query
     ↓
 ┌─────────────────┐
-│  Grok Planner   │ ← Uses grok-beta for complex reasoning
+│  Grok Planner   │ ← Uses grok-4-fast-reasoning for complex reasoning
 └────────┬────────┘
          │
          ▼
@@ -40,7 +40,7 @@ User Query
          │
          ▼
 ┌─────────────────┐
-│  Grok Analyzer  │ ← Deep analysis with grok-beta
+│  Grok Analyzer  │ ← Deep analysis with grok-4-fast-reasoning
 └────────┬────────┘
          │
          ▼
@@ -56,7 +56,7 @@ User Query
          │
          ▼
 ┌─────────────────┐
-│  Summarizer     │ ← Final summary with grok-beta
+│  Summarizer     │ ← Final summary with grok-4-fast-reasoning
 └─────────────────┘
 ```
 
@@ -89,14 +89,46 @@ cp .env.example .env
 
 4. **Generate mock data** (optional - will auto-generate on first run)
 ```bash
+cd server
 python data_generator.py
 ```
 
 ### Usage
 
-#### Interactive Mode
+#### Web UI (Recommended)
+Start the API server:
 ```bash
+cd server
+python api_server.py
+```
+
+Or from project root:
+```bash
+python server/api_server.py
+```
+
+Then open your browser to:
+```
+http://localhost:5000
+```
+
+The web interface provides:
+- Simple query input with submit button
+- Example queries to try
+- Real-time results display
+- Beautiful, responsive UI
+
+#### CLI Mode
+
+**Interactive Mode:**
+```bash
+cd server
 python main.py
+```
+
+Or from project root:
+```bash
+python server/main.py
 ```
 
 Then enter your query when prompted:
@@ -104,27 +136,50 @@ Then enter your query when prompted:
 💬 Enter your research query: What are people saying about AI safety?
 ```
 
-#### Single Query Mode
+**Single Query Mode:**
 ```bash
+cd server
 python main.py --query "What are the main trends in tech discussions?"
 ```
 
-#### With Custom Data
+**With Custom Data:**
 ```bash
+cd server
 python main.py --query "Your question" --data path/to/data.json
 ```
+
+#### API Endpoints
+
+The API server provides REST endpoints:
+
+- `GET /` - Web UI
+- `POST /api/query` - Submit research query
+  ```json
+  {
+    "query": "What are people saying about AI?"
+  }
+  ```
+- `GET /api/health` - Health check
+- `GET /api/examples` - Get example queries
 
 ## 📁 Project Structure
 
 ```
 Grok-takehome/
-├── main.py                 # Main entry point and CLI
-├── agent.py                # Core agentic workflow
-├── grok_client.py          # Grok API client
-├── retrieval.py            # Hybrid retrieval system
-├── context_manager.py      # Context and execution tracking
-├── data_generator.py       # Mock X data generator
-├── config.py               # Configuration settings
+├── server/                 # Server-side code
+│   ├── api_server.py       # Flask API server
+│   ├── main.py             # CLI entry point
+│   ├── agent.py            # Core agentic workflow
+│   ├── grok_client.py      # Grok API client
+│   ├── retrieval.py        # Hybrid retrieval system
+│   ├── context_manager.py  # Context and execution tracking
+│   ├── data_generator.py   # Mock X data generator
+│   └── config.py           # Configuration settings
+├── client/                 # Client-side code
+│   └── static/            # Web UI files
+│       ├── index.html      # Main HTML page
+│       ├── style.css       # Styles
+│       └── script.js       # Frontend JavaScript
 ├── requirements.txt        # Python dependencies
 ├── .env.example            # Environment variables template
 ├── README.md               # This file
@@ -147,10 +202,10 @@ Edit `config.py` to customize:
 
 The framework uses different Grok models for different tasks:
 
-- **Planning & Analysis**: `grok-beta` (strongest reasoning)
-- **Classification**: `grok-beta` (can use lighter model if available)
-- **Refinement**: `grok-beta` (needs good reasoning)
-- **Summarization**: `grok-beta` (high-quality summaries)
+- **Planning & Analysis**: `grok-4-fast-reasoning` (fast reasoning, 2M context, $0.20/$0.50)
+- **Classification**: `grok-4-fast-reasoning` (consistent model)
+- **Refinement**: `grok-4-fast-reasoning` (fast reasoning)
+- **Summarization**: `grok-4-fast-reasoning` (high-quality summaries)
 
 *Note: Adjust model names in `config.py` based on available models from xAI*
 
@@ -286,17 +341,19 @@ If confidence scores are consistently low:
 
 ## 📝 Model Selection Rationale
 
-### Why grok-beta for Planning?
-Planning requires complex reasoning to break down queries. The strongest model ensures high-quality plans.
+### Why grok-4-fast-reasoning for Planning?
+Planning requires complex reasoning to break down queries. `grok-4-fast-reasoning` provides strong reasoning at 45x lower cost than `grok-3` ($0.20/$0.50 vs $3/$15 per 1M tokens) with a 15x larger context window (2M vs 131K tokens).
 
-### Why grok-beta for Analysis?
-Deep analysis needs sophisticated reasoning to identify patterns and insights.
+### Why grok-4-fast-reasoning for Analysis?
+Deep analysis needs sophisticated reasoning to identify patterns and insights. The fast reasoning model maintains quality while significantly reducing costs.
 
-### Why grok-beta for Refinement?
-Refinement decisions require understanding context and determining optimal next steps.
+### Why grok-4-fast-reasoning for Refinement?
+Refinement decisions require understanding context and determining optimal next steps. The larger context window (2M tokens) allows for better context management.
 
-### Why grok-beta for Summarization?
-High-quality summaries need strong language understanding and synthesis capabilities.
+### Why grok-4-fast-reasoning for Summarization?
+High-quality summaries need strong language understanding and synthesis capabilities. The fast reasoning model provides excellent quality at a fraction of the cost.
+
+**Note**: The framework uses `grok-4-fast-reasoning` for optimal cost/performance balance. It's 45x cheaper than `grok-3` while maintaining strong reasoning capabilities.
 
 *Note: If lighter/faster models are available, you can use them for classification tasks to reduce costs.*
 
