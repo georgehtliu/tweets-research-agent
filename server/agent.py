@@ -62,8 +62,8 @@ class AgenticResearchAgent:
         system_prompt = """Research planner. Break queries into steps.
 
 Modes:
-1. Plan-based: Exact steps (straightforward queries)
-2. Tool-calling: Dynamic tool selection (complex/exploratory queries)
+1. Plan-based: Exact steps (straightforward queries) - FASTER
+2. Tool-calling: Dynamic tool selection (complex/exploratory queries) - SLOWER
 
 Return JSON:
 {
@@ -77,7 +77,8 @@ Return JSON:
     "expected_complexity": "low|medium|high"
 }
 
-Use tool_calling=true for: multiple search types, exploratory queries, iterative refinement, complex filtering."""
+Use tool_calling=true ONLY for: very complex multi-step queries requiring iterative tool selection.
+Prefer plan-based (use_tool_calling=false) for: simple searches, single-step queries, straightforward info extraction."""
         
         user_prompt = f"""Query: "{query}"
 
@@ -123,9 +124,25 @@ Create a plan. Consider: query type, information needed, analysis required, filt
                     "expected_complexity": "medium"
                 }
             
-            # Ensure use_tool_calling is set (default to False)
+            # Ensure use_tool_calling is set (default to False for speed)
             if "use_tool_calling" not in plan:
                 plan["use_tool_calling"] = False
+            
+            # Override: Disable tool calling for simple queries (performance optimization)
+            complexity = plan.get("expected_complexity", "medium").lower()
+            query_type = plan.get("query_type", "other").lower()
+            steps_count = len(plan.get("steps", []))
+            
+            # Simple query heuristics: disable tool calling for faster execution
+            is_simple = (
+                complexity == "low" or
+                steps_count <= 2 or
+                query_type in ["info_extraction", "sentiment"]  # Usually straightforward
+            )
+            
+            if is_simple and plan.get("use_tool_calling", False):
+                plan["use_tool_calling"] = False
+                print(f"   ⚡ Simplified workflow: disabled tool calling for faster execution")
         
         # Store plan
         step = ExecutionStep(
@@ -876,7 +893,7 @@ Create concise summary answering the query."""
         
         return summary
     
-    def run_workflow(self, query: str, max_iterations: int = None, max_replans: int = 2) -> Dict:
+    def run_workflow(self, query: str, max_iterations: int = None, max_replans: int = 2, fast_mode: bool = None) -> Dict:
         """
         Main workflow orchestrator using state machine pattern
         
@@ -893,9 +910,12 @@ Create concise summary answering the query."""
             query: Research query
             max_iterations: Max refinement iterations
             max_replans: Max replanning cycles (default: 2)
+            fast_mode: Override config - skip evaluate/critique when True; None = use config
         """
         if max_iterations is None:
             max_iterations = config.MAX_ITERATIONS
+        
+        use_fast_mode = fast_mode if fast_mode is not None else config.ENABLE_FAST_MODE
         
         self.context.clear()
         self.iteration_count = 0
@@ -974,7 +994,7 @@ Create concise summary answering the query."""
                 # Skip evaluate if fast mode or high confidence (optimization)
                 confidence = analysis.get("confidence", 0.5) if analysis else 0.5
                 skip_evaluate = (
-                    config.ENABLE_FAST_MODE or 
+                    use_fast_mode or 
                     (config.SKIP_EVALUATE_IF_HIGH_CONFIDENCE and confidence > 0.85)
                 )
                 
@@ -1088,7 +1108,7 @@ Create concise summary answering the query."""
                 # Skip critique if fast mode or high confidence (optimization)
                 confidence = analysis.get("confidence", 0.5) if analysis else 0.5
                 skip_critique = (
-                    config.ENABLE_FAST_MODE or 
+                    use_fast_mode or 
                     (config.SKIP_CRITIQUE_IF_HIGH_CONFIDENCE and confidence > 0.85)
                 )
                 

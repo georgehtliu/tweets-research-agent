@@ -37,7 +37,7 @@ class ModelConfig:
     SUMMARIZER_MODEL = "grok-4-fast-reasoning"  # Fast reasoning model for summaries
 
 # Agent Configuration
-MAX_ITERATIONS = 3  # Maximum refinement loops (reduced from 5 for faster runs)
+MAX_ITERATIONS = 2  # Maximum refinement loops (reduced from 3 for faster runs)
 MAX_CONTEXT_TOKENS = 8000  # Context window limit
 TEMPERATURE = 0.7  # Default temperature for creativity
 MAX_TOKENS_RESPONSE = 1500  # Max tokens per response (reduced from 2000 for faster responses)
@@ -46,7 +46,7 @@ MAX_TOKENS_SUMMARY = 1200  # Max tokens for summary (shorter summaries = faster)
 # Performance Optimization Flags
 SKIP_EVALUATE_IF_HIGH_CONFIDENCE = True  # Skip evaluate step if confidence > 0.85
 SKIP_CRITIQUE_IF_HIGH_CONFIDENCE = True  # Skip critique if confidence > 0.85 and no obvious issues
-ENABLE_FAST_MODE = False  # Fast mode: skip evaluate and critique entirely
+ENABLE_FAST_MODE = True  # Fast mode: skip evaluate and critique entirely (enabled for speed)
 
 # Data Configuration
 MOCK_DATA_SIZE = 100  # Number of mock posts to generate

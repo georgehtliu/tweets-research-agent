@@ -452,12 +452,13 @@ async function submitQuery() {
     progressSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     
     try {
+        const fastMode = document.getElementById('fastMode').checked;
         const response = await fetch(`${API_BASE}/api/query`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ query: query })
+            body: JSON.stringify({ query: query, fast_mode: fastMode })
         });
         
         if (!response.ok) {

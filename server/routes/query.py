@@ -8,12 +8,14 @@ import threading
 from fastapi import HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
+from typing import Optional
 from . import query_router
 
 
 class QueryRequest(BaseModel):
     """Request model for query endpoint"""
     query: str
+    fast_mode: Optional[bool] = None  # Override config; None = use config default
 
 
 @query_router.post("/query")
@@ -23,7 +25,8 @@ def query(request: QueryRequest):
     
     Request body:
         {
-            "query": "your research question"
+            "query": "your research question",
+            "fast_mode": true  // optional; skip evaluate/critique for speed
         }
     
     Returns:
@@ -62,7 +65,10 @@ def query(request: QueryRequest):
             
             def run_workflow():
                 try:
-                    result = agent_instance.run_workflow(query_text)
+                    result = agent_instance.run_workflow(
+                        query_text,
+                        fast_mode=request.fast_mode
+                    )
                     result_container['result'] = result
                     
                     # Save results

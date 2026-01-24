@@ -90,11 +90,13 @@ class HybridRetriever:
         """Extract searchable text from post"""
         text_parts = [post.get("text", "")]
         
-        # Add topics
+        if "category" in post:
+            text_parts.append(post["category"])
         if "topics" in post:
             text_parts.extend(post["topics"])
+        if "language" in post:
+            text_parts.append(post["language"])
         
-        # Add author info
         if "author" in post and isinstance(post["author"], dict):
             text_parts.append(post["author"].get("display_name", ""))
         
@@ -310,5 +312,17 @@ class HybridRetriever:
                 p for p in filtered
                 if p.get("author", {}).get("author_type") in author_type_filter
             ]
-        
+
+        if "category" in filters:
+            cat_filter = filters["category"]
+            if isinstance(cat_filter, str):
+                cat_filter = [cat_filter]
+            filtered = [p for p in filtered if p.get("category") in cat_filter]
+
+        if "language" in filters:
+            lang_filter = filters["language"]
+            if isinstance(lang_filter, str):
+                lang_filter = [lang_filter]
+            filtered = [p for p in filtered if p.get("language") in lang_filter]
+
         return filtered

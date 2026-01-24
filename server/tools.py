@@ -203,8 +203,18 @@ class ToolRegistry:
                             },
                             "author_type": {
                                 "type": "string",
-                                "description": "Filter by author type: 'researcher', 'influencer', 'developer', 'journalist', 'regular_user'",
-                                "enum": ["researcher", "influencer", "developer", "journalist", "regular_user"]
+                                "description": "Filter by author type: 'researcher', 'influencer', 'developer', 'journalist', 'regular_user', 'celebrity'",
+                                "enum": ["researcher", "influencer", "developer", "journalist", "regular_user", "celebrity"]
+                            },
+                            "category": {
+                                "type": "string",
+                                "description": "Filter by content category: 'tech', 'sports', 'politics', 'fashion', 'art', 'entertainment'",
+                                "enum": ["tech", "sports", "politics", "fashion", "art", "entertainment"]
+                            },
+                            "language": {
+                                "type": "string",
+                                "description": "Filter by language code: 'en', 'es', 'fr', 'pt', 'de', 'ja'",
+                                "enum": ["en", "es", "fr", "pt", "de", "ja"]
                             }
                         },
                         "required": []
@@ -355,11 +365,13 @@ class ToolRegistry:
                 min_engagement = arguments.get("min_engagement")
                 verified_only = arguments.get("verified_only", False)
                 author_type = arguments.get("author_type")
-                
+                category = arguments.get("category")
+                language = arguments.get("language")
+
                 # Get posts by IDs
                 post_dict = {p["id"]: p for p in self.data}
                 posts = [post_dict[pid] for pid in post_ids if pid in post_dict]
-                
+
                 # Apply filters
                 filters = {}
                 if sentiment:
@@ -370,7 +382,11 @@ class ToolRegistry:
                     filters["verified"] = True
                 if author_type:
                     filters["author_type"] = author_type
-                
+                if category:
+                    filters["category"] = category
+                if language:
+                    filters["language"] = language
+
                 filtered = self.retriever.filter_by_metadata(posts, filters)
                 
                 return {

@@ -40,8 +40,16 @@
                         </button>
                     </div>
                     
+                    <div class="query-options">
+                        <label class="fast-mode-toggle">
+                            <input type="checkbox" id="fastMode" checked>
+                            <span>Fast mode</span>
+                        </label>
+                        <small class="fast-mode-hint">Skip evaluate &amp; critique — faster, slightly less quality checking</small>
+                    </div>
+                    
                     <div class="examples-section">
-                        <p class="examples-label">Example queries:</p>
+                        <p class="examples-label">Examples:</p>
                         <div class="examples">
                             <button class="example-btn" onclick="useExample('What are people saying about AI safety?')">
                                 What are people saying about AI safety?
@@ -51,6 +59,9 @@
                             </button>
                             <button class="example-btn" onclick="useExample('Compare sentiment about crypto vs traditional finance')">
                                 Compare sentiment about crypto vs traditional finance
+                            </button>
+                            <button class="example-btn" onclick="useExample('What are people saying about sports and fashion?')">
+                                What are people saying about sports and fashion?
                             </button>
                         </div>
                     </div>

@@ -195,6 +195,42 @@ main {
     display: none !important;
 }
 
+.query-options {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 20px;
+    margin-top: 20px;
+    padding: 14px 18px;
+    background: rgba(59, 130, 246, 0.06);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    border-radius: 12px;
+}
+
+.fast-mode-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #e2e8f0;
+}
+
+.fast-mode-toggle input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #3b82f6;
+    cursor: pointer;
+    margin: 0;
+}
+
+.fast-mode-hint {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 400;
+}
+
 .examples-section {
     margin-top: 32px;
 }
@@ -1308,6 +1344,15 @@ footer {
     .tab-btn.active {
         border-left-color: #3b82f6;
         border-bottom-color: rgba(148, 163, 184, 0.2);
+    }
+    
+    .query-options {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .fast-mode-hint {
+        margin-left: 28px;
     }
     
     .result-meta-bar {
