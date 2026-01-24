@@ -14,32 +14,127 @@
         </header>
 
         <main>
-            <div class="query-section">
-                <div class="input-group">
-                    <input 
-                        type="text" 
-                        id="queryInput" 
-                        placeholder="Enter your research query (e.g., 'What are people saying about AI?')"
-                        autocomplete="off"
-                    >
-                    <button id="submitBtn" onclick="submitQuery()">
-                        <span id="btnText">Generate</span>
-                        <span id="btnSpinner" class="spinner hidden"></span>
-                    </button>
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('query')" id="queryTab">
+                    🔍 Single Query
+                </button>
+                <button class="tab-btn" onclick="switchTab('evaluation')" id="evaluationTab">
+                    📊 Batch Evaluation
+                </button>
+            </div>
+
+            <!-- Query Tab -->
+            <div id="queryTabContent" class="tab-content">
+                <div class="query-section">
+                    <div class="input-group">
+                        <input 
+                            type="text" 
+                            id="queryInput" 
+                            placeholder="Enter your research query (e.g., 'What are people saying about AI?')"
+                            autocomplete="off"
+                        >
+                        <button id="submitBtn" onclick="submitQuery()">
+                            <span id="btnText">Generate</span>
+                            <span id="btnSpinner" class="spinner hidden"></span>
+                        </button>
+                    </div>
+                    
+                    <div class="examples-section">
+                        <p class="examples-label">Example queries:</p>
+                        <div class="examples">
+                            <button class="example-btn" onclick="useExample('What are people saying about AI safety?')">
+                                What are people saying about AI safety?
+                            </button>
+                            <button class="example-btn" onclick="useExample('Find the most discussed topics this week')">
+                                Find the most discussed topics this week
+                            </button>
+                            <button class="example-btn" onclick="useExample('Compare sentiment about crypto vs traditional finance')">
+                                Compare sentiment about crypto vs traditional finance
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="examples-section">
-                    <p class="examples-label">Example queries:</p>
-                    <div class="examples">
-                        <button class="example-btn" onclick="useExample('What are people saying about AI safety?')">
-                            What are people saying about AI safety?
+            </div>
+
+            <!-- Evaluation Tab -->
+            <div id="evaluationTabContent" class="tab-content hidden">
+                <div class="evaluation-section">
+                    <h3>Batch Evaluation</h3>
+                    <p class="section-description">Run the agent on multiple test queries and collect metrics</p>
+                    
+                    <div class="evaluation-controls">
+                        <div class="control-group">
+                            <label for="maxQueries">Max Queries:</label>
+                            <input type="number" id="maxQueries" min="1" max="40" value="10" placeholder="All (40)">
+                            <small>Leave empty or set to 0 for all queries</small>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="evalDelay">Delay (seconds):</label>
+                            <input type="number" id="evalDelay" min="0" max="10" step="0.5" value="1.0">
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="evalModel">Model:</label>
+                            <select id="evalModel">
+                                <option value="">Default (from config)</option>
+                                <!-- Populated by script from /api/evaluation/models -->
+                            </select>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label>
+                                <input type="checkbox" id="evalParallel" style="width: auto; margin-right: 8px;">
+                                Use parallel execution (faster)
+                            </label>
+                            <small>Runs multiple queries concurrently</small>
+                        </div>
+                        
+                        <div class="control-group" id="evalMaxWorkersGroup" style="display: none;">
+                            <label for="evalMaxWorkers">Max Workers:</label>
+                            <input type="number" id="evalMaxWorkers" min="1" max="10" value="3">
+                            <small>Concurrent queries (parallel mode only)</small>
+                        </div>
+                        
+                        <button id="runEvaluationBtn" onclick="runEvaluation()" class="eval-btn">
+                            <span id="evalBtnText">Run Evaluation</span>
+                            <span id="evalBtnSpinner" class="spinner hidden"></span>
                         </button>
-                        <button class="example-btn" onclick="useExample('Find the most discussed topics this week')">
-                            Find the most discussed topics this week
-                        </button>
-                        <button class="example-btn" onclick="useExample('Compare sentiment about crypto vs traditional finance')">
-                            Compare sentiment about crypto vs traditional finance
-                        </button>
+                    </div>
+
+                    <div class="model-comparison-section" style="margin-top: 30px; padding-top: 30px; border-top: 1px solid rgba(148, 163, 184, 0.2);">
+                        <h3>Model Comparison</h3>
+                        <p class="section-description">Compare performance across different Grok models</p>
+                        
+                        <div class="evaluation-controls">
+                            <div class="control-group">
+                                <label for="compareMaxQueries">Max Queries per Model:</label>
+                                <input type="number" id="compareMaxQueries" min="1" max="40" value="5">
+                            </div>
+                            
+                            <div class="control-group">
+                                <label for="compareDelay">Delay (seconds):</label>
+                                <input type="number" id="compareDelay" min="0" max="10" step="0.5" value="1.0">
+                            </div>
+                            
+                            <div class="control-group">
+                                <label>Models to compare:</label>
+                                <div class="model-checkbox-actions">
+                                    <button type="button" class="model-checkbox-btn" onclick="toggleCompareModels(true)">Select all</button>
+                                    <button type="button" class="model-checkbox-btn" onclick="toggleCompareModels(false)">Deselect all</button>
+                                </div>
+                                <div id="compareModelsContainer" class="model-checkboxes">
+                                    <!-- Populated by script from /api/evaluation/models -->
+                                </div>
+                                <small>Select one or more models; leave all unchecked to compare every available model.</small>
+                            </div>
+                            
+                            <button id="compareModelsBtn" onclick="compareModels()" class="eval-btn">
+                                <span id="compareBtnText">Compare Models</span>
+                                <span id="compareBtnSpinner" class="spinner hidden"></span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

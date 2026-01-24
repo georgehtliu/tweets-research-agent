@@ -4,6 +4,9 @@ Combines semantic search (embeddings) and keyword search for robust data retriev
 """
 import json
 import re
+import hashlib
+import os
+from pathlib import Path
 from typing import List, Dict, Tuple
 import numpy as np
 from sentence_transformers import SentenceTransformer
@@ -13,33 +16,75 @@ import config
 class HybridRetriever:
     """Hybrid retrieval combining semantic and keyword search"""
     
-    def __init__(self, data: List[Dict]):
+    def __init__(self, data: List[Dict], cache_dir: str = None):
         """
         Initialize retriever with dataset
         
         Args:
             data: List of posts/documents to search
+            cache_dir: Directory to cache embeddings (default: data/.embeddings_cache)
         """
         self.data = data
         self.embeddings = None
         self.embedding_model = None
         
+        # Set up cache directory
+        if cache_dir is None:
+            # Default to data/.embeddings_cache relative to project root
+            project_root = Path(__file__).parent.parent
+            cache_dir = project_root / "data" / ".embeddings_cache"
+        self.cache_dir = Path(cache_dir)
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        
         # Initialize embedding model for semantic search
         try:
             self.embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
-            self._build_embeddings()
+            self._load_or_build_embeddings()
         except Exception as e:
             print(f"Warning: Could not load embedding model: {e}")
             print("Falling back to keyword-only search")
     
-    def _build_embeddings(self):
-        """Build embeddings for all documents"""
+    def _get_data_hash(self) -> str:
+        """Generate hash of data for cache key"""
+        # Create a stable hash based on data IDs and text content
+        data_signature = json.dumps(
+            [(post.get("id", ""), post.get("text", "")[:100]) for post in self.data[:100]],
+            sort_keys=True
+        )
+        return hashlib.md5(data_signature.encode()).hexdigest()
+    
+    def _get_cache_path(self) -> Path:
+        """Get cache file path for current data"""
+        data_hash = self._get_data_hash()
+        return self.cache_dir / f"embeddings_{data_hash}.npy"
+    
+    def _load_or_build_embeddings(self):
+        """Load embeddings from cache or build new ones"""
         if self.embedding_model is None:
             return
         
+        cache_path = self._get_cache_path()
+        
+        # Try to load from cache
+        if cache_path.exists():
+            try:
+                self.embeddings = np.load(str(cache_path))
+                print(f"✅ Loaded embeddings from cache ({len(self.embeddings)} embeddings)")
+                return
+            except Exception as e:
+                print(f"⚠️ Failed to load cache: {e}. Rebuilding embeddings...")
+        
+        # Build new embeddings
         texts = [self._extract_text(post) for post in self.data]
         self.embeddings = self.embedding_model.encode(texts, show_progress_bar=False)
-        print(f"✅ Built embeddings for {len(texts)} documents")
+        
+        # Save to cache
+        try:
+            np.save(str(cache_path), self.embeddings)
+            print(f"✅ Built and cached embeddings for {len(texts)} documents")
+        except Exception as e:
+            print(f"⚠️ Failed to save cache: {e}")
+            print(f"✅ Built embeddings for {len(texts)} documents (not cached)")
     
     def _extract_text(self, post: Dict) -> str:
         """Extract searchable text from post"""

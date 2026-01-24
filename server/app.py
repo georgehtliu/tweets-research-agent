@@ -14,7 +14,7 @@ server_dir = Path(__file__).parent
 sys.path.insert(0, str(server_dir))
 
 # Import routers
-from routes import main_router, query_router
+from routes import main_router, query_router, evaluation_router
 from utils.errors import register_error_handlers
 from services import AgentService
 
@@ -67,9 +67,10 @@ def create_app(project_root: Path = None, client_dir: Path = None) -> FastAPI:
     # Initialize services
     _agent_service = AgentService(_project_root)
     
-    # Include routers (must be before static file mounting for route precedence)
-    app.include_router(main_router)
+    # Include routers: API routes first so /api/* matches before main's catch-all /{filename:path}
     app.include_router(query_router)
+    app.include_router(evaluation_router)
+    app.include_router(main_router)
     
     # Mount static files (after routers to avoid conflicts)
     static_dir = _client_dir / 'static'

@@ -44,6 +44,13 @@ logs/*.log
 *.db
 *.sqlite
 
+# Evaluation Results
+server/evaluation/results/*.json
+!server/evaluation/results/.gitkeep
+
+# Embedding cache
+data/.embeddings_cache/
+
 # OS
 .DS_Store
 Thumbs.db

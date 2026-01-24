@@ -1,0 +1,361 @@
+{
+  "queries": [
+    {
+      "id": "trend_001",
+      "category": "trend_analysis",
+      "complexity": "medium",
+      "query": "What are people saying about AI safety?",
+      "expected_themes": ["AI safety", "artificial intelligence", "safety concerns"],
+      "description": "Basic trend analysis query"
+    },
+    {
+      "id": "trend_002",
+      "category": "trend_analysis",
+      "complexity": "high",
+      "query": "How has sentiment about remote work changed over the past month?",
+      "expected_themes": ["remote work", "sentiment", "temporal analysis"],
+      "description": "Temporal trend analysis with sentiment tracking"
+    },
+    {
+      "id": "trend_003",
+      "category": "trend_analysis",
+      "complexity": "medium",
+      "query": "What topics are trending in tech discussions this week?",
+      "expected_themes": ["technology", "trending topics", "discussions"],
+      "description": "Current trend identification"
+    },
+    {
+      "id": "info_001",
+      "category": "info_extraction",
+      "complexity": "low",
+      "query": "Find all posts mentioning GPT-4 from verified accounts",
+      "expected_themes": ["GPT-4", "verified accounts", "information extraction"],
+      "description": "Simple information extraction with filter"
+    },
+    {
+      "id": "info_002",
+      "category": "info_extraction",
+      "complexity": "medium",
+      "query": "What are the most liked posts about climate change?",
+      "expected_themes": ["climate change", "engagement", "popular content"],
+      "description": "Information extraction with engagement ranking"
+    },
+    {
+      "id": "info_003",
+      "category": "info_extraction",
+      "complexity": "high",
+      "query": "Extract all posts from researchers discussing neural networks, including their main concerns and recommendations",
+      "expected_themes": ["neural networks", "researchers", "concerns", "recommendations"],
+      "description": "Complex extraction with multiple criteria"
+    },
+    {
+      "id": "compare_001",
+      "category": "comparison",
+      "complexity": "medium",
+      "query": "Compare discussions about Python vs JavaScript",
+      "expected_themes": ["Python", "JavaScript", "comparison", "programming languages"],
+      "description": "Direct comparison query"
+    },
+    {
+      "id": "compare_002",
+      "category": "comparison",
+      "complexity": "high",
+      "query": "What's the difference in sentiment between crypto and traditional finance discussions?",
+      "expected_themes": ["crypto", "traditional finance", "sentiment", "comparison"],
+      "description": "Sentiment-based comparison"
+    },
+    {
+      "id": "compare_003",
+      "category": "comparison",
+      "complexity": "high",
+      "query": "Compare engagement patterns for posts about machine learning vs deep learning",
+      "expected_themes": ["machine learning", "deep learning", "engagement", "comparison"],
+      "description": "Engagement pattern comparison"
+    },
+    {
+      "id": "temporal_001",
+      "category": "temporal",
+      "complexity": "medium",
+      "query": "What were the peak discussion topics last week?",
+      "expected_themes": ["temporal analysis", "peak topics", "discussions"],
+      "description": "Temporal peak identification"
+    },
+    {
+      "id": "temporal_002",
+      "category": "temporal",
+      "complexity": "high",
+      "query": "How has the conversation about quantum computing evolved over the past 30 days?",
+      "expected_themes": ["quantum computing", "temporal evolution", "conversation analysis"],
+      "description": "Temporal evolution analysis"
+    },
+    {
+      "id": "sentiment_001",
+      "category": "sentiment",
+      "complexity": "low",
+      "query": "What is the overall sentiment about blockchain technology?",
+      "expected_themes": ["blockchain", "sentiment analysis"],
+      "description": "Basic sentiment analysis"
+    },
+    {
+      "id": "sentiment_002",
+      "category": "sentiment",
+      "complexity": "medium",
+      "query": "Analyze sentiment trends for posts about renewable energy from verified accounts",
+      "expected_themes": ["renewable energy", "sentiment trends", "verified accounts"],
+      "description": "Filtered sentiment analysis"
+    },
+    {
+      "id": "sentiment_003",
+      "category": "sentiment",
+      "complexity": "high",
+      "query": "Compare positive vs negative sentiment about AI regulation across different author types",
+      "expected_themes": ["AI regulation", "sentiment comparison", "author types"],
+      "description": "Multi-dimensional sentiment analysis"
+    },
+    {
+      "id": "complex_001",
+      "category": "complex",
+      "complexity": "high",
+      "query": "Find posts from verified researchers discussing the ethical implications of large language models, analyze their main concerns, and compare sentiment with general public discussions",
+      "expected_themes": ["LLMs", "ethics", "researchers", "sentiment comparison"],
+      "description": "Multi-step complex query"
+    },
+    {
+      "id": "complex_002",
+      "category": "complex",
+      "complexity": "high",
+      "query": "What are the main themes in discussions about climate tech, and how do engagement patterns differ between positive and negative sentiment posts?",
+      "expected_themes": ["climate tech", "themes", "engagement patterns", "sentiment"],
+      "description": "Complex multi-dimensional analysis"
+    },
+    {
+      "id": "complex_003",
+      "category": "complex",
+      "complexity": "high",
+      "query": "Identify conflicting viewpoints about cryptocurrency regulation and analyze which perspective has more engagement from verified accounts",
+      "expected_themes": ["cryptocurrency", "regulation", "conflicting viewpoints", "engagement"],
+      "description": "Conflict detection and analysis"
+    },
+    {
+      "id": "edge_001",
+      "category": "edge_case",
+      "complexity": "high",
+      "query": "Find posts with sarcastic or ironic statements about AI",
+      "expected_themes": ["AI", "sarcasm", "irony", "ambiguity"],
+      "description": "Sarcasm/ambiguity detection"
+    },
+    {
+      "id": "edge_002",
+      "category": "edge_case",
+      "complexity": "medium",
+      "query": "What are people saying about 'the cloud'? (ambiguous term)",
+      "expected_themes": ["cloud computing", "ambiguity resolution"],
+      "description": "Ambiguous term resolution"
+    },
+    {
+      "id": "edge_003",
+      "category": "edge_case",
+      "complexity": "high",
+      "query": "Analyze threaded conversations about data privacy and identify the evolution of opinions within threads",
+      "expected_themes": ["data privacy", "threads", "conversation evolution"],
+      "description": "Thread-aware analysis"
+    },
+    {
+      "id": "edge_004",
+      "category": "edge_case",
+      "complexity": "medium",
+      "query": "Find posts that mention 'Python' but are not about the programming language",
+      "expected_themes": ["Python", "disambiguation"],
+      "description": "Context disambiguation"
+    },
+    {
+      "id": "multilingual_001",
+      "category": "multilingual",
+      "complexity": "medium",
+      "query": "What are people discussing about 'inteligencia artificial'?",
+      "expected_themes": ["AI", "multilingual", "Spanish"],
+      "description": "Spanish query (if data supports)"
+    },
+    {
+      "id": "specific_001",
+      "category": "specific",
+      "complexity": "low",
+      "query": "What posts have the highest engagement about cybersecurity?",
+      "expected_themes": ["cybersecurity", "engagement"],
+      "description": "Specific engagement query"
+    },
+    {
+      "id": "specific_002",
+      "category": "specific",
+      "complexity": "medium",
+      "query": "Find all posts from journalists about space exploration with more than 1000 likes",
+      "expected_themes": ["space exploration", "journalists", "high engagement"],
+      "description": "Multi-filter specific query"
+    },
+    {
+      "id": "broad_001",
+      "category": "broad",
+      "complexity": "medium",
+      "query": "What are the main concerns people have about technology?",
+      "expected_themes": ["technology", "concerns", "broad analysis"],
+      "description": "Broad exploratory query"
+    },
+    {
+      "id": "broad_002",
+      "category": "broad",
+      "complexity": "high",
+      "query": "Analyze the overall discourse about emerging technologies and identify key trends, sentiment patterns, and influential voices",
+      "expected_themes": ["emerging technologies", "trends", "sentiment", "influencers"],
+      "description": "Very broad multi-dimensional analysis"
+    },
+    {
+      "id": "filter_001",
+      "category": "filtering",
+      "complexity": "low",
+      "query": "Show me only negative sentiment posts about social media",
+      "expected_themes": ["social media", "negative sentiment"],
+      "description": "Simple filter query"
+    },
+    {
+      "id": "filter_002",
+      "category": "filtering",
+      "complexity": "medium",
+      "query": "Find posts from verified influencers about web3 that have high engagement",
+      "expected_themes": ["web3", "verified", "influencers", "high engagement"],
+      "description": "Multi-criteria filtering"
+    },
+    {
+      "id": "synthesis_001",
+      "category": "synthesis",
+      "complexity": "high",
+      "query": "Synthesize insights from multiple posts about quantum computing to create a comprehensive overview of current discussions",
+      "expected_themes": ["quantum computing", "synthesis", "comprehensive overview"],
+      "description": "Synthesis query"
+    },
+    {
+      "id": "synthesis_002",
+      "category": "synthesis",
+      "complexity": "high",
+      "query": "Combine information from posts about neural networks, machine learning, and deep learning to identify common themes and differences",
+      "expected_themes": ["neural networks", "ML", "DL", "synthesis", "comparison"],
+      "description": "Cross-topic synthesis"
+    },
+    {
+      "id": "temporal_complex_001",
+      "category": "temporal_complex",
+      "complexity": "high",
+      "query": "Track how discussions about AI ethics have evolved over time, identifying key turning points and shifts in sentiment",
+      "expected_themes": ["AI ethics", "temporal evolution", "turning points", "sentiment shifts"],
+      "description": "Complex temporal analysis"
+    },
+    {
+      "id": "author_001",
+      "category": "author_analysis",
+      "complexity": "medium",
+      "query": "What are researchers saying about biotech that differs from what influencers say?",
+      "expected_themes": ["biotech", "researchers", "influencers", "comparison"],
+      "description": "Author type comparison"
+    },
+    {
+      "id": "author_002",
+      "category": "author_analysis",
+      "complexity": "high",
+      "query": "Analyze the engagement patterns and sentiment of posts from verified accounts vs regular users on the topic of climate change",
+      "expected_themes": ["climate change", "verified accounts", "regular users", "engagement", "sentiment"],
+      "description": "Author type engagement analysis"
+    },
+    {
+      "id": "noise_001",
+      "category": "noise_filtering",
+      "complexity": "medium",
+      "query": "Find serious discussions about cybersecurity, filtering out spam and low-quality posts",
+      "expected_themes": ["cybersecurity", "quality filtering", "noise reduction"],
+      "description": "Noise filtering query"
+    },
+    {
+      "id": "noise_002",
+      "category": "noise_filtering",
+      "complexity": "high",
+      "query": "Extract meaningful insights about data science from posts, ignoring irrelevant or off-topic content",
+      "expected_themes": ["data science", "relevance filtering", "insights"],
+      "description": "Relevance filtering"
+    },
+    {
+      "id": "conflict_001",
+      "category": "conflict_detection",
+      "complexity": "high",
+      "query": "Identify conflicting viewpoints about cryptocurrency and analyze which arguments are most supported",
+      "expected_themes": ["cryptocurrency", "conflicting viewpoints", "argument analysis"],
+      "description": "Conflict detection and analysis"
+    },
+    {
+      "id": "conflict_002",
+      "category": "conflict_detection",
+      "complexity": "high",
+      "query": "Find posts with opposing views on remote work and compare their engagement and author credibility",
+      "expected_themes": ["remote work", "opposing views", "engagement", "credibility"],
+      "description": "Opposing views comparison"
+    },
+    {
+      "id": "thread_001",
+      "category": "thread_analysis",
+      "complexity": "high",
+      "query": "Analyze threaded conversations about AI safety to understand how discussions evolve and where consensus emerges",
+      "expected_themes": ["AI safety", "threads", "conversation evolution", "consensus"],
+      "description": "Thread evolution analysis"
+    },
+    {
+      "id": "thread_002",
+      "category": "thread_analysis",
+      "complexity": "medium",
+      "query": "Find the most engaging threaded discussions about Python programming",
+      "expected_themes": ["Python", "threads", "engagement"],
+      "description": "Thread engagement query"
+    },
+    {
+      "id": "meta_001",
+      "category": "meta_analysis",
+      "complexity": "high",
+      "query": "What patterns can we identify in how verified accounts vs regular users discuss emerging technologies?",
+      "expected_themes": ["patterns", "verified accounts", "regular users", "emerging technologies"],
+      "description": "Meta-pattern analysis"
+    },
+    {
+      "id": "meta_002",
+      "category": "meta_analysis",
+      "complexity": "high",
+      "query": "Analyze the relationship between post sentiment and engagement levels across different topics",
+      "expected_themes": ["sentiment", "engagement", "correlation", "topics"],
+      "description": "Cross-topic meta-analysis"
+    }
+  ],
+  "metadata": {
+    "total_queries": 40,
+    "categories": [
+      "trend_analysis",
+      "info_extraction",
+      "comparison",
+      "temporal",
+      "sentiment",
+      "complex",
+      "edge_case",
+      "multilingual",
+      "specific",
+      "broad",
+      "filtering",
+      "synthesis",
+      "temporal_complex",
+      "author_analysis",
+      "noise_filtering",
+      "conflict_detection",
+      "thread_analysis",
+      "meta_analysis"
+    ],
+    "complexity_distribution": {
+      "low": 4,
+      "medium": 18,
+      "high": 18
+    },
+    "description": "Test query suite for evaluating agentic research workflow. Includes diverse query types, complexity levels, and edge cases."
+  }
+}

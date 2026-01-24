@@ -296,16 +296,52 @@ python main.py --query "Find posts about Python from verified accounts"
 python main.py --query "Compare sentiment about crypto vs stocks"
 ```
 
-## 📈 Evaluation Metrics
+## 📈 Evaluation Framework
 
-The system tracks:
+The system includes a comprehensive evaluation framework for testing agent performance across multiple queries and comparing different Grok models.
+
+### Quick Start
+
+**Run batch evaluation:**
+```bash
+cd server/evaluation
+python evaluator.py --max-queries 10
+```
+
+**Compare models:**
+```bash
+python compare_models.py --max-queries 5
+```
+
+### Features
+
+- **40 Test Queries**: Diverse queries covering trend analysis, info extraction, comparison, temporal analysis, sentiment, edge cases, and more
+- **Metrics Collection**: 
+  - Completion rate (% successfully completed)
+  - Step efficiency (avg steps, refinement iterations, replan count)
+  - Summary quality (confidence scores, summary length)
+  - Autonomy metrics (replan rate, refinement rate, critique pass rate)
+- **Model Comparison**: Compare performance across different Grok model variants
+- **Category Breakdown**: Metrics broken down by query category and complexity level
+
+### Test Query Suite
+
+The `server/evaluation/test_queries.json` contains 40 queries:
+- **Categories**: trend_analysis, info_extraction, comparison, temporal, sentiment, complex, edge_case, multilingual, specific, broad, filtering, synthesis, etc.
+- **Complexity**: low (4), medium (18), high (18)
+- **Edge Cases**: sarcasm detection, ambiguity resolution, conflicting sources, threaded discussions
+
+### Metrics Tracked
+
 - **Completion Rate**: % of queries successfully completed
-- **Step Efficiency**: Number of steps per query
-- **Confidence Scores**: Final confidence in results
-- **Token Usage**: Total tokens consumed
-- **Refinement Iterations**: How many refinement loops needed
+- **Step Efficiency**: Number of steps per query, refinement iterations, replan cycles
+- **Confidence Scores**: Final confidence in results, high confidence rate
+- **Token Usage**: Total tokens consumed per query
+- **Autonomy Score**: How well agent handles queries independently (0-1 scale)
 
-Results are saved to `output/research_result.json` with full execution details.
+Results are saved to `server/evaluation/results/` with detailed metrics and individual query results.
+
+See `server/evaluation/README.md` for detailed documentation.
 
 ## 🐛 Troubleshooting
 

@@ -37,7 +37,9 @@ class GrokClient:
         system_prompt: Optional[str] = None,
         max_tokens: int = None,
         temperature: float = None,
-        response_format: Optional[Dict] = None
+        response_format: Optional[Dict] = None,
+        tools: Optional[List[Dict]] = None,
+        tool_choice: Optional[str] = None
     ) -> Dict:
         """
         Call Grok API
@@ -49,9 +51,11 @@ class GrokClient:
             max_tokens: Maximum tokens in response
             temperature: Sampling temperature
             response_format: Optional response format (e.g., {"type": "json_object"})
+            tools: Optional list of tool definitions for function calling
+            tool_choice: Optional tool choice ("auto", "none", or {"type": "function", "function": {"name": "tool_name"}})
             
         Returns:
-            Dictionary with "content", "tokens_used", "model"
+            Dictionary with "content", "tokens_used", "model", "tool_calls" (if any)
         """
         # Prepare messages
         api_messages = []
@@ -72,16 +76,38 @@ class GrokClient:
         if response_format:
             params["response_format"] = response_format
         
+        if tools:
+            params["tools"] = tools
+            if tool_choice:
+                params["tool_choice"] = tool_choice
+            else:
+                params["tool_choice"] = "auto"
+        
         try:
             response = self.client.chat.completions.create(**params)
             
-            content = response.choices[0].message.content
+            message = response.choices[0].message
+            content = message.content or ""
+            
+            # Parse tool calls if present
+            tool_calls = None
+            if hasattr(message, 'tool_calls') and message.tool_calls:
+                tool_calls = []
+                for tc in message.tool_calls:
+                    tool_calls.append({
+                        "id": tc.id,
+                        "type": tc.type,
+                        "function": {
+                            "name": tc.function.name,
+                            "arguments": tc.function.arguments
+                        }
+                    })
             
             # Estimate tokens (rough approximation)
             input_tokens = sum(len(msg.get("content", "")) // 4 for msg in api_messages)
             output_tokens = len(content) // 4
             
-            return {
+            result = {
                 "content": content,
                 "input_tokens": input_tokens,
                 "output_tokens": output_tokens,
@@ -89,6 +115,11 @@ class GrokClient:
                 "model": model,
                 "success": True
             }
+            
+            if tool_calls:
+                result["tool_calls"] = tool_calls
+            
+            return result
         except Exception as e:
             error_msg = str(e)
             print(f"❌ Grok API Error: {error_msg}")

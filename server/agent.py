@@ -12,6 +12,7 @@ from grok_client import GrokClient
 from context_manager import ContextManager, ExecutionStep
 from retrieval import HybridRetriever
 from tools import ToolRegistry
+from utils.truncation import create_concise_data_summary, truncate_results_for_llm, truncate_text
 
 class WorkflowState(Enum):
     """States in the agent workflow state machine"""
@@ -58,32 +59,29 @@ class AgenticResearchAgent:
         
         Uses grok-4-fast-reasoning for complex reasoning
         """
-        system_prompt = """You are an expert research planner. Break down queries into clear steps.
+        system_prompt = """Research planner. Break queries into steps.
+
+Modes:
+1. Plan-based: Exact steps (straightforward queries)
+2. Tool-calling: Dynamic tool selection (complex/exploratory queries)
+
+Return JSON:
+{
+    "query_type": "trend_analysis|info_extraction|comparison|sentiment|temporal|other",
+    "use_tool_calling": true/false,
+    "steps": [
+        {"step_number": 1, "action": "search", "description": "...", "tools": ["hybrid_search"]},
+        {"step_number": 2, "action": "filter", "description": "...", "filters": {...}}
+    ],
+    "success_criteria": ["criterion1"],
+    "expected_complexity": "low|medium|high"
+}
+
+Use tool_calling=true for: multiple search types, exploratory queries, iterative refinement, complex filtering."""
         
-        Return JSON:
-        {
-            "query_type": "trend_analysis|info_extraction|comparison|sentiment|temporal|other",
-            "steps": [
-                {"step_number": 1, "action": "search", "description": "...", "tools": ["semantic_search", "keyword_search"]},
-                {"step_number": 2, "action": "filter", "description": "...", "filters": {...}},
-                {"step_number": 3, "action": "analyze", "description": "..."}
-            ],
-            "success_criteria": ["criterion1", "criterion2"],
-            "expected_complexity": "low|medium|high"
-        }"""
-        
-        user_prompt = f"""Analyze this research query and create a detailed plan:
+        user_prompt = f"""Query: "{query}"
 
-Query: "{query}"
-
-Consider:
-- What type of query is this?
-- What information needs to be retrieved?
-- What analysis is required?
-- What filters or constraints apply?
-- How will we know if we've succeeded?
-
-Create a comprehensive plan."""
+Create a plan. Consider: query type, information needed, analysis required, filters/constraints."""
         
         messages = [{"role": "user", "content": user_prompt}]
         
@@ -98,6 +96,7 @@ Create a comprehensive plan."""
             # Fallback plan if API fails
             plan = {
                 "query_type": "other",
+                "use_tool_calling": False,
                 "steps": [
                     {"step_number": 1, "action": "search", "description": "Search for relevant posts", "tools": ["hybrid_search"]},
                     {"step_number": 2, "action": "analyze", "description": "Analyze retrieved results"}
@@ -115,6 +114,7 @@ Create a comprehensive plan."""
                 # Fallback to basic plan
                 plan = {
                     "query_type": plan.get("query_type", "other"),
+                    "use_tool_calling": False,
                     "steps": [
                         {"step_number": 1, "action": "search", "description": "Search for relevant posts", "tools": ["hybrid_search"]},
                         {"step_number": 2, "action": "analyze", "description": "Analyze retrieved results"}
@@ -122,6 +122,10 @@ Create a comprehensive plan."""
                     "success_criteria": ["Relevant results found"],
                     "expected_complexity": "medium"
                 }
+            
+            # Ensure use_tool_calling is set (default to False)
+            if "use_tool_calling" not in plan:
+                plan["use_tool_calling"] = False
         
         # Store plan
         step = ExecutionStep(
@@ -146,34 +150,239 @@ Create a comprehensive plan."""
         This is an alternative to plan-based execution where the LLM dynamically
         decides which tools to call based on intermediate results.
         
-        NOTE: Full implementation requires GrokClient to support tools/function_calling.
-        Currently falls back to hybrid_search. To enable:
-        1. Add 'tools' parameter support to GrokClient.call()
-        2. Parse tool_calls from API response
-        3. Execute tools via tool_registry.call_tool()
-        4. Add tool results back to conversation
-        
         Args:
             query: Research query
-            max_tool_calls: Maximum number of tool calls allowed
+            max_tool_calls: Maximum number of tool call iterations allowed
             
         Returns:
             List of retrieved posts
         """
-        # TODO: Implement full tool-calling when GrokClient supports tools parameter
-        # For now, use hybrid search as fallback
-        # The tool_registry and tool definitions are ready for when API support is added
-        results = self.retriever.hybrid_search(query)
-        return results[:20]
+        # Get tool definitions
+        tools = self.tool_registry.get_tool_definitions()
+        
+        # Initial system prompt
+        system_prompt = """You are a research assistant that uses tools to find information.
+        
+Available tools:
+- keyword_search: Search posts using keyword matching (good for exact terms, hashtags)
+- semantic_search: Search posts using semantic similarity (good for concepts, meaning)
+- hybrid_search: Combines keyword and semantic search (recommended for most queries)
+- user_profile_lookup: Find posts by specific authors
+- temporal_trend_analyzer: Analyze trends over time periods
+- filter_by_metadata: Filter results by sentiment, engagement, verification status
+
+Use tools iteratively to gather comprehensive information. You can call multiple tools in one turn.
+After seeing tool results, decide if you need more information or can proceed."""
+        
+        # Conversation history
+        messages = [
+            {
+                "role": "user",
+                "content": f"Research query: {query}\n\nUse tools to find relevant information. You can call multiple tools."
+            }
+        ]
+        
+        all_results = []
+        seen_post_ids = set()
+        tool_call_count = 0
+        total_tokens = 0
+        tool_calls_history = []
+        
+        # Emit initial tool calling start
+        self._emit_progress('executing', {
+            'status': 'started',
+            'message': 'Starting dynamic tool calling...',
+            'tool_calling_mode': True,
+            'tool_calls': []
+        })
+        
+        while tool_call_count < max_tool_calls:
+            # Call Grok with tools
+            response = self.grok.call(
+                model=config.ModelConfig.PLANNER_MODEL,  # Use planner model for tool selection
+                messages=messages,
+                system_prompt=system_prompt,
+                tools=tools,
+                tool_choice="auto",
+                max_tokens=500,
+                temperature=0.7
+            )
+            
+            if not response.get("success"):
+                print(f"⚠️ Tool calling API error: {response.get('error', 'Unknown error')}")
+                total_tokens += response.get("total_tokens", 0)
+                break
+            
+            total_tokens += response.get("total_tokens", 0)
+            
+            # Add assistant message to conversation
+            assistant_message = {"role": "assistant", "content": response.get("content", "")}
+            messages.append(assistant_message)
+            
+            # Check for tool calls
+            tool_calls = response.get("tool_calls", [])
+            
+            if not tool_calls:
+                # No more tool calls - Grok is done
+                self._emit_progress('executing', {
+                    'status': 'completed',
+                    'message': f'Tool calling completed. Retrieved {len(all_results)} results',
+                    'tool_calling_mode': True,
+                    'tool_calls': tool_calls_history,
+                    'total_results': len(all_results),
+                    'total_tool_calls': tool_call_count
+                })
+                break
+            
+            # Execute each tool call
+            tool_results = []
+            iteration_tool_calls = []
+            
+            for tool_call in tool_calls:
+                tool_call_count += 1
+                function_name = tool_call["function"]["name"]
+                function_args_str = tool_call["function"]["arguments"]
+                
+                # Parse arguments
+                try:
+                    function_args = json.loads(function_args_str)
+                except json.JSONDecodeError:
+                    function_args = {}
+                
+                print(f"🔧 Calling tool: {function_name} with args: {function_args}")
+                
+                # Emit tool call start
+                self._emit_progress('executing', {
+                    'status': 'tool_calling',
+                    'message': f'Calling tool: {function_name}...',
+                    'tool_calling_mode': True,
+                    'current_tool': {
+                        'name': function_name,
+                        'arguments': function_args,
+                        'status': 'executing'
+                    }
+                })
+                
+                # Execute tool
+                tool_result = self.tool_registry.call_tool(function_name, function_args)
+                
+                # Collect results
+                results_count = 0
+                if tool_result.get("success"):
+                    results = tool_result.get("results", [])
+                    results_count = len(results)
+                    for result in results:
+                        post_id = result.get("id")
+                        if post_id and post_id not in seen_post_ids:
+                            seen_post_ids.add(post_id)
+                            all_results.append(result)
+                    
+                    tool_results.append({
+                        "tool_call_id": tool_call["id"],
+                        "role": "tool",
+                        "name": function_name,
+                        "content": json.dumps({
+                            "success": True,
+                            "message": tool_result.get("message", ""),
+                            "results_count": len(results),
+                            "sample_results": results[:3] if results else []
+                        })
+                    })
+                else:
+                    tool_results.append({
+                        "tool_call_id": tool_call["id"],
+                        "role": "tool",
+                        "name": function_name,
+                        "content": json.dumps({
+                            "success": False,
+                            "message": tool_result.get("message", "Tool execution failed")
+                        })
+                    })
+                
+                # Track tool call for history
+                iteration_tool_calls.append({
+                    'name': function_name,
+                    'arguments': function_args,
+                    'success': tool_result.get("success", False),
+                    'results_count': results_count,
+                    'message': tool_result.get("message", "")
+                })
+            
+            # Emit tool calls completion for this iteration
+            tool_calls_history.extend(iteration_tool_calls)
+            self._emit_progress('executing', {
+                'status': 'tool_calling',
+                'message': f'Completed {len(iteration_tool_calls)} tool call(s). Total results: {len(all_results)}',
+                'tool_calling_mode': True,
+                'tool_calls': tool_calls_history,
+                'total_results': len(all_results),
+                'iteration': len(tool_calls_history)
+            })
+            
+            # Add tool results to conversation
+            messages.extend(tool_results)
+            
+            # Limit total results
+            if len(all_results) >= config.MAX_RETRIEVAL_RESULTS:
+                break
+        
+        # Limit and deduplicate final results
+        final_results = all_results[:config.MAX_RETRIEVAL_RESULTS]
+        
+        # Emit final completion
+        self._emit_progress('executing', {
+            'status': 'completed',
+            'message': f'Tool calling finished. Retrieved {len(final_results)} results',
+            'tool_calling_mode': True,
+            'tool_calls': tool_calls_history,
+            'total_results': len(final_results),
+            'total_tool_calls': tool_call_count,
+            'results_count': len(final_results)
+        })
+        
+        # Log execution step
+        step = ExecutionStep(
+            step_name="Tool-Calling Execution",
+            step_type="execute",
+            input_data={"query": query, "max_tool_calls": max_tool_calls},
+            output_data={"results_count": len(final_results), "tool_calls_made": tool_call_count, "tool_calls": tool_calls_history},
+            reasoning=f"Used {tool_call_count} tool calls to retrieve {len(final_results)} results",
+            timestamp=datetime.now().isoformat(),
+            model_used=config.ModelConfig.PLANNER_MODEL,
+            tokens_used=total_tokens
+        )
+        self.context.add_step(step)
+        self.context.store_intermediate_result("execution_results", final_results)
+        
+        return final_results
     
     def execute(self, plan: Dict, query: str) -> List[Dict]:
         """
-        Step 2: Execute - Retrieve data using hybrid search
+        Step 2: Execute - Retrieve data using hybrid search or dynamic tool calling
         
-        Uses retrieval tools based on plan. Search steps use step["description"]
-        as the search query when present (plan or refinement); otherwise fall
-        back to the original query.
+        Uses retrieval tools based on plan. If plan specifies use_tool_calling=True,
+        uses dynamic tool calling where Grok selects tools iteratively. Otherwise,
+        uses plan-based execution with specified tools.
+        
+        Search steps use step["description"] as the search query when present
+        (plan or refinement); otherwise fall back to the original query.
         """
+        # Check if plan requests tool calling
+        use_tool_calling = plan.get("use_tool_calling", False)
+        
+        if use_tool_calling:
+            # Use dynamic tool calling
+            search_query = query
+            # If plan has a search step with description, use that as the query
+            steps = plan.get("steps", [])
+            for step in steps:
+                if step.get("action") == "search" and step.get("description"):
+                    search_query = step.get("description")
+                    break
+            
+            return self.execute_with_tool_calling(search_query, max_tool_calls=5)
+        
+        # Plan-based execution (original approach)
         steps = plan.get("steps", [])
         all_results = []
         
@@ -232,40 +441,36 @@ Create a comprehensive plan."""
         
         Uses grok-4-fast-reasoning for complex reasoning
         """
-        system_prompt = """You are a research analyst. Analyze data and identify patterns, themes, insights.
+        system_prompt = """Research analyst. Analyze data for patterns, themes, insights.
+
+Return JSON:
+{
+    "main_themes": ["theme1", "theme2"],
+    "key_insights": ["insight1", "insight2"],
+    "sentiment_analysis": {"positive": count, "negative": count, "neutral": count},
+    "engagement_patterns": {...},
+    "notable_findings": ["finding1"],
+    "data_quality": "high|medium|low",
+    "confidence": 0.0-1.0,
+    "gaps_or_limitations": ["gap1"]
+}"""
         
-        Return JSON:
-        {
-            "main_themes": ["theme1", "theme2"],
-            "key_insights": ["insight1", "insight2"],
-            "sentiment_analysis": {"positive": count, "negative": count, "neutral": count},
-            "engagement_patterns": {...},
-            "notable_findings": ["finding1", "finding2"],
-            "data_quality": "high|medium|low",
-            "confidence": 0.0-1.0,
-            "gaps_or_limitations": ["gap1", "gap2"]
-        }"""
+        # Use optimized truncation utility
+        data_summary = create_concise_data_summary(
+            results,
+            query,
+            max_items=config.ANALYZE_SAMPLE_SIZE,
+            max_text_length=config.ANALYZE_TEXT_LENGTH
+        )
         
-        # Prepare data summary (optimized: fewer items, shorter text)
-        data_summary = f"Query: {query}\n\n"
-        data_summary += f"Retrieved {len(results)} items:\n\n"
-        
-        sample_size = min(config.ANALYZE_SAMPLE_SIZE, len(results))
-        text_length = config.ANALYZE_TEXT_LENGTH
-        for i, item in enumerate(results[:sample_size], 1):
-            data_summary += f"{i}. {item.get('text', '')[:text_length]}\n"
-            data_summary += f"   Author: {item.get('author', {}).get('display_name', 'Unknown')}\n"
-            eng = item.get('engagement', {}) or {}
-            eng_sum = sum(v for v in eng.values() if isinstance(v, (int, float))) if isinstance(eng, dict) else 0
-            data_summary += f"   Engagement: {eng_sum} total\n"
-            data_summary += f"   Sentiment: {item.get('sentiment', 'unknown')}\n\n"
+        # Truncate plan steps for prompt
+        plan_steps = plan.get('steps', [])[:3]  # Only include first 3 steps
         
         user_prompt = f"""{data_summary}
 
-Analyze this data according to the plan:
-{json.dumps(plan.get('steps', []), indent=2)}
+Plan steps: {json.dumps(plan_steps, separators=(',', ':'))}
 
-Provide comprehensive analysis."""
+Analyze and return JSON."""
         
         messages = [{"role": "user", "content": user_prompt}]
         
@@ -448,25 +653,17 @@ Evaluate if refinement needed: gaps, completeness, need for more searches, confi
         Returns:
             Dict with "replan_needed" (bool), "reason", "suggested_strategy"
         """
-        system_prompt = """You are a research strategy evaluator. Determine if the current 
-        research plan needs to be completely revised (not just refined with more searches).
-        
-        Return JSON:
-        {
-            "replan_needed": true|false,
-            "reason": "explanation",
-            "suggested_strategy": "description of new approach if replan needed"
-        }
-        
-        Replan if:
-        - The retrieved data is fundamentally wrong (e.g., 90% sarcasm when query asks for serious analysis)
-        - The search strategy is misaligned with query intent
-        - Data quality issues require a completely different approach (not just more searches)
-        
-        Do NOT replan if:
-        - Just need more data (use refinement instead)
-        - Need to filter existing results (use refinement instead)
-        - Confidence is low but strategy is sound (use refinement instead)"""
+        system_prompt = """Strategy evaluator. Determine if plan needs complete revision (not just refinement).
+
+Return JSON:
+{
+    "replan_needed": true|false,
+    "reason": "brief explanation",
+    "suggested_strategy": "new approach if replan needed"
+}
+
+Replan if: data fundamentally wrong, strategy misaligned, quality issues require different approach.
+Don't replan if: just need more data, need filters, low confidence but strategy sound."""
         
         # Analyze data quality signals
         sentiment_dist = analysis.get("sentiment_analysis", {}) or {}
@@ -480,25 +677,23 @@ Evaluate if refinement needed: gaps, completeness, need for more searches, confi
         
         data_quality = analysis.get("data_quality", "medium")
         confidence = analysis.get("confidence", 0.5)
-        gaps = analysis.get("gaps_or_limitations", [])
+        gaps = analysis.get("gaps_or_limitations", [])[:2]  # Limit gaps
         
-        user_prompt = f"""Original Query: {query}
+        # Truncate plan and analysis
+        plan_summary = {"steps_count": len(plan.get("steps", [])), "query_type": plan.get("query_type", "other")}
+        analysis_summary = {
+            "confidence": confidence,
+            "data_quality": data_quality,
+            "gaps": gaps,
+            "sentiment_dist": sentiment_dist
+        }
+        
+        user_prompt = f"""Query: {query}
+Plan: {json.dumps(plan_summary, separators=(',', ':'))}
+Analysis: {json.dumps(analysis_summary, separators=(',', ':'))}
+Results: {len(results)} items, sarcasm_ratio: {sarcasm_ratio:.2f}
 
-Current Plan:
-{json.dumps(plan, indent=2)}
-
-Analysis Results:
-{json.dumps(analysis, indent=2)}
-
-Data Quality Signals:
-- Sentiment distribution: {sentiment_dist}
-- Data quality rating: {data_quality}
-- Confidence: {confidence:.2f}
-- Gaps/limitations: {gaps}
-- Retrieved {len(results)} items
-
-Evaluate if the PLAN/STRATEGY needs to be completely revised (replan) vs. just refined (more searches).
-Consider: Is the fundamental approach wrong, or do we just need more/better data?"""
+Evaluate: replan needed (fundamental strategy wrong) or refine (more data needed)?"""
         
         messages = [{"role": "user", "content": user_prompt}]
         
@@ -549,45 +744,42 @@ Consider: Is the fundamental approach wrong, or do we just need more/better data
         Returns:
             Dict with "critique_passed" (bool), "hallucinations", "biases", "corrections"
         """
-        system_prompt = """You are a research critique specialist. Review the analysis and summary 
-        for hallucinations (unsupported claims), bias, and factual errors.
+        system_prompt = """Critique specialist. Review for hallucinations, bias, factual errors.
+
+Return JSON:
+{
+    "critique_passed": true|false,
+    "hallucinations": ["claim1 not supported"],
+    "biases": ["selection bias: only positive"],
+    "corrections": ["correction1"],
+    "confidence_adjustment": -0.1 to 0.1,
+    "revised_summary": null or "corrected summary"
+}
+
+Flag unsupported claims."""
         
-        Return JSON:
-        {
-            "critique_passed": true|false,
-            "hallucinations": ["claim1 not supported", "claim2 not in data"],
-            "biases": ["selection bias: only positive posts", "temporal bias: only recent data"],
-            "corrections": ["correction1", "correction2"],
-            "confidence_adjustment": 0.0-1.0,
-            "revised_summary": "corrected summary if critique failed"
+        # Use truncation utility
+        data_sample = create_concise_data_summary(
+            results,
+            query,
+            max_items=config.CRITIQUE_SAMPLE_SIZE,
+            max_text_length=100
+        )
+        
+        # Truncate analysis and summary
+        analysis_summary = {
+            "main_themes": analysis.get("main_themes", [])[:3],
+            "key_insights": analysis.get("key_insights", [])[:2],
+            "confidence": analysis.get("confidence", 0)
         }
+        summary_truncated = truncate_text(summary, max_chars=500)
         
-        Be strict: flag any claim that cannot be directly supported by the retrieved data."""
-        
-        # Prepare sample of retrieved data for verification (optimized: fewer items)
-        data_sample = f"Retrieved {len(results)} items. Sample:\n\n"
-        sample_size = min(config.CRITIQUE_SAMPLE_SIZE, len(results))
-        for i, item in enumerate(results[:sample_size], 1):
-            data_sample += f"{i}. {item.get('text', '')[:120]}\n"
-            data_sample += f"   Sentiment: {item.get('sentiment', 'unknown')}\n"
-            data_sample += f"   Author: {item.get('author', {}).get('display_name', 'Unknown')}\n\n"
-        
-        user_prompt = f"""Original Query: {query}
+        user_prompt = f"""Query: {query}
+Data: {data_sample}
+Analysis: {json.dumps(analysis_summary, separators=(',', ':'))}
+Summary: {summary_truncated}
 
-Retrieved Data Sample:
-{data_sample}
-
-Analysis:
-{json.dumps(analysis, indent=2)}
-
-Summary:
-{summary}
-
-Critique the analysis and summary:
-1. Are all claims supported by the retrieved data?
-2. Are there hallucinations (made-up facts)?
-3. Is there bias (selection, temporal, sentiment)?
-4. Is the analysis balanced and fair?"""
+Check: claims supported? hallucinations? bias? balanced?"""
         
         messages = [{"role": "user", "content": user_prompt}]
         
@@ -634,19 +826,24 @@ Critique the analysis and summary:
         
         Uses grok-4-fast-reasoning for high-quality summaries
         """
-        system_prompt = """You are a research summarization expert. Create clear summaries.
+        system_prompt = """Summarization expert. Create clear, concise summaries.
+
+Structure: Executive Summary, Key Findings, Analysis, Limitations, Recommendations"""
         
-        Structure: 1) Executive Summary (2-3 sentences), 2) Key Findings, 3) Analysis, 4) Limitations, 5) Recommendations"""
+        # Truncate for summary prompt
+        analysis_summary = {
+            "main_themes": analysis.get("main_themes", [])[:5],
+            "key_insights": analysis.get("key_insights", [])[:3],
+            "sentiment_analysis": analysis.get("sentiment_analysis", {}),
+            "confidence": analysis.get("confidence", 0)
+        }
+        plan_summary = {"steps_count": len(plan.get("steps", [])), "query_type": plan.get("query_type", "other")}
         
-        user_prompt = f"""Research Query: {query}
+        user_prompt = f"""Query: {query}
+Plan: {json.dumps(plan_summary, separators=(',', ':'))}
+Analysis: {json.dumps(analysis_summary, separators=(',', ':'))}
 
-Plan Executed:
-{json.dumps(plan, indent=2)}
-
-Analysis Results:
-{json.dumps(analysis, indent=2)}
-
-Create a comprehensive final summary that answers the original query."""
+Create concise summary answering the query."""
         
         messages = [{"role": "user", "content": user_prompt}]
         
