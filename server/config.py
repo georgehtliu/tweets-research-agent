@@ -37,10 +37,16 @@ class ModelConfig:
     SUMMARIZER_MODEL = "grok-4-fast-reasoning"  # Fast reasoning model for summaries
 
 # Agent Configuration
-MAX_ITERATIONS = 5  # Maximum refinement loops
+MAX_ITERATIONS = 3  # Maximum refinement loops (reduced from 5 for faster runs)
 MAX_CONTEXT_TOKENS = 8000  # Context window limit
 TEMPERATURE = 0.7  # Default temperature for creativity
-MAX_TOKENS_RESPONSE = 2000  # Max tokens per response
+MAX_TOKENS_RESPONSE = 1500  # Max tokens per response (reduced from 2000 for faster responses)
+MAX_TOKENS_SUMMARY = 1200  # Max tokens for summary (shorter summaries = faster)
+
+# Performance Optimization Flags
+SKIP_EVALUATE_IF_HIGH_CONFIDENCE = True  # Skip evaluate step if confidence > 0.85
+SKIP_CRITIQUE_IF_HIGH_CONFIDENCE = True  # Skip critique if confidence > 0.85 and no obvious issues
+ENABLE_FAST_MODE = False  # Fast mode: skip evaluate and critique entirely
 
 # Data Configuration
 MOCK_DATA_SIZE = 100  # Number of mock posts to generate
@@ -48,9 +54,13 @@ MOCK_DATA_SIZE = 100  # Number of mock posts to generate
 DATA_FILE = "data/mock_x_data.json"
 
 # Retrieval Configuration
-SEMANTIC_SEARCH_TOP_K = 10  # Top K results for semantic search
-KEYWORD_SEARCH_TOP_K = 10  # Top K results for keyword search
+SEMANTIC_SEARCH_TOP_K = 8  # Top K results for semantic search (reduced from 10)
+KEYWORD_SEARCH_TOP_K = 8  # Top K results for keyword search (reduced from 10)
 HYBRID_ALPHA = 0.6  # Weight for semantic vs keyword (0.6 = 60% semantic, 40% keyword)
+MAX_RETRIEVAL_RESULTS = 15  # Max results to return (reduced from 20)
+ANALYZE_SAMPLE_SIZE = 6  # Number of items to show in analyze step (reduced from 10)
+ANALYZE_TEXT_LENGTH = 150  # Max text length per item in analyze (reduced from 200)
+CRITIQUE_SAMPLE_SIZE = 4  # Number of items to show in critique (reduced from 5)
 
 # Logging
 LOG_LEVEL = "INFO"

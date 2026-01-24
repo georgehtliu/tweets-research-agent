@@ -90,7 +90,7 @@ function formatResult(result) {
     </div>`;
     html += `<div class="meta-item">
         <div class="meta-label">Confidence</div>
-        <div class="meta-value">${(result.analysis?.confidence * 100 || 0).toFixed(0)}%</div>
+        <div class="meta-value">${(Math.max(0, Number(result.analysis?.confidence) || 0) * 100).toFixed(0)}%</div>
     </div>`;
     html += '</div>';
     
@@ -365,9 +365,9 @@ function renderProgressSteps() {
         if (state.status === 'started' || state.status === 'checking' || state.status === 'refining' || state.status === 'replanning') {
             statusClass = 'active';
             message = state.message || `${step.title} in progress...`;
-        } else if (state.status === 'completed' || state.status === 'updated') {
+        } else if (state.status === 'completed' || state.status === 'updated' || state.status === 'skipped') {
             statusClass = 'completed';
-            message = `${step.title} completed`;
+            message = state.status === 'skipped' ? `${step.title} skipped` : `${step.title} completed`;
             
             // Add details based on step type
             if (step.key === 'planning' && state.query_type) {
@@ -375,7 +375,8 @@ function renderProgressSteps() {
             } else if (step.key === 'executing' && state.results_count !== undefined) {
                 details = `Retrieved ${state.results_count} items`;
             } else if (step.key === 'analyzing' && state.confidence !== undefined) {
-                details = `Confidence: ${(state.confidence * 100).toFixed(0)}%`;
+                const conf = Number(state.confidence);
+                details = `Confidence: ${(isNaN(conf) ? 0 : conf * 100).toFixed(0)}%`;
                 if (state.main_themes && state.main_themes.length > 0) {
                     details += ` | Themes: ${state.main_themes.slice(0, 2).join(', ')}`;
                 }

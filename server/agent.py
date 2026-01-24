@@ -58,10 +58,9 @@ class AgenticResearchAgent:
         
         Uses grok-4-fast-reasoning for complex reasoning
         """
-        system_prompt = """You are an expert research planner. Break down complex queries into 
-        clear, sequential steps. Think step-by-step about what information is needed and how to obtain it.
+        system_prompt = """You are an expert research planner. Break down queries into clear steps.
         
-        Return your plan as JSON with this structure:
+        Return JSON:
         {
             "query_type": "trend_analysis|info_extraction|comparison|sentiment|temporal|other",
             "steps": [
@@ -209,7 +208,7 @@ Create a comprehensive plan."""
                 unique_results.append(result)
         
         # Limit results
-        max_results = 20
+        max_results = config.MAX_RETRIEVAL_RESULTS
         unique_results = unique_results[:max_results]
         
         step = ExecutionStep(
@@ -233,10 +232,9 @@ Create a comprehensive plan."""
         
         Uses grok-4-fast-reasoning for complex reasoning
         """
-        system_prompt = """You are a research analyst. Analyze the provided data deeply.
-        Identify patterns, themes, insights, and anomalies. Think critically and provide detailed analysis.
+        system_prompt = """You are a research analyst. Analyze data and identify patterns, themes, insights.
         
-        Return analysis as JSON:
+        Return JSON:
         {
             "main_themes": ["theme1", "theme2"],
             "key_insights": ["insight1", "insight2"],
@@ -248,14 +246,18 @@ Create a comprehensive plan."""
             "gaps_or_limitations": ["gap1", "gap2"]
         }"""
         
-        # Prepare data summary
+        # Prepare data summary (optimized: fewer items, shorter text)
         data_summary = f"Query: {query}\n\n"
         data_summary += f"Retrieved {len(results)} items:\n\n"
         
-        for i, item in enumerate(results[:10], 1):  # Show first 10
-            data_summary += f"{i}. {item.get('text', '')[:200]}\n"
+        sample_size = min(config.ANALYZE_SAMPLE_SIZE, len(results))
+        text_length = config.ANALYZE_TEXT_LENGTH
+        for i, item in enumerate(results[:sample_size], 1):
+            data_summary += f"{i}. {item.get('text', '')[:text_length]}\n"
             data_summary += f"   Author: {item.get('author', {}).get('display_name', 'Unknown')}\n"
-            data_summary += f"   Engagement: {sum(item.get('engagement', {}).values())} total\n"
+            eng = item.get('engagement', {}) or {}
+            eng_sum = sum(v for v in eng.values() if isinstance(v, (int, float))) if isinstance(eng, dict) else 0
+            data_summary += f"   Engagement: {eng_sum} total\n"
             data_summary += f"   Sentiment: {item.get('sentiment', 'unknown')}\n\n"
         
         user_prompt = f"""{data_summary}
@@ -318,8 +320,8 @@ Provide comprehensive analysis."""
         """
         confidence = analysis.get("confidence", 0.5)
         
-        # If confidence is high, skip refinement
-        if confidence > 0.8:
+        # If confidence is high, skip refinement (optimized threshold)
+        if confidence > 0.75:  # Lowered from 0.8 to skip more often
             refinement = {
                 "refinement_needed": False,
                 "reason": "High confidence achieved",
@@ -356,19 +358,12 @@ Provide comprehensive analysis."""
         search query to run (e.g. "negative sentiment posts about X", "high engagement 
         posts from verified users"). The description will be used as the search query."""
         
-        user_prompt = f"""Original Query: {query}
+        user_prompt = f"""Query: {query}
 
-Current Analysis:
-{json.dumps(analysis, indent=2)}
+Analysis: {json.dumps(analysis, indent=2)}
+Plan: {json.dumps(plan, indent=2)}
 
-Plan:
-{json.dumps(plan, indent=2)}
-
-Evaluate if refinement is needed. Consider:
-- Are there gaps in the data?
-- Is the analysis complete?
-- Would additional searches help?
-- Is the confidence sufficient?"""
+Evaluate if refinement needed: gaps, completeness, need for more searches, confidence."""
         
         messages = [{"role": "user", "content": user_prompt}]
         
@@ -474,10 +469,12 @@ Evaluate if refinement is needed. Consider:
         - Confidence is low but strategy is sound (use refinement instead)"""
         
         # Analyze data quality signals
-        sentiment_dist = analysis.get("sentiment_analysis", {})
-        total_sentiment = sum(sentiment_dist.values())
+        sentiment_dist = analysis.get("sentiment_analysis", {}) or {}
+        total_sentiment = sum(v for v in sentiment_dist.values() if isinstance(v, (int, float)))
+        neg = sentiment_dist.get("negative", 0)
+        neg = neg if isinstance(neg, (int, float)) else 0
         if total_sentiment > 0:
-            sarcasm_ratio = sentiment_dist.get("negative", 0) / total_sentiment
+            sarcasm_ratio = neg / total_sentiment
         else:
             sarcasm_ratio = 0
         
@@ -567,10 +564,11 @@ Consider: Is the fundamental approach wrong, or do we just need more/better data
         
         Be strict: flag any claim that cannot be directly supported by the retrieved data."""
         
-        # Prepare sample of retrieved data for verification
+        # Prepare sample of retrieved data for verification (optimized: fewer items)
         data_sample = f"Retrieved {len(results)} items. Sample:\n\n"
-        for i, item in enumerate(results[:5], 1):
-            data_sample += f"{i}. {item.get('text', '')[:150]}\n"
+        sample_size = min(config.CRITIQUE_SAMPLE_SIZE, len(results))
+        for i, item in enumerate(results[:sample_size], 1):
+            data_sample += f"{i}. {item.get('text', '')[:120]}\n"
             data_sample += f"   Sentiment: {item.get('sentiment', 'unknown')}\n"
             data_sample += f"   Author: {item.get('author', {}).get('display_name', 'Unknown')}\n\n"
         
@@ -636,15 +634,9 @@ Critique the analysis and summary:
         
         Uses grok-4-fast-reasoning for high-quality summaries
         """
-        system_prompt = """You are a research summarization expert. Create clear, actionable, 
-        and comprehensive summaries of research findings.
+        system_prompt = """You are a research summarization expert. Create clear summaries.
         
-        Structure your summary with:
-        1. Executive Summary (2-3 sentences)
-        2. Key Findings (bullet points)
-        3. Detailed Analysis
-        4. Limitations and Confidence
-        5. Recommendations or Next Steps"""
+        Structure: 1) Executive Summary (2-3 sentences), 2) Key Findings, 3) Analysis, 4) Limitations, 5) Recommendations"""
         
         user_prompt = f"""Research Query: {query}
 
@@ -662,7 +654,7 @@ Create a comprehensive final summary that answers the original query."""
             model=config.ModelConfig.SUMMARIZER_MODEL,
             messages=messages,
             system_prompt=system_prompt,
-            max_tokens=2000
+            max_tokens=config.MAX_TOKENS_SUMMARY
         )
         
         if not response.get("success", False):
@@ -782,9 +774,26 @@ Create a comprehensive final summary that answers the original query."""
                 self.current_state = WorkflowState.EVALUATE
             
             elif self.current_state == WorkflowState.EVALUATE:
-                print(f"🔎 [{self.current_state.value.upper()}] Evaluating strategy...")
-                self._emit_progress('evaluating', {'status': 'started', 'message': 'Evaluating if replan needed...'})
-                evaluation = self.evaluate_for_replan(query, analysis, plan, results)
+                # Skip evaluate if fast mode or high confidence (optimization)
+                confidence = analysis.get("confidence", 0.5) if analysis else 0.5
+                skip_evaluate = (
+                    config.ENABLE_FAST_MODE or 
+                    (config.SKIP_EVALUATE_IF_HIGH_CONFIDENCE and confidence > 0.85)
+                )
+                
+                if skip_evaluate:
+                    print(f"🔎 [{self.current_state.value.upper()}] Skipping evaluation (fast mode or high confidence)\n")
+                    evaluation = {"replan_needed": False, "reason": "Skipped for performance", "suggested_strategy": None}
+                    self._emit_progress('evaluating', {
+                        'status': 'skipped',
+                        'reason': 'High confidence or fast mode',
+                        'summary': 'Evaluation skipped for performance'
+                    })
+                else:
+                    print(f"🔎 [{self.current_state.value.upper()}] Evaluating strategy...")
+                    self._emit_progress('evaluating', {'status': 'started', 'message': 'Evaluating if replan needed...'})
+                    evaluation = self.evaluate_for_replan(query, analysis, plan, results)
+                
                 replan_needed = evaluation.get("replan_needed", False)
                 
                 # Emit evaluation completion
@@ -879,14 +888,40 @@ Create a comprehensive final summary that answers the original query."""
                     self.current_state = WorkflowState.CRITIQUE
             
             elif self.current_state == WorkflowState.CRITIQUE:
-                print(f"🔬 [{self.current_state.value.upper()}] Critiquing analysis...")
-                self._emit_progress('critiquing', {'status': 'started', 'message': 'Reviewing for hallucinations and bias...'})
+                # Skip critique if fast mode or high confidence (optimization)
+                confidence = analysis.get("confidence", 0.5) if analysis else 0.5
+                skip_critique = (
+                    config.ENABLE_FAST_MODE or 
+                    (config.SKIP_CRITIQUE_IF_HIGH_CONFIDENCE and confidence > 0.85)
+                )
                 
-                # Generate summary first for critique
-                if summary is None:
-                    summary = self.summarize(query, analysis, plan)
-                
-                critique_result = self.critique(query, analysis, plan, results, summary)
+                if skip_critique:
+                    print(f"🔬 [{self.current_state.value.upper()}] Skipping critique (fast mode or high confidence)\n")
+                    critique_result = {
+                        "critique_passed": True,
+                        "hallucinations": [],
+                        "biases": [],
+                        "corrections": [],
+                        "confidence_adjustment": 0.0,
+                        "revised_summary": None
+                    }
+                    self._emit_progress('critiquing', {
+                        'status': 'skipped',
+                        'critique_passed': True,
+                        'summary': 'Critique skipped for performance'
+                    })
+                    # Generate summary if not already done
+                    if summary is None:
+                        summary = self.summarize(query, analysis, plan)
+                else:
+                    print(f"🔬 [{self.current_state.value.upper()}] Critiquing analysis...")
+                    self._emit_progress('critiquing', {'status': 'started', 'message': 'Reviewing for hallucinations and bias...'})
+                    
+                    # Generate summary first for critique
+                    if summary is None:
+                        summary = self.summarize(query, analysis, plan)
+                    
+                    critique_result = self.critique(query, analysis, plan, results, summary)
                 critique_passed = critique_result.get("critique_passed", True)
                 
                 # Emit critique completion

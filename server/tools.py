@@ -334,7 +334,8 @@ class ToolRegistry:
                         sentiment_counts[sentiment] += 1
                     
                     engagement = post.get("engagement", {})
-                    total_engagement += sum(engagement.values()) if isinstance(engagement, dict) else 0
+                    if isinstance(engagement, dict):
+                        total_engagement += sum(v for v in engagement.values() if isinstance(v, (int, float)))
                 
                 return {
                     "success": True,

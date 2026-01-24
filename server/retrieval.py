@@ -180,17 +180,19 @@ class HybridRetriever:
         semantic_scores = {post["id"]: score for post, score in semantic_results}
         keyword_scores = {post["id"]: score for post, score in keyword_results}
         
-        # Normalize scores to 0-1 range
+        # Normalize scores to 0-1 range (avoid division by zero)
         all_semantic_scores = [s for _, s in semantic_results]
         all_keyword_scores = [s for _, s in keyword_results]
         
-        if all_semantic_scores:
-            max_semantic = max(all_semantic_scores) if all_semantic_scores else 1
-            semantic_scores = {k: v / max_semantic for k, v in semantic_scores.items()}
+        max_semantic = max(all_semantic_scores) if all_semantic_scores else 1
+        if max_semantic <= 0:
+            max_semantic = 1
+        semantic_scores = {k: v / max_semantic for k, v in semantic_scores.items()}
         
-        if all_keyword_scores:
-            max_keyword = max(all_keyword_scores) if all_keyword_scores else 1
-            keyword_scores = {k: v / max_keyword for k, v in keyword_scores.items()}
+        max_keyword = max(all_keyword_scores) if all_keyword_scores else 1
+        if max_keyword <= 0:
+            max_keyword = 1
+        keyword_scores = {k: v / max_keyword for k, v in keyword_scores.items()}
         
         # Combine scores
         combined_scores = {}
