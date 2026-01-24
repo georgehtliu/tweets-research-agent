@@ -80,6 +80,19 @@ python server/main.py
 python server/main.py --query "What are people saying about AI?"
 ```
 
+#### Docker Deployment
+
+**Quick Start:**
+```bash
+# Create .env file with your GROK_API_KEY
+cp .env.example .env
+
+# Start with Docker Compose
+docker-compose up
+```
+
+See [Deployment Guide](DEPLOYMENT.md#docker-deployment) for detailed Docker instructions.
+
 ## 📚 Documentation
 
 - **[Beginner Guide](BEGINNER_GUIDE.md)**: Complete step-by-step walkthrough with data flow, optimizations, and detailed explanations
@@ -168,12 +181,6 @@ See [Architecture](ARCHITECTURE.md) for detailed project structure.
 - Use environment variables in production
 - Rotate API keys regularly
 - Monitor token usage to avoid unexpected costs
-
-## 📧 Contact
-
-For questions about this assessment:
-- Payton: payton@x.ai
-- Ideshpande: ideshpande@x.ai
 
 ---
 

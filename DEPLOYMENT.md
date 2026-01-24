@@ -54,31 +54,271 @@ PORT=8080
 
 ## Docker Deployment
 
-### Build Image
+### Prerequisites
+
+- Docker installed ([Install Docker](https://docs.docker.com/get-docker/))
+- Docker Compose installed (usually included with Docker Desktop)
+- Grok API key
+
+### Quick Start with Docker Compose (Recommended)
+
+1. **Create `.env` file**:
+```bash
+cp .env.example .env
+```
+
+2. **Edit `.env` and add your API key**:
+```bash
+GROK_API_KEY=your_api_key_here
+GROK_BASE_URL=https://api.x.ai/v1
+PORT=8080
+```
+
+3. **Start the container**:
+```bash
+docker-compose up
+```
+
+4. **Access the application**:
+   - Web UI: http://localhost:8080
+   - API Docs: http://localhost:8080/docs
+
+5. **Stop the container**:
+```bash
+docker-compose down
+```
+
+### Docker Compose Options
+
+**Run in detached mode (background)**:
+```bash
+docker-compose up -d
+```
+
+**View logs**:
+```bash
+docker-compose logs -f
+```
+
+**Rebuild after code changes**:
+```bash
+docker-compose up --build
+```
+
+**Stop and remove containers**:
+```bash
+docker-compose down
+```
+
+**Stop and remove containers + volumes**:
+```bash
+docker-compose down -v
+```
+
+### Docker Compose Configuration
+
+Edit `docker-compose.yml` to customize:
+
+- **Port mapping**: Change `${PORT:-8080}:8080` to use a different host port
+- **Environment variables**: Add more variables in the `environment` section
+- **Volume mounts**: Adjust paths for data, output, and logs persistence
+- **Resource limits**: Add `deploy.resources` section for CPU/memory limits
+
+Example with custom port and resource limits:
+```yaml
+services:
+  grok-agent:
+    ports:
+      - "9000:8080"  # Host port 9000 -> Container port 8080
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+```
+
+### Manual Docker Build
+
+#### Build Image
 
 ```bash
 docker build -t grok-agent .
 ```
 
-### Run Container
+#### Run Container
 
+**Basic run**:
 ```bash
 docker run -p 8080:8080 \
+  -e GROK_API_KEY=your_api_key \
+  grok-agent
+```
+
+**With volumes for data persistence**:
+```bash
+docker run -p 8080:8080 \
+  -e GROK_API_KEY=your_api_key \
+  -e GROK_BASE_URL=https://api.x.ai/v1 \
+  -v $(pwd)/data:/app/data \
+  -v $(pwd)/output:/app/output \
+  -v $(pwd)/logs:/app/logs \
+  grok-agent
+```
+
+**With custom port**:
+```bash
+docker run -p 9000:8080 \
   -e GROK_API_KEY=your_api_key \
   -e PORT=8080 \
   grok-agent
 ```
 
-### Docker Compose
-
+**Run in detached mode**:
 ```bash
-docker-compose up
+docker run -d \
+  --name grok-agent \
+  -p 8080:8080 \
+  -e GROK_API_KEY=your_api_key \
+  grok-agent
 ```
 
-Edit `docker-compose.yml` to customize:
-- Port mapping
-- Environment variables
-- Volume mounts for data persistence
+**View logs**:
+```bash
+docker logs -f grok-agent
+```
+
+**Stop container**:
+```bash
+docker stop grok-agent
+docker rm grok-agent
+```
+
+### Dockerfile Details
+
+The Dockerfile:
+- Uses Python 3.11 slim base image
+- Installs system dependencies (gcc for some Python packages)
+- Copies requirements and installs Python dependencies
+- Copies application code
+- Creates necessary directories
+- Exposes port 8080
+- Includes health check
+- Runs the API server
+
+### Volume Mounts
+
+The following directories are mounted as volumes for data persistence:
+
+- `./data` → `/app/data`: Mock data and embedding cache
+- `./output` → `/app/output`: Research results
+- `./logs` → `/app/logs`: Application logs
+- `./server/evaluation/results` → `/app/server/evaluation/results`: Evaluation results
+
+**Important**: Without volume mounts, data will be lost when the container stops.
+
+### Environment Variables
+
+Required:
+- `GROK_API_KEY`: Your Grok API key (required)
+
+Optional:
+- `GROK_BASE_URL`: API base URL (default: `https://api.x.ai/v1`)
+- `PORT`: Server port (default: `8080`)
+- `PYTHONUNBUFFERED`: Set to `1` for immediate log output
+
+### Health Check
+
+The container includes a health check that:
+- Checks `/api/health` endpoint every 30 seconds
+- Times out after 10 seconds
+- Retries 3 times before marking unhealthy
+- Starts checking after 10 seconds
+
+View health status:
+```bash
+docker ps  # Shows health status
+docker inspect grok-agent | grep Health
+```
+
+### Troubleshooting Docker
+
+#### Container won't start
+```bash
+# Check logs
+docker-compose logs
+
+# Check if port is already in use
+lsof -i :8080
+
+# Try rebuilding
+docker-compose up --build
+```
+
+#### API key not working
+```bash
+# Verify environment variable is set
+docker-compose exec grok-agent env | grep GROK_API_KEY
+
+# Or check in running container
+docker exec grok-agent env | grep GROK_API_KEY
+```
+
+#### Data not persisting
+- Ensure volumes are mounted correctly in `docker-compose.yml`
+- Check volume paths exist on host
+- Verify write permissions
+
+#### Container keeps restarting
+```bash
+# Check logs for errors
+docker-compose logs -f
+
+# Check health status
+docker ps
+```
+
+#### Out of memory
+- Reduce dataset size
+- Add memory limits in `docker-compose.yml`
+- Use smaller base image or optimize Dockerfile
+
+### Production Docker Deployment
+
+For production, consider:
+
+1. **Use specific image tags** instead of `latest`
+2. **Add resource limits** in docker-compose.yml
+3. **Use secrets management** for API keys (Docker secrets, AWS Secrets Manager, etc.)
+4. **Set up reverse proxy** (nginx, Traefik) for HTTPS
+5. **Use Docker Swarm or Kubernetes** for orchestration
+6. **Set up logging aggregation** (ELK stack, CloudWatch, etc.)
+7. **Monitor container health** and set up alerts
+8. **Use multi-stage builds** to reduce image size
+9. **Scan images** for vulnerabilities
+10. **Use read-only filesystem** where possible
+
+Example production docker-compose.yml additions:
+```yaml
+services:
+  grok-agent:
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    security_opt:
+      - no-new-privileges:true
+    read_only: false  # Set to true if possible
+```
 
 ## Production Considerations
 

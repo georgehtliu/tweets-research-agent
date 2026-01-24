@@ -33,10 +33,13 @@ if __name__ == '__main__':
     print(f"📚 API docs available at: http://localhost:{port}/docs")
     print("\n" + "="*70 + "\n")
     
+    # Disable reload in Docker/production environments
+    reload_enabled = os.getenv("ENVIRONMENT", "development") == "development" and not os.path.exists("/.dockerenv")
+    
     uvicorn.run(
         "api_server:app",
         host="0.0.0.0",
         port=port,
-        reload=True,
+        reload=reload_enabled,
         log_level="info"
     )

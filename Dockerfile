@@ -17,11 +17,20 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Create necessary directories
-RUN mkdir -p data output logs
+RUN mkdir -p data output logs server/evaluation/results
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app
+ENV PORT=8080
+
+# Expose port
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python -c "import requests; requests.get('http://localhost:${PORT}/api/health')" || exit 1
 
 # Run the application
+# Note: api_server.py creates the app and runs uvicorn with reload=False in Docker
 CMD ["python", "server/api_server.py"]

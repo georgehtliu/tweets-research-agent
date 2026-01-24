@@ -2,14 +2,28 @@ version: '3.8'
 
 services:
   grok-agent:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: grok-agentic-research
+    ports:
+      - "${PORT:-8080}:8080"
     environment:
       - GROK_API_KEY=${GROK_API_KEY}
+      - GROK_BASE_URL=${GROK_BASE_URL:-https://api.x.ai/v1}
+      - PORT=8080
+      - PYTHONUNBUFFERED=1
     volumes:
       - ./data:/app/data
       - ./output:/app/output
       - ./logs:/app/logs
+      - ./server/evaluation/results:/app/server/evaluation/results
     stdin_open: true
     tty: true
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8080/api/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
