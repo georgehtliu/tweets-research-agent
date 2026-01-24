@@ -934,6 +934,8 @@ Create concise summary answering the query."""
         analysis = None
         summary = None
         critique_result = None
+        critique_refine_loop_count = 0  # Prevent CRITIQUE → REFINE → CRITIQUE infinite loop
+        max_critique_refine_loops = 2
         
         print(f"\n{'='*70}")
         print(f"🚀 Starting Agentic Research Workflow (State Machine)")
@@ -1071,6 +1073,21 @@ Create concise summary answering the query."""
                 refinement = self.refine(query, analysis, plan)
                 refinement_needed = refinement.get("refinement_needed", False)
                 
+                # Force refinement when critique found issues (we came from CRITIQUE)
+                if critique_result and not critique_result.get("critique_passed", True):
+                    if critique_refine_loop_count >= max_critique_refine_loops:
+                        # Already looped too many times; proceed to summarize instead of going back to critique
+                        print(f"   Max critique-refine loops ({max_critique_refine_loops}) reached, proceeding to summarize\n")
+                        revised = critique_result.get("revised_summary")
+                        if revised:
+                            summary = revised
+                        self.current_state = WorkflowState.SUMMARIZE
+                        continue
+                    refinement_needed = True
+                    refinement["reason"] = f"Critique found issues: {len(critique_result.get('hallucinations', []))} hallucinations, {len(critique_result.get('biases', []))} biases"
+                    default_steps = [{"action": "search", "description": "Expand search to address critique issues", "tools": ["hybrid_search"]}]
+                    refinement.setdefault("next_steps", default_steps)
+                
                 if refinement_needed:
                     self.iteration_count = iteration
                     print(f"   Refinement needed: {refinement.get('reason', '')}")
@@ -1104,10 +1121,14 @@ Create concise summary answering the query."""
                     confidence = analysis.get("confidence", 0.5)
                     
                     print(f"   Updated Confidence: {confidence:.2f}\n")
+                    critique_result = None  # Clear so we don't force refinement again
+                    critique_refine_loop_count = 0  # Reset after successful refinement
                     # Loop back to analyze (which will go to evaluate)
                     self.current_state = WorkflowState.ANALYZE
                 else:
                     print(f"   No refinement needed: {refinement.get('reason', '')}\n")
+                    # If we came from critique with issues, we'd have forced refinement above.
+                    # Here we're on the normal path (REFINE → CRITIQUE).
                     self.current_state = WorkflowState.CRITIQUE
             
             elif self.current_state == WorkflowState.CRITIQUE:
@@ -1174,9 +1195,10 @@ Create concise summary answering the query."""
                     if biases:
                         print(f"      Biases: {len(biases)}")
                     
-                    # If major issues, try to refine once more
-                    if hallucinations and self.iteration_count < max_iterations:
-                        print(f"   Attempting refinement to address issues...\n")
+                    # If major issues, try to refine once more (cap loops to avoid CRITIQUE↔REFINE infinite loop)
+                    if hallucinations and self.iteration_count < max_iterations and critique_refine_loop_count < max_critique_refine_loops:
+                        critique_refine_loop_count += 1
+                        print(f"   Attempting refinement to address issues (loop {critique_refine_loop_count}/{max_critique_refine_loops})...\n")
                         self.current_state = WorkflowState.REFINE
                     else:
                         # Use revised summary if provided
@@ -1187,6 +1209,7 @@ Create concise summary answering the query."""
                         self.current_state = WorkflowState.SUMMARIZE
                 else:
                     print(f"   ✅ Critique passed - no major issues found\n")
+                    critique_refine_loop_count = 0  # Reset on pass
                     self.current_state = WorkflowState.SUMMARIZE
             
             elif self.current_state == WorkflowState.SUMMARIZE:
