@@ -304,3 +304,57 @@ def compare_models_query(request: ModelComparisonQueryRequest):
             "Connection": "keep-alive"
         }
     )
+
+
+@query_router.get("/tweets")
+def get_tweets(page: int = 1, per_page: int = 20, category: Optional[str] = None, language: Optional[str] = None):
+    """
+    Get paginated tweets with optional filters
+    
+    Query parameters:
+        page: Page number (default: 1)
+        per_page: Items per page (default: 20)
+        category: Filter by category (optional)
+        language: Filter by language (optional)
+    
+    Returns:
+        JSON with tweets, pagination info, and total count
+    """
+    from app import get_agent_service
+    
+    try:
+        agent_service = get_agent_service()
+        _, data = agent_service.initialize_agent()
+        
+        # Apply filters
+        filtered_data = data
+        if category:
+            filtered_data = [p for p in filtered_data if p.get("category") == category]
+        if language:
+            filtered_data = [p for p in filtered_data if p.get("language") == language]
+        
+        # Calculate pagination
+        total = len(filtered_data)
+        total_pages = (total + per_page - 1) // per_page if total > 0 else 1
+        start_idx = (page - 1) * per_page
+        end_idx = start_idx + per_page
+        
+        # Get page of tweets
+        page_tweets = filtered_data[start_idx:end_idx]
+        
+        return {
+            "tweets": page_tweets,
+            "pagination": {
+                "page": page,
+                "per_page": per_page,
+                "total": total,
+                "total_pages": total_pages,
+                "has_next": page < total_pages,
+                "has_prev": page > 1
+            }
+        }
+    except Exception as e:
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"❌ Tweets API Error: {error_details}")
+        raise HTTPException(status_code=500, detail=str(e))

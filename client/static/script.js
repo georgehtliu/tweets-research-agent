@@ -21,8 +21,6 @@ const resultSection = document.getElementById('resultSection');
 const resultContent = document.getElementById('resultContent');
 const errorSection = document.getElementById('errorSection');
 const errorMessage = document.getElementById('errorMessage');
-const progressSection = document.getElementById('progressSection');
-const progressSteps = document.getElementById('progressSteps');
 
 // Allow Enter key to submit
 queryInput.addEventListener('keypress', (e) => {
@@ -276,7 +274,10 @@ function convertMarkdownToHtml(markdown) {
             return part;
         }).join('');
         
-        html += `<p>${processedLine}</p>\n`;
+        // Only wrap in <p> if line has content
+        if (processedLine.trim()) {
+            html += `<p>${processedLine}</p>\n`;
+        }
     }
     
     // Close any remaining list
@@ -287,151 +288,10 @@ function convertMarkdownToHtml(markdown) {
     return html;
 }
 
-// Progress tracking
-const progressState = {
-    planning: { status: 'pending', step: null },
-    executing: { status: 'pending', step: null },
-    analyzing: { status: 'pending', step: null },
-    evaluating: { status: 'pending', step: null },
-    replanning: { status: 'pending', step: null },
-    refining: { status: 'pending', step: null },
-    critiquing: { status: 'pending', step: null },
-    summarizing: { status: 'pending', step: null }
-};
-
-function updateProgressStep(stepType, data) {
-    const stepNames = {
-        'planning': { icon: '📋', title: 'Planning', order: 1 },
-        'executing': { icon: '⚙️', title: 'Executing', order: 2 },
-        'analyzing': { icon: '🔍', title: 'Analyzing', order: 3 },
-        'evaluating': { icon: '🔎', title: 'Evaluating Strategy', order: 4 },
-        'replanning': { icon: '🔄', title: 'Replanning', order: 4.5 },
-        'refining': { icon: '🔄', title: 'Refining', order: 5 },
-        'critiquing': { icon: '🔬', title: 'Critiquing', order: 6 },
-        'summarizing': { icon: '📝', title: 'Summarizing', order: 7 }
-    };
-    
-    if (stepNames[stepType]) {
-        progressState[stepType] = { ...progressState[stepType], ...data };
-        renderProgressSteps();
-    }
-}
-
-function renderProgressSteps() {
-    const steps = [
-        { key: 'planning', icon: '📋', title: 'Planning' },
-        { key: 'executing', icon: '⚙️', title: 'Executing' },
-        { key: 'analyzing', icon: '🔍', title: 'Analyzing' },
-        { key: 'evaluating', icon: '🔎', title: 'Evaluating Strategy' },
-        { key: 'replanning', icon: '🔄', title: 'Replanning', conditional: true },
-        { key: 'refining', icon: '🔄', title: 'Refining' },
-        { key: 'critiquing', icon: '🔬', title: 'Critiquing' },
-        { key: 'summarizing', icon: '📝', title: 'Summarizing' }
-    ];
-    
-    // Filter out conditional steps that haven't been activated
-    const visibleSteps = steps.filter(step => {
-        if (step.conditional) {
-            const state = progressState[step.key];
-            return state.status !== 'pending';
-        }
-        return true;
-    });
-    
-    progressSteps.innerHTML = visibleSteps.map(step => {
-        const state = progressState[step.key];
-        let statusClass = 'pending';
-        let message = '';
-        let details = '';
-        
-        if (state.status === 'started' || state.status === 'checking' || state.status === 'refining' || state.status === 'replanning' || state.status === 'tool_calling') {
-            statusClass = 'active';
-            message = state.message || `${step.title} in progress...`;
-        } else if (state.status === 'completed' || state.status === 'updated' || state.status === 'skipped') {
-            statusClass = 'completed';
-            message = state.status === 'skipped' ? `${step.title} skipped` : `${step.title} completed`;
-            
-            // Add details based on step type (simplified)
-            if (step.key === 'planning' && state.query_type) {
-                details = `${state.query_type} · ${state.steps_count || 0} steps`;
-            } else if (step.key === 'executing') {
-                if (state.tool_calling_mode && state.tool_calls && state.tool_calls.length > 0) {
-                    details = `${state.total_tool_calls || state.tool_calls.length} tools · ${state.total_results || state.results_count || 0} results`;
-                } else if (state.results_count !== undefined) {
-                    details = `${state.results_count} items`;
-                }
-            } else if (step.key === 'analyzing' && state.confidence !== undefined) {
-                const conf = Number(state.confidence);
-                details = `${(isNaN(conf) ? 0 : conf * 100).toFixed(0)}% confidence`;
-                if (state.main_themes && state.main_themes.length > 0) {
-                    details += ` · ${state.main_themes.slice(0, 2).join(', ')}`;
-                }
-            } else if (step.key === 'evaluating') {
-                details = state.reason ? state.reason.slice(0, 60) : 'Strategy checked';
-            } else if (step.key === 'replanning' && state.attempt) {
-                details = `Attempt ${state.attempt}`;
-            } else if (step.key === 'refining' && state.iteration) {
-                details = `Iteration ${state.iteration}`;
-            } else if (step.key === 'critiquing') {
-                details = state.critique_passed !== undefined 
-                    ? (state.critique_passed ? '✓ Passed' : '⚠ Issues')
-                    : 'Reviewed';
-            }
-        }
-        
-        const iconStyle = statusClass === 'completed' ? '✓' : statusClass === 'active' ? '→' : '○';
-        const phaseSummary = state.summary || '';
-        
-        // Tool calls visualization for executing step
-        let toolCallsHtml = '';
-        if (step.key === 'executing' && state.tool_calling_mode && state.tool_calls && state.tool_calls.length > 0) {
-            toolCallsHtml = '<div class="tool-calls-container">';
-            toolCallsHtml += '<div class="tool-calls-header">🔧 Tool Calls:</div>';
-            toolCallsHtml += '<div class="tool-calls-list">';
-            state.tool_calls.forEach((toolCall, idx) => {
-                const successClass = toolCall.success ? 'success' : 'failed';
-                const statusIcon = toolCall.success ? '✓' : '✗';
-                toolCallsHtml += `
-                    <div class="tool-call-item ${successClass}">
-                        <div class="tool-call-header">
-                            <span class="tool-call-icon">${statusIcon}</span>
-                            <span class="tool-call-name">${escapeHtml(toolCall.name)}</span>
-                            <span class="tool-call-results">${toolCall.results_count || 0} results</span>
-                        </div>
-                        <div class="tool-call-args">
-                            ${Object.keys(toolCall.arguments || {}).length > 0 
-                                ? `<div class="tool-call-args-label">Arguments:</div>
-                                   <div class="tool-call-args-content">${escapeHtml(JSON.stringify(toolCall.arguments, null, 2))}</div>`
-                                : ''}
-                        </div>
-                        ${toolCall.message ? `<div class="tool-call-message">${escapeHtml(toolCall.message)}</div>` : ''}
-                    </div>
-                `;
-            });
-            toolCallsHtml += '</div></div>';
-        }
-        
-        return `
-            <div class="progress-step ${statusClass}">
-                <div class="progress-step-title">
-                    <span class="icon" style="font-weight: 600;">${iconStyle}</span>
-                    <span>${step.title}</span>
-                </div>
-                ${message ? `<div class="progress-step-message">${message}</div>` : ''}
-                ${details ? `<div class="progress-step-details">${details}</div>` : ''}
-                ${toolCallsHtml}
-                ${phaseSummary ? `<div class="progress-step-summary">${escapeHtml(phaseSummary)}</div>` : ''}
-            </div>
-        `;
-    }).join('');
-}
-
-function resetProgress() {
-    Object.keys(progressState).forEach(key => {
-        progressState[key] = { status: 'pending', step: null };
-    });
-    renderProgressSteps();
-}
+// Tweets pagination state
+let currentTweetsPage = 1;
+const tweetsPerPage = 20;
+let totalTweets = 0;
 
 async function submitQuery() {
     const query = queryInput.value.trim();
@@ -449,11 +309,8 @@ async function submitQuery() {
     errorSection.classList.add('hidden');
     document.getElementById('resultsTabsContainer').classList.add('hidden');
     
-    // Show loading state and progress
+    // Show loading state
     setLoading(true);
-    resetProgress();
-    progressSection.classList.remove('hidden');
-    progressSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     
     try {
         let endpoint, body;
@@ -493,12 +350,21 @@ async function submitQuery() {
         const modelResults = {};
         const modelLogs = {}; // model -> array of logs
         
-        // Initialize logs container for comparison mode
+        // Initialize progress tracking for comparison mode
+        const modelProgress = {}; // model -> {current, total, status}
         if (selectedModels.length > 0) {
+            selectedModels.forEach(model => {
+                modelProgress[model] = { current: 0, total: 0, status: 'waiting' };
+            });
+            // Show progress bars
+            showModelProgressBars(selectedModels, modelProgress);
+            // Initialize logs container
             const logsEl = document.getElementById('modelLogs');
             if (logsEl) {
                 logsEl.innerHTML = '<div class="log-info">Waiting for logs...</div>';
             }
+            // Show results container early
+            document.getElementById('resultsTabsContainer').classList.remove('hidden');
         }
         
         while (true) {
@@ -524,7 +390,14 @@ async function submitQuery() {
                             // Initialize logs for each model
                             data.models.forEach(model => {
                                 modelLogs[model] = [];
+                                if (!modelProgress[model]) {
+                                    modelProgress[model] = { current: 0, total: 0, status: 'running' };
+                                } else {
+                                    modelProgress[model].status = 'running';
+                                }
                             });
+                            // Show progress bars
+                            showModelProgressBars(data.models, modelProgress);
                             // Show logs tab and start streaming
                             if (selectedModels.length > 0) {
                                 document.getElementById('resultsTabsContainer').classList.remove('hidden');
@@ -538,15 +411,39 @@ async function submitQuery() {
                                 modelLogs[model] = [];
                             }
                             modelLogs[model].push(log);
+                            // Store logs globally for carousel
+                            window.currentModelLogs = modelLogs;
+                            // Update progress based on log type
+                            if (modelProgress[model]) {
+                                const progressMap = {
+                                    'planning': 1, 'executing': 2, 'analyzing': 3,
+                                    'evaluating': 4, 'refining': 5, 'critiquing': 6, 'summarizing': 7
+                                };
+                                if (progressMap[log.type] !== undefined) {
+                                    modelProgress[model].current = Math.max(modelProgress[model].current, progressMap[log.type]);
+                                    modelProgress[model].total = 7;
+                                }
+                            }
                             // Update logs display immediately
-                            updateModelLogsDisplay(modelLogs);
+                            updateModelLogsDisplay(modelLogs, selectedModels);
+                            // Update progress bars
+                            updateModelProgressBars(modelProgress);
                         } else if (data.type === 'model_complete') {
                             // Track model results
                             const model = data.model;
                             modelResults[model] = data.result || null;
                             if (data.status === 'error') {
                                 modelResults[model] = { error: data.error };
+                                if (modelProgress[model]) {
+                                    modelProgress[model].status = 'error';
+                                }
+                            } else {
+                                if (modelProgress[model]) {
+                                    modelProgress[model].status = 'complete';
+                                    modelProgress[model].current = modelProgress[model].total;
+                                }
                             }
+                            updateModelProgressBars(modelProgress);
                         } else if (data.type === 'comparison_complete') {
                             // Final comparison summary
                             comparisonData = data.summary;
@@ -577,13 +474,11 @@ async function submitQuery() {
         if (selectedModels.length > 0 && comparisonData) {
             // Display comparison results
             displayComparisonResults(comparisonData);
-            progressSection.classList.add('hidden');
             document.getElementById('resultsTabsContainer').classList.remove('hidden');
             document.getElementById('resultsTabsContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else if (finalResult) {
             // Display single result
             resultContent.innerHTML = formatResult(finalResult);
-            progressSection.classList.add('hidden');
             resultSection.classList.remove('hidden');
             resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {
@@ -592,42 +487,160 @@ async function submitQuery() {
         
     } catch (error) {
         console.error('Error:', error);
-        progressSection.classList.add('hidden');
         showError(error.message || 'An error occurred while processing your query. Please try again.');
     } finally {
         setLoading(false);
     }
 }
 
-function updateModelLogsDisplay(modelLogs) {
+// Global state for log carousel
+let currentLogModelIndex = 0;
+let logCarouselModels = [];
+
+function showModelProgressBars(models, progress) {
+    const progressContainer = document.getElementById('modelProgressBars');
+    if (!progressContainer) {
+        return;
+    }
+    
+    // Show the container
+    progressContainer.classList.remove('hidden');
+    
+    const container = progressContainer;
+    let html = '<div class="model-progress-header"><h4>Model Progress</h4></div>';
+    html += '<div class="model-progress-list">';
+    
+    models.forEach((model, idx) => {
+        const prog = progress[model] || { current: 0, total: 0, status: 'waiting' };
+        const percent = prog.total > 0 ? (prog.current / prog.total * 100) : 0;
+        const statusClass = prog.status === 'complete' ? 'complete' : prog.status === 'error' ? 'error' : 'running';
+        
+        html += `<div class="model-progress-item ${statusClass}">`;
+        html += `<div class="progress-model-name">${model}</div>`;
+        html += `<div class="progress-bar-container">`;
+        html += `<div class="progress-bar" style="width: ${percent}%"></div>`;
+        html += `</div>`;
+        html += `<div class="progress-status">${prog.status === 'complete' ? '✓ Complete' : prog.status === 'error' ? '✗ Error' : `${Math.round(percent)}%`}</div>`;
+        html += `</div>`;
+    });
+    
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function updateModelProgressBars(progress) {
+    const container = document.getElementById('modelProgressBars');
+    if (!container) return;
+    
+    const items = container.querySelectorAll('.model-progress-item');
+    items.forEach(item => {
+        const modelName = item.querySelector('.progress-model-name').textContent;
+        const prog = progress[modelName];
+        if (prog) {
+            const percent = prog.total > 0 ? (prog.current / prog.total * 100) : 0;
+            const statusClass = prog.status === 'complete' ? 'complete' : prog.status === 'error' ? 'error' : 'running';
+            item.className = `model-progress-item ${statusClass}`;
+            const bar = item.querySelector('.progress-bar');
+            if (bar) bar.style.width = `${percent}%`;
+            const status = item.querySelector('.progress-status');
+            if (status) {
+                status.textContent = prog.status === 'complete' ? '✓ Complete' : prog.status === 'error' ? '✗ Error' : `${Math.round(percent)}%`;
+            }
+        }
+    });
+}
+
+function updateModelLogsDisplay(modelLogs, models = null) {
     const logsEl = document.getElementById('modelLogs');
     if (!logsEl) return;
     
-    let logsHtml = '';
-    for (const [model, logs] of Object.entries(modelLogs)) {
-        if (logs.length === 0) continue;
-        
-        logsHtml += `<div class="model-log-section">`;
-        logsHtml += `<h4>${model}</h4>`;
-        logsHtml += `<div class="log-entries">`;
+    // Update carousel models list
+    if (models) {
+        logCarouselModels = models.filter(m => modelLogs[m] && modelLogs[m].length > 0);
+        if (logCarouselModels.length === 0) {
+            logCarouselModels = Object.keys(modelLogs).filter(m => modelLogs[m] && modelLogs[m].length > 0);
+        }
+        if (currentLogModelIndex >= logCarouselModels.length) {
+            currentLogModelIndex = 0;
+        }
+    } else {
+        logCarouselModels = Object.keys(modelLogs).filter(m => modelLogs[m] && modelLogs[m].length > 0);
+    }
+    
+    if (logCarouselModels.length === 0) {
+        logsEl.innerHTML = '<div class="log-info">Waiting for logs...</div>';
+        return;
+    }
+    
+    const currentModel = logCarouselModels[currentLogModelIndex];
+    const logs = modelLogs[currentModel] || [];
+    
+    // Carousel controls
+    let html = '<div class="log-carousel">';
+    html += '<div class="log-carousel-header">';
+    html += '<button class="carousel-btn" onclick="switchLogModel(-1)" ' + (logCarouselModels.length <= 1 ? 'disabled' : '') + '>‹</button>';
+    html += `<div class="carousel-title">${currentModel} <span class="carousel-counter">(${currentLogModelIndex + 1}/${logCarouselModels.length})</span></div>`;
+    html += '<button class="carousel-btn" onclick="switchLogModel(1)" ' + (logCarouselModels.length <= 1 ? 'disabled' : '') + '>›</button>';
+    html += '</div>';
+    
+    // Model tabs (quick switch)
+    if (logCarouselModels.length > 1) {
+        html += '<div class="log-model-tabs">';
+        logCarouselModels.forEach((model, idx) => {
+            html += `<button class="log-model-tab ${idx === currentLogModelIndex ? 'active' : ''}" onclick="switchLogModelTo(${idx})">${model}</button>`;
+        });
+        html += '</div>';
+    }
+    
+    // Log entries for current model
+    html += '<div class="log-entries-container">';
+    if (logs.length === 0) {
+        html += '<div class="log-info">No logs yet for this model</div>';
+    } else {
         logs.forEach(log => {
-            logsHtml += `<div class="log-entry log-${log.type}">`;
-            logsHtml += `<span class="log-time">${new Date(log.timestamp * 1000).toLocaleTimeString()}</span>`;
-            logsHtml += `<span class="log-type">${log.type}</span>`;
+            const logType = log.type || 'info';
+            html += `<div class="log-entry log-${logType}">`;
+            html += `<span class="log-time">${new Date((log.timestamp || Date.now() / 1000) * 1000).toLocaleTimeString()}</span>`;
+            html += `<span class="log-type">${logType}</span>`;
             const logData = {...log};
             delete logData.timestamp;
             delete logData.model;
-            logsHtml += `<span class="log-message">${escapeHtml(JSON.stringify(logData, null, 2))}</span>`;
-            logsHtml += `</div>`;
+            delete logData.type;
+            const logMessage = Object.keys(logData).length > 0 
+                ? JSON.stringify(logData, null, 2)
+                : 'No additional data';
+            html += `<span class="log-message">${escapeHtml(logMessage)}</span>`;
+            html += `</div>`;
         });
-        logsHtml += `</div>`;
-        logsHtml += `</div>`;
     }
+    html += '</div>';
+    html += '</div>';
     
-    if (logsHtml) {
-        logsEl.innerHTML = logsHtml;
-        // Auto-scroll to bottom
-        logsEl.scrollTop = logsEl.scrollHeight;
+    logsEl.innerHTML = html;
+    // Auto-scroll to bottom
+    const entriesContainer = logsEl.querySelector('.log-entries-container');
+    if (entriesContainer) {
+        entriesContainer.scrollTop = entriesContainer.scrollHeight;
+    }
+}
+
+function switchLogModel(direction) {
+    if (logCarouselModels.length <= 1) return;
+    currentLogModelIndex = (currentLogModelIndex + direction + logCarouselModels.length) % logCarouselModels.length;
+    // Re-render with current model logs
+    const logsEl = document.getElementById('modelLogs');
+    if (logsEl) {
+        // Get logs from the stored state (we'll need to maintain this)
+        const allLogs = window.currentModelLogs || {};
+        updateModelLogsDisplay(allLogs);
+    }
+}
+
+function switchLogModelTo(index) {
+    if (index >= 0 && index < logCarouselModels.length) {
+        currentLogModelIndex = index;
+        const allLogs = window.currentModelLogs || {};
+        updateModelLogsDisplay(allLogs);
     }
 }
 
@@ -682,7 +695,9 @@ function displayComparisonResults(summary) {
         if (!result.error && result.summary) {
             summaryHtml += `<div class="model-summary-card">`;
             summaryHtml += `<h4>${model}</h4>`;
-            summaryHtml += `<div class="model-summary-text">${convertMarkdownToHtml(result.summary)}</div>`;
+            const summaryText = result.summary || '';
+            const markdownHtml = convertMarkdownToHtml(summaryText);
+            summaryHtml += `<div class="model-summary-text">${markdownHtml}</div>`;
             summaryHtml += `</div>`;
         }
     }
@@ -690,39 +705,14 @@ function displayComparisonResults(summary) {
     
     summaryEl.innerHTML = summaryHtml;
     
-    // Logs - use the logs from summary (which may have been updated in real-time)
-    let logsHtml = '';
+    // Logs - use carousel display
+    window.currentModelLogs = {};
     for (const [model, result] of Object.entries(summary.results)) {
-        logsHtml += `<div class="model-log-section">`;
-        logsHtml += `<h4>${model}</h4>`;
-        if (result.error) {
-            logsHtml += `<div class="log-error">Error: ${escapeHtml(result.error)}</div>`;
-        } else if (result.logs && result.logs.length > 0) {
-            logsHtml += `<div class="log-entries">`;
-            result.logs.forEach(log => {
-                const logType = log.type || 'info';
-                logsHtml += `<div class="log-entry log-${logType}">`;
-                logsHtml += `<span class="log-time">${new Date((log.timestamp || Date.now() / 1000) * 1000).toLocaleTimeString()}</span>`;
-                logsHtml += `<span class="log-type">${logType}</span>`;
-                const logData = {...log};
-                delete logData.timestamp;
-                delete logData.model;
-                delete logData.type;
-                const logMessage = Object.keys(logData).length > 0 
-                    ? JSON.stringify(logData, null, 2)
-                    : 'No additional data';
-                logsHtml += `<span class="log-message">${escapeHtml(logMessage)}</span>`;
-                logsHtml += `</div>`;
-            });
-            logsHtml += `</div>`;
-        } else {
-            logsHtml += `<div class="log-info">No logs available</div>`;
+        if (result.logs && result.logs.length > 0) {
+            window.currentModelLogs[model] = result.logs;
         }
-        logsHtml += `</div>`;
     }
-    logsEl.innerHTML = logsHtml;
-    // Scroll to bottom
-    logsEl.scrollTop = logsEl.scrollHeight;
+    updateModelLogsDisplay(window.currentModelLogs, summary.models || Object.keys(summary.results));
 }
 
 // Check API health on load
@@ -1010,23 +1000,22 @@ function getSelectedModels() {
     return Array.from(inputs).map(cb => cb.value);
 }
 
-// Results tab switching
+// Results tab switching (Summary / Logs only; Tweets is a standalone section)
 function switchResultsTab(tabName) {
     const summaryTab = document.getElementById('summaryTab');
     const logsTab = document.getElementById('logsTab');
     const summaryContent = document.getElementById('summaryTabContent');
     const logsContent = document.getElementById('logsTabContent');
     
+    [summaryTab, logsTab].forEach(tab => tab?.classList.remove('active'));
+    [summaryContent, logsContent].forEach(content => content?.classList.add('hidden'));
+    
     if (tabName === 'summary') {
-        summaryTab.classList.add('active');
-        logsTab.classList.remove('active');
-        summaryContent.classList.remove('hidden');
-        logsContent.classList.add('hidden');
-    } else {
-        logsTab.classList.add('active');
-        summaryTab.classList.remove('active');
-        logsContent.classList.remove('hidden');
-        summaryContent.classList.add('hidden');
+        summaryTab?.classList.add('active');
+        summaryContent?.classList.remove('hidden');
+    } else if (tabName === 'logs') {
+        logsTab?.classList.add('active');
+        logsContent?.classList.remove('hidden');
     }
 }
 
@@ -1250,9 +1239,6 @@ async function runEvaluation() {
     
     // Show loading
     setEvaluationLoading(true);
-    resetProgress();
-    progressSection.classList.remove('hidden');
-    progressSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     
     try {
         const requestBody = {
@@ -1302,14 +1288,6 @@ async function runEvaluation() {
                         
                         if (data.type === 'error') {
                             throw new Error(data.message);
-                        } else if (data.type === 'evaluation_progress') {
-                            // Update progress
-                            updateProgressStep('evaluating', {
-                                status: 'started',
-                                message: data.message,
-                                query_number: data.query_number,
-                                total_queries: data.total_queries
-                            });
                         } else if (data.type === 'complete') {
                             finalResult = data.result;
                         }
@@ -1353,9 +1331,6 @@ async function compareModels() {
     
     // Show loading
     setCompareLoading(true);
-    resetProgress();
-    progressSection.classList.remove('hidden');
-    progressSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     
     try {
         const requestBody = {
@@ -1402,11 +1377,6 @@ async function compareModels() {
                         
                         if (data.type === 'error') {
                             throw new Error(data.message);
-                        } else if (data.type === 'comparison_start') {
-                            updateProgressStep('evaluating', {
-                                status: 'started',
-                                message: `Comparing ${data.models.length} models on ${data.total_queries} queries...`
-                            });
                         } else if (data.type === 'complete') {
                             finalResult = data.result;
                         }
@@ -1422,7 +1392,6 @@ async function compareModels() {
         
         if (finalResult) {
             resultContent.innerHTML = formatComparisonResult(finalResult);
-            progressSection.classList.add('hidden');
             resultSection.classList.remove('hidden');
             resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {
@@ -1431,21 +1400,139 @@ async function compareModels() {
         
     } catch (error) {
         console.error('Error:', error);
-        progressSection.classList.add('hidden');
         showError(error.message || 'An error occurred during model comparison.');
     } finally {
         setCompareLoading(false);
     }
 }
 
-// Run health check and load models on page load
+// Tweets functions
+async function loadTweets(resetPage = false) {
+    const tweetsList = document.getElementById('tweetsList');
+    if (!tweetsList) return;
+    
+    if (resetPage) {
+        currentTweetsPage = 1;
+    }
+    
+    const category = document.getElementById('tweetsCategoryFilter')?.value || '';
+    const language = document.getElementById('tweetsLanguageFilter')?.value || '';
+    
+    tweetsList.innerHTML = '<div class="tweets-loading">Loading tweets...</div>';
+    
+    try {
+        const params = new URLSearchParams({
+            page: currentTweetsPage.toString(),
+            per_page: tweetsPerPage.toString()
+        });
+        if (category) params.append('category', category);
+        if (language) params.append('language', language);
+        
+        const response = await fetch(`${API_BASE}/api/tweets?${params}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        totalTweets = data.pagination.total;
+        
+        // Render tweets
+        if (data.tweets.length === 0) {
+            tweetsList.innerHTML = '<div class="tweets-empty">No tweets found</div>';
+        } else {
+            let html = '';
+            data.tweets.forEach(tweet => {
+                const author = tweet.author || {};
+                const engagement = tweet.engagement || {};
+                const totalEngagement = (engagement.likes || 0) + (engagement.retweets || 0) + (engagement.replies || 0);
+                const date = new Date(tweet.created_at).toLocaleDateString();
+                
+                html += '<div class="tweet-card">';
+                html += '<div class="tweet-header">';
+                html += `<div class="tweet-author">`;
+                if (author.verified) {
+                    html += '<span class="verified-badge">✓</span>';
+                }
+                html += `<span class="author-name">${escapeHtml(author.display_name || 'Unknown')}</span>`;
+                html += `<span class="author-handle">@${escapeHtml(author.username || 'unknown')}</span>`;
+                html += `</div>`;
+                html += `<div class="tweet-date">${date}</div>`;
+                html += '</div>';
+                
+                html += `<div class="tweet-text">${escapeHtml(tweet.text)}</div>`;
+                
+                if (tweet.topics && tweet.topics.length > 0) {
+                    html += '<div class="tweet-topics">';
+                    tweet.topics.forEach(topic => {
+                        html += `<span class="topic-tag">${escapeHtml(topic)}</span>`;
+                    });
+                    html += '</div>';
+                }
+                
+                html += '<div class="tweet-footer">';
+                html += `<div class="tweet-meta">`;
+                if (tweet.category) {
+                    html += `<span class="meta-item category-${tweet.category}">${tweet.category}</span>`;
+                }
+                if (tweet.language && tweet.language !== 'en') {
+                    html += `<span class="meta-item">${tweet.language.toUpperCase()}</span>`;
+                }
+                html += `</div>`;
+                html += `<div class="tweet-engagement">`;
+                html += `<span class="engagement-item">❤️ ${engagement.likes || 0}</span>`;
+                html += `<span class="engagement-item">🔄 ${engagement.retweets || 0}</span>`;
+                html += `<span class="engagement-item">💬 ${engagement.replies || 0}</span>`;
+                html += `</div>`;
+                html += '</div>';
+                html += '</div>';
+            });
+            tweetsList.innerHTML = html;
+        }
+        
+        // Update pagination controls
+        updateTweetsPagination(data.pagination);
+        
+    } catch (error) {
+        console.error('Error loading tweets:', error);
+        tweetsList.innerHTML = `<div class="tweets-error">Error loading tweets: ${escapeHtml(error.message)}</div>`;
+    }
+}
+
+function updateTweetsPagination(pagination) {
+    const prevBtn = document.getElementById('tweetsPrevBtn');
+    const nextBtn = document.getElementById('tweetsNextBtn');
+    const pageInfo = document.getElementById('tweetsPageInfo');
+    
+    if (prevBtn) {
+        prevBtn.disabled = !pagination.has_prev;
+    }
+    if (nextBtn) {
+        nextBtn.disabled = !pagination.has_next;
+    }
+    if (pageInfo) {
+        pageInfo.textContent = `Page ${pagination.page} of ${pagination.total_pages} (${pagination.total} total)`;
+    }
+}
+
+function changeTweetsPage(direction) {
+    const newPage = currentTweetsPage + direction;
+    if (newPage < 1) return;
+    
+    currentTweetsPage = newPage;
+    loadTweets();
+    const el = document.getElementById('tweetsSection') || document.getElementById('tweetsList');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Run health check, load models, and load tweets on page load
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
         checkHealth();
         loadModels();
+        loadTweets();
     });
 } else {
-    // DOM already loaded
     checkHealth();
     loadModels();
+    loadTweets();
 }
