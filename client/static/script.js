@@ -441,9 +441,13 @@ async function submitQuery() {
         return;
     }
     
+    const selectedModels = getSelectedModels();
+    const fastMode = document.getElementById('fastMode').checked;
+    
     // Hide previous results/errors
     resultSection.classList.add('hidden');
     errorSection.classList.add('hidden');
+    document.getElementById('resultsTabsContainer').classList.add('hidden');
     
     // Show loading state and progress
     setLoading(true);
@@ -452,13 +456,28 @@ async function submitQuery() {
     progressSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     
     try {
-        const fastMode = document.getElementById('fastMode').checked;
-        const response = await fetch(`${API_BASE}/api/query`, {
+        let endpoint, body;
+        
+        if (selectedModels.length > 0) {
+            // Use model comparison endpoint
+            endpoint = `${API_BASE}/api/query/compare-models`;
+            body = JSON.stringify({ 
+                query: query, 
+                models: selectedModels,
+                fast_mode: fastMode 
+            });
+        } else {
+            // Use single query endpoint
+            endpoint = `${API_BASE}/api/query`;
+            body = JSON.stringify({ query: query, fast_mode: fastMode });
+        }
+        
+        const response = await fetch(endpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ query: query, fast_mode: fastMode })
+            body: body
         });
         
         if (!response.ok) {
@@ -470,6 +489,17 @@ async function submitQuery() {
         const decoder = new TextDecoder();
         let buffer = '';
         let finalResult = null;
+        let comparisonData = null;
+        const modelResults = {};
+        const modelLogs = {}; // model -> array of logs
+        
+        // Initialize logs container for comparison mode
+        if (selectedModels.length > 0) {
+            const logsEl = document.getElementById('modelLogs');
+            if (logsEl) {
+                logsEl.innerHTML = '<div class="log-info">Waiting for logs...</div>';
+            }
+        }
         
         while (true) {
             const { done, value } = await reader.read();
@@ -488,9 +518,50 @@ async function submitQuery() {
                             throw new Error(data.message);
                         } else if (data.type === 'complete') {
                             finalResult = data.result;
+                        } else if (data.type === 'comparison_start') {
+                            // Initialize comparison tracking
+                            comparisonData = { models: data.models, query: data.query, results: {} };
+                            // Initialize logs for each model
+                            data.models.forEach(model => {
+                                modelLogs[model] = [];
+                            });
+                            // Show logs tab and start streaming
+                            if (selectedModels.length > 0) {
+                                document.getElementById('resultsTabsContainer').classList.remove('hidden');
+                                switchResultsTab('logs');
+                            }
+                        } else if (data.type === 'model_log') {
+                            // Stream log in real-time
+                            const log = data.log;
+                            const model = log.model;
+                            if (!modelLogs[model]) {
+                                modelLogs[model] = [];
+                            }
+                            modelLogs[model].push(log);
+                            // Update logs display immediately
+                            updateModelLogsDisplay(modelLogs);
+                        } else if (data.type === 'model_complete') {
+                            // Track model results
+                            const model = data.model;
+                            modelResults[model] = data.result || null;
+                            if (data.status === 'error') {
+                                modelResults[model] = { error: data.error };
+                            }
+                        } else if (data.type === 'comparison_complete') {
+                            // Final comparison summary
+                            comparisonData = data.summary;
+                            // Merge real-time logs into summary
+                            for (const [model, logs] of Object.entries(modelLogs)) {
+                                if (comparisonData.results[model] && !comparisonData.results[model].error) {
+                                    comparisonData.results[model].logs = logs;
+                                }
+                            }
+                            displayComparisonResults(comparisonData);
                         } else {
-                            // Update progress
-                            updateProgressStep(data.type, data);
+                            // Update progress (for single query mode)
+                            if (!selectedModels.length) {
+                                updateProgressStep(data.type, data);
+                            }
                         }
                     } catch (e) {
                         if (e instanceof SyntaxError) {
@@ -503,8 +574,14 @@ async function submitQuery() {
             }
         }
         
-        if (finalResult) {
-            // Display results
+        if (selectedModels.length > 0 && comparisonData) {
+            // Display comparison results
+            displayComparisonResults(comparisonData);
+            progressSection.classList.add('hidden');
+            document.getElementById('resultsTabsContainer').classList.remove('hidden');
+            document.getElementById('resultsTabsContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (finalResult) {
+            // Display single result
             resultContent.innerHTML = formatResult(finalResult);
             progressSection.classList.add('hidden');
             resultSection.classList.remove('hidden');
@@ -520,6 +597,132 @@ async function submitQuery() {
     } finally {
         setLoading(false);
     }
+}
+
+function updateModelLogsDisplay(modelLogs) {
+    const logsEl = document.getElementById('modelLogs');
+    if (!logsEl) return;
+    
+    let logsHtml = '';
+    for (const [model, logs] of Object.entries(modelLogs)) {
+        if (logs.length === 0) continue;
+        
+        logsHtml += `<div class="model-log-section">`;
+        logsHtml += `<h4>${model}</h4>`;
+        logsHtml += `<div class="log-entries">`;
+        logs.forEach(log => {
+            logsHtml += `<div class="log-entry log-${log.type}">`;
+            logsHtml += `<span class="log-time">${new Date(log.timestamp * 1000).toLocaleTimeString()}</span>`;
+            logsHtml += `<span class="log-type">${log.type}</span>`;
+            const logData = {...log};
+            delete logData.timestamp;
+            delete logData.model;
+            logsHtml += `<span class="log-message">${escapeHtml(JSON.stringify(logData, null, 2))}</span>`;
+            logsHtml += `</div>`;
+        });
+        logsHtml += `</div>`;
+        logsHtml += `</div>`;
+    }
+    
+    if (logsHtml) {
+        logsEl.innerHTML = logsHtml;
+        // Auto-scroll to bottom
+        logsEl.scrollTop = logsEl.scrollHeight;
+    }
+}
+
+function displayComparisonResults(summary) {
+    const summaryEl = document.getElementById('comparisonSummary');
+    const logsEl = document.getElementById('modelLogs');
+    
+    let summaryHtml = '<div class="comparison-header">';
+    summaryHtml += `<h3>Comparison Results</h3>`;
+    summaryHtml += `<p class="comparison-query">Query: "${summary.query}"</p>`;
+    summaryHtml += '</div>';
+    
+    // Summary metrics
+    if (summary.summary && Object.keys(summary.summary).length > 0) {
+        summaryHtml += '<div class="comparison-best">';
+        summaryHtml += '<h4>🏆 Best Performers</h4>';
+        if (summary.summary.best_confidence) {
+            summaryHtml += `<p><strong>Highest Confidence:</strong> ${summary.summary.best_confidence.model} (${(summary.summary.best_confidence.value * 100).toFixed(1)}%)</p>`;
+        }
+        if (summary.summary.most_efficient) {
+            summaryHtml += `<p><strong>Most Efficient:</strong> ${summary.summary.most_efficient.model} (${summary.summary.most_efficient.value} steps)</p>`;
+        }
+        summaryHtml += '</div>';
+    }
+    
+    // Results table
+    summaryHtml += '<div class="comparison-table-container">';
+    summaryHtml += '<table class="comparison-table">';
+    summaryHtml += '<thead><tr><th>Model</th><th>Status</th><th>Confidence</th><th>Steps</th><th>Replans</th></tr></thead>';
+    summaryHtml += '<tbody>';
+    
+    for (const [model, result] of Object.entries(summary.results)) {
+        if (result.error) {
+            summaryHtml += `<tr><td>${model}</td><td class="error">Error</td><td>-</td><td>-</td><td>-</td></tr>`;
+        } else {
+            const conf = (result.confidence * 100).toFixed(1);
+            summaryHtml += `<tr>
+                <td>${model}</td>
+                <td class="success">✓ Success</td>
+                <td>${conf}%</td>
+                <td>${result.execution_steps}</td>
+                <td>${result.replan_count}</td>
+            </tr>`;
+        }
+    }
+    
+    summaryHtml += '</tbody></table></div>';
+    
+    // Model summaries
+    summaryHtml += '<div class="model-summaries">';
+    for (const [model, result] of Object.entries(summary.results)) {
+        if (!result.error && result.summary) {
+            summaryHtml += `<div class="model-summary-card">`;
+            summaryHtml += `<h4>${model}</h4>`;
+            summaryHtml += `<div class="model-summary-text">${convertMarkdownToHtml(result.summary)}</div>`;
+            summaryHtml += `</div>`;
+        }
+    }
+    summaryHtml += '</div>';
+    
+    summaryEl.innerHTML = summaryHtml;
+    
+    // Logs - use the logs from summary (which may have been updated in real-time)
+    let logsHtml = '';
+    for (const [model, result] of Object.entries(summary.results)) {
+        logsHtml += `<div class="model-log-section">`;
+        logsHtml += `<h4>${model}</h4>`;
+        if (result.error) {
+            logsHtml += `<div class="log-error">Error: ${escapeHtml(result.error)}</div>`;
+        } else if (result.logs && result.logs.length > 0) {
+            logsHtml += `<div class="log-entries">`;
+            result.logs.forEach(log => {
+                const logType = log.type || 'info';
+                logsHtml += `<div class="log-entry log-${logType}">`;
+                logsHtml += `<span class="log-time">${new Date((log.timestamp || Date.now() / 1000) * 1000).toLocaleTimeString()}</span>`;
+                logsHtml += `<span class="log-type">${logType}</span>`;
+                const logData = {...log};
+                delete logData.timestamp;
+                delete logData.model;
+                delete logData.type;
+                const logMessage = Object.keys(logData).length > 0 
+                    ? JSON.stringify(logData, null, 2)
+                    : 'No additional data';
+                logsHtml += `<span class="log-message">${escapeHtml(logMessage)}</span>`;
+                logsHtml += `</div>`;
+            });
+            logsHtml += `</div>`;
+        } else {
+            logsHtml += `<div class="log-info">No logs available</div>`;
+        }
+        logsHtml += `</div>`;
+    }
+    logsEl.innerHTML = logsHtml;
+    // Scroll to bottom
+    logsEl.scrollTop = logsEl.scrollHeight;
 }
 
 // Check API health on load
@@ -542,79 +745,289 @@ async function checkHealth() {
     }
 }
 
-// Tab switching
-function switchTab(tabName) {
-    const queryTab = document.getElementById('queryTab');
-    const evaluationTab = document.getElementById('evaluationTab');
-    const queryContent = document.getElementById('queryTabContent');
-    const evaluationContent = document.getElementById('evaluationTabContent');
-    
-    if (tabName === 'query') {
-        queryTab.classList.add('active');
-        evaluationTab.classList.remove('active');
-        queryContent.classList.remove('hidden');
-        evaluationContent.classList.add('hidden');
-    } else {
-        evaluationTab.classList.add('active');
-        queryTab.classList.remove('active');
-        evaluationContent.classList.remove('hidden');
-        queryContent.classList.add('hidden');
-        loadEvaluationModels();
+// Model metadata
+const MODEL_INFO = {
+    "grok-4-fast-reasoning": {
+        name: "grok-4-fast-reasoning",
+        description: "Fast reasoning, large context",
+        context: "2M tokens",
+        pricing: "$0.20/$0.50",
+        tpm: "4M tpm",
+        badge: "Recommended"
+    },
+    "grok-4-0709": {
+        name: "grok-4-0709",
+        description: "Higher quality reasoning",
+        context: "256K tokens",
+        pricing: "$3.00/$15.00",
+        tpm: "2M tpm",
+        badge: "Premium"
+    },
+    "grok-3-mini": {
+        name: "grok-3-mini",
+        description: "Budget-friendly option",
+        context: "131K tokens",
+        pricing: "$0.30/$0.50",
+        tpm: "480 rpm",
+        badge: "Budget"
     }
-}
+};
 
-// Load available models and populate Batch Evaluation + Model Comparison controls
-let evaluationModelsLoaded = false;
-async function loadEvaluationModels() {
-    if (evaluationModelsLoaded) return;
-    const selectEl = document.getElementById('evalModel');
-    const containerEl = document.getElementById('compareModelsContainer');
-    if (!selectEl || !containerEl) return;
+// Load available models on page load
+let modelsLoaded = false;
+async function loadModels() {
+    if (modelsLoaded) return;
+    const containerEl = document.getElementById('modelCheckboxes');
+    if (!containerEl) {
+        console.warn('modelCheckboxes element not found');
+        return;
+    }
+    
+    // Show loading state
+    containerEl.innerHTML = '<div style="color: #94a3b8; padding: 20px; text-align: center;">Loading models...</div>';
+    
     try {
         const response = await fetch(`${API_BASE}/api/evaluation/models`);
-        if (!response.ok) return;
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
         const data = await response.json();
         const models = data.models || [];
-        evaluationModelsLoaded = true;
+        
+        if (models.length === 0) {
+            containerEl.innerHTML = '<div style="color: #f87171; padding: 20px; text-align: center;">No models available</div>';
+            return;
+        }
+        
+        modelsLoaded = true;
+        console.log('Loaded models:', models);
 
-        // Populate Batch Evaluation model select (keep "Default" option)
-        selectEl.innerHTML = '<option value="">Default (from config)</option>';
-        models.forEach(function (m) {
-            const opt = document.createElement('option');
-            opt.value = m;
-            opt.textContent = m;
-            selectEl.appendChild(opt);
-        });
-
-        // Populate Model Comparison checkboxes
+        // Populate model checkboxes with enhanced info
         containerEl.innerHTML = '';
-        models.forEach(function (m) {
+        models.forEach(function (modelName) {
+            const info = MODEL_INFO[modelName] || {
+                name: modelName,
+                description: "Available model",
+                context: "",
+                pricing: "",
+                tpm: "",
+                badge: ""
+            };
+            
+            const card = document.createElement('div');
+            card.className = 'model-card';
+            
             const label = document.createElement('label');
+            label.className = 'model-checkbox-label';
+            
             const cb = document.createElement('input');
             cb.type = 'checkbox';
-            cb.name = 'compareModel';
-            cb.value = m;
+            cb.name = 'model';
+            cb.value = modelName;
             label.appendChild(cb);
-            label.appendChild(document.createTextNode(m));
-            containerEl.appendChild(label);
+            
+            const content = document.createElement('div');
+            content.className = 'model-card-content';
+            
+            const header = document.createElement('div');
+            header.className = 'model-card-header';
+            
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'model-name';
+            nameSpan.textContent = info.name;
+            header.appendChild(nameSpan);
+            
+            if (info.badge) {
+                const badge = document.createElement('span');
+                badge.className = `model-badge model-badge-${info.badge.toLowerCase()}`;
+                badge.textContent = info.badge;
+                header.appendChild(badge);
+            }
+            
+            content.appendChild(header);
+            
+            const desc = document.createElement('div');
+            desc.className = 'model-description';
+            desc.textContent = info.description;
+            content.appendChild(desc);
+            
+            const details = document.createElement('div');
+            details.className = 'model-details';
+            
+            if (info.context) {
+                const ctx = document.createElement('span');
+                ctx.className = 'model-detail-item';
+                ctx.innerHTML = `<span class="detail-icon">📄</span> ${info.context}`;
+                details.appendChild(ctx);
+            }
+            
+            if (info.pricing) {
+                const price = document.createElement('span');
+                price.className = 'model-detail-item';
+                price.innerHTML = `<span class="detail-icon">💰</span> ${info.pricing}`;
+                details.appendChild(price);
+            }
+            
+            if (info.tpm) {
+                const speed = document.createElement('span');
+                speed.className = 'model-detail-item';
+                speed.innerHTML = `<span class="detail-icon">⚡</span> ${info.tpm}`;
+                details.appendChild(speed);
+            }
+            
+            content.appendChild(details);
+            label.appendChild(content);
+            card.appendChild(label);
+            containerEl.appendChild(card);
+            
+            // Add change listener to update card styling
+            cb.addEventListener('change', function() {
+                if (this.checked) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
         });
         
-        // Show/hide max workers based on parallel checkbox
-        const parallelCheckbox = document.getElementById('evalParallel');
-        const maxWorkersGroup = document.getElementById('evalMaxWorkersGroup');
-        if (parallelCheckbox && maxWorkersGroup) {
-            parallelCheckbox.addEventListener('change', function() {
-                maxWorkersGroup.style.display = this.checked ? 'block' : 'none';
-            });
-        }
+        console.log(`✅ Loaded ${models.length} model(s)`);
     } catch (e) {
-        console.warn('Could not load evaluation models:', e);
+        console.error('❌ Could not load models from API:', e);
+        // Fallback: use models from MODEL_INFO
+        const fallbackModels = Object.keys(MODEL_INFO);
+        if (fallbackModels.length > 0) {
+            console.log('Using fallback models:', fallbackModels);
+            modelsLoaded = true;
+            containerEl.innerHTML = '';
+            fallbackModels.forEach(function (modelName) {
+                const info = MODEL_INFO[modelName];
+                if (!info) return;
+                
+                const card = document.createElement('div');
+                card.className = 'model-card';
+                
+                const label = document.createElement('label');
+                label.className = 'model-checkbox-label';
+                
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.name = 'model';
+                cb.value = modelName;
+                label.appendChild(cb);
+                
+                const content = document.createElement('div');
+                content.className = 'model-card-content';
+                
+                const header = document.createElement('div');
+                header.className = 'model-card-header';
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'model-name';
+                nameSpan.textContent = info.name;
+                header.appendChild(nameSpan);
+                
+                if (info.badge) {
+                    const badge = document.createElement('span');
+                    badge.className = `model-badge model-badge-${info.badge.toLowerCase()}`;
+                    badge.textContent = info.badge;
+                    header.appendChild(badge);
+                }
+                
+                content.appendChild(header);
+                
+                const desc = document.createElement('div');
+                desc.className = 'model-description';
+                desc.textContent = info.description;
+                content.appendChild(desc);
+                
+                const details = document.createElement('div');
+                details.className = 'model-details';
+                
+                if (info.context) {
+                    const ctx = document.createElement('span');
+                    ctx.className = 'model-detail-item';
+                    ctx.innerHTML = `<span class="detail-icon">📄</span> ${info.context}`;
+                    details.appendChild(ctx);
+                }
+                
+                if (info.pricing) {
+                    const price = document.createElement('span');
+                    price.className = 'model-detail-item';
+                    price.innerHTML = `<span class="detail-icon">💰</span> ${info.pricing}`;
+                    details.appendChild(price);
+                }
+                
+                if (info.tpm) {
+                    const speed = document.createElement('span');
+                    speed.className = 'model-detail-item';
+                    speed.innerHTML = `<span class="detail-icon">⚡</span> ${info.tpm}`;
+                    details.appendChild(speed);
+                }
+                
+                content.appendChild(details);
+                label.appendChild(content);
+                card.appendChild(label);
+                containerEl.appendChild(card);
+                
+                // Add change listener
+                cb.addEventListener('change', function() {
+                    if (this.checked) {
+                        card.classList.add('selected');
+                    } else {
+                        card.classList.remove('selected');
+                    }
+                });
+            });
+            console.log(`✅ Loaded ${fallbackModels.length} fallback model(s)`);
+        } else {
+            containerEl.innerHTML = `<div style="color: #f87171; padding: 20px; text-align: center;">
+                <p>Failed to load models</p>
+                <p style="font-size: 12px; margin-top: 8px;">${escapeHtml(e.message)}</p>
+                <button onclick="loadModels()" style="margin-top: 12px; padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer;">Retry</button>
+            </div>`;
+        }
     }
 }
 
-function toggleCompareModels(checked) {
-    var inputs = document.querySelectorAll('#compareModelsContainer input[name="compareModel"]');
-    inputs.forEach(function (c) { c.checked = !!checked; });
+function toggleModelSelection(checked) {
+    const inputs = document.querySelectorAll('#modelCheckboxes input[name="model"]');
+    inputs.forEach(function (c) { 
+        c.checked = !!checked;
+        // Trigger visual update
+        const card = c.closest('.model-card');
+        if (card) {
+            if (checked) {
+                card.classList.add('selected');
+            } else {
+                card.classList.remove('selected');
+            }
+        }
+    });
+}
+
+function getSelectedModels() {
+    const inputs = document.querySelectorAll('#modelCheckboxes input[name="model"]:checked');
+    return Array.from(inputs).map(cb => cb.value);
+}
+
+// Results tab switching
+function switchResultsTab(tabName) {
+    const summaryTab = document.getElementById('summaryTab');
+    const logsTab = document.getElementById('logsTab');
+    const summaryContent = document.getElementById('summaryTabContent');
+    const logsContent = document.getElementById('logsTabContent');
+    
+    if (tabName === 'summary') {
+        summaryTab.classList.add('active');
+        logsTab.classList.remove('active');
+        summaryContent.classList.remove('hidden');
+        logsContent.classList.add('hidden');
+    } else {
+        logsTab.classList.add('active');
+        summaryTab.classList.remove('active');
+        logsContent.classList.remove('hidden');
+        summaryContent.classList.add('hidden');
+    }
 }
 
 // Evaluation functions
@@ -1025,6 +1438,14 @@ async function compareModels() {
     }
 }
 
-// Run health check and load evaluation models on page load
-checkHealth();
-loadEvaluationModels();
+// Run health check and load models on page load
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        checkHealth();
+        loadModels();
+    });
+} else {
+    // DOM already loaded
+    checkHealth();
+    loadModels();
+}

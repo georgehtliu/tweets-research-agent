@@ -4,7 +4,7 @@ Agent Service - Manages agent initialization and lifecycle
 import json
 import sys
 from pathlib import Path
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Dict
 
 # Add server directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -22,15 +22,18 @@ class AgentService:
         self._agent: Optional[AgenticResearchAgent] = None
         self._data: Optional[list] = None
     
-    def initialize_agent(self) -> Tuple[AgenticResearchAgent, list]:
+    def initialize_agent(self, model_config: Optional[Dict] = None) -> Tuple[AgenticResearchAgent, list]:
         """
         Initialize the agent and load data
+        
+        Args:
+            model_config: Optional model config override (creates new agent instance)
         
         Returns:
             Tuple of (agent_instance, data)
         """
-        if self._agent is None:
-            # Load or generate data
+        # Load or generate data (only once)
+        if self._data is None:
             data_file = config.DATA_FILE
             if not Path(data_file).is_absolute():
                 data_file = self.project_root / data_file
@@ -50,8 +53,18 @@ class AgentService:
                 )
                 generator.save_to_file(data_file)
                 print(f"   ✅ Generated {len(self._data)} posts")
-            
-            # Initialize agent
+        
+        # If model_config provided, create new agent (for comparison)
+        if model_config is not None:
+            try:
+                agent = AgenticResearchAgent(self._data, model_config=model_config)
+                return agent, self._data
+            except ValueError as e:
+                print(f"❌ Error initializing agent with model_config: {e}")
+                raise
+        
+        # Otherwise use cached agent
+        if self._agent is None:
             try:
                 self._agent = AgenticResearchAgent(self._data)
                 print("✅ Agent initialized")

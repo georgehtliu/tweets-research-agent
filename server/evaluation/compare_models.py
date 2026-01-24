@@ -18,6 +18,10 @@ import config
 
 
 # Define model configurations to compare
+# Selected models most applicable for agent analysis:
+# 1. grok-4-fast-reasoning: Fast reasoning, 2M context, cost-effective ($0.20/$0.50)
+# 2. grok-4-0709: Higher quality reasoning, 256K context, premium ($3.00/$15.00)
+# 3. grok-3-mini: Smaller/cheaper option, 131K context, budget-friendly ($0.30/$0.50)
 MODEL_CONFIGS = {
     "grok-4-fast-reasoning": {
         "PLANNER_MODEL": "grok-4-fast-reasoning",
@@ -25,20 +29,18 @@ MODEL_CONFIGS = {
         "REFINER_MODEL": "grok-4-fast-reasoning",
         "SUMMARIZER_MODEL": "grok-4-fast-reasoning"
     },
-    # Add other models as they become available
-    # Example:
-    # "grok-3": {
-    #     "PLANNER_MODEL": "grok-3",
-    #     "ANALYZER_MODEL": "grok-3",
-    #     "REFINER_MODEL": "grok-3",
-    #     "SUMMARIZER_MODEL": "grok-3"
-    # },
-    # "grok-beta": {
-    #     "PLANNER_MODEL": "grok-beta",
-    #     "ANALYZER_MODEL": "grok-beta",
-    #     "REFINER_MODEL": "grok-beta",
-    #     "SUMMARIZER_MODEL": "grok-beta"
-    # }
+    "grok-4-0709": {
+        "PLANNER_MODEL": "grok-4-0709",
+        "ANALYZER_MODEL": "grok-4-0709",
+        "REFINER_MODEL": "grok-4-0709",
+        "SUMMARIZER_MODEL": "grok-4-0709"
+    },
+    "grok-3-mini": {
+        "PLANNER_MODEL": "grok-3-mini",
+        "ANALYZER_MODEL": "grok-3-mini",
+        "REFINER_MODEL": "grok-3-mini",
+        "SUMMARIZER_MODEL": "grok-3-mini"
+    }
 }
 
 

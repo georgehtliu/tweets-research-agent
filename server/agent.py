@@ -29,7 +29,7 @@ class WorkflowState(Enum):
 class AgenticResearchAgent:
     """Main agentic research agent using Grok with state machine orchestration"""
     
-    def __init__(self, data: List[Dict], api_key: Optional[str] = None, progress_callback=None):
+    def __init__(self, data: List[Dict], api_key: Optional[str] = None, progress_callback=None, model_config: Optional[Dict] = None):
         """
         Initialize agent
         
@@ -37,6 +37,7 @@ class AgenticResearchAgent:
             data: Dataset to search (list of posts/documents)
             api_key: Optional Grok API key
             progress_callback: Optional callback function(event_type, data) for progress updates
+            model_config: Optional dict overriding model config (e.g. {"PLANNER_MODEL": "grok-3", ...})
         """
         self.grok = GrokClient(api_key)
         self.context = ContextManager()
@@ -47,6 +48,11 @@ class AgenticResearchAgent:
         self.replan_count = 0
         self.progress_callback = progress_callback
         self.current_state = WorkflowState.PLAN
+        self.model_config = model_config or {}
+    
+    def _get_model(self, model_type: str) -> str:
+        """Get model name for a given type, using override if provided"""
+        return self.model_config.get(model_type, getattr(config.ModelConfig, model_type))
     
     def _emit_progress(self, event_type: str, data: Dict):
         """Emit progress event if callback is set"""
@@ -87,7 +93,7 @@ Create a plan. Consider: query type, information needed, analysis required, filt
         messages = [{"role": "user", "content": user_prompt}]
         
         response = self.grok.call(
-            model=config.ModelConfig.PLANNER_MODEL,
+            model=self._get_model("PLANNER_MODEL"),
             messages=messages,
             system_prompt=system_prompt,
             response_format={"type": "json_object"}
@@ -152,7 +158,7 @@ Create a plan. Consider: query type, information needed, analysis required, filt
             output_data=plan,
             reasoning=plan_content,
             timestamp=datetime.now().isoformat(),
-            model_used=config.ModelConfig.PLANNER_MODEL,
+            model_used=self._get_model("PLANNER_MODEL"),
             tokens_used=response.get("total_tokens", 0)
         )
         self.context.add_step(step)
@@ -216,7 +222,7 @@ After seeing tool results, decide if you need more information or can proceed.""
         while tool_call_count < max_tool_calls:
             # Call Grok with tools
             response = self.grok.call(
-                model=config.ModelConfig.PLANNER_MODEL,  # Use planner model for tool selection
+                model=self._get_model("PLANNER_MODEL"),  # Use planner model for tool selection
                 messages=messages,
                 system_prompt=system_prompt,
                 tools=tools,
@@ -365,7 +371,7 @@ After seeing tool results, decide if you need more information or can proceed.""
             output_data={"results_count": len(final_results), "tool_calls_made": tool_call_count, "tool_calls": tool_calls_history},
             reasoning=f"Used {tool_call_count} tool calls to retrieve {len(final_results)} results",
             timestamp=datetime.now().isoformat(),
-            model_used=config.ModelConfig.PLANNER_MODEL,
+            model_used=self._get_model("PLANNER_MODEL"),
             tokens_used=total_tokens
         )
         self.context.add_step(step)
@@ -526,7 +532,7 @@ Analyze and return JSON."""
             output_data=analysis,
             reasoning=analysis_content,
             timestamp=datetime.now().isoformat(),
-            model_used=config.ModelConfig.ANALYZER_MODEL,
+            model_used=self._get_model("ANALYZER_MODEL"),
             tokens_used=response.get("total_tokens", 0)
         )
         self.context.add_step(step)
@@ -590,7 +596,7 @@ Evaluate if refinement needed: gaps, completeness, need for more searches, confi
         messages = [{"role": "user", "content": user_prompt}]
         
         response = self.grok.call(
-            model=config.ModelConfig.REFINER_MODEL,
+            model=self._get_model("REFINER_MODEL"),
             messages=messages,
             system_prompt=system_prompt,
             response_format={"type": "json_object"}
@@ -715,7 +721,7 @@ Evaluate: replan needed (fundamental strategy wrong) or refine (more data needed
         messages = [{"role": "user", "content": user_prompt}]
         
         response = self.grok.call(
-            model=config.ModelConfig.REFINER_MODEL,  # Reuse refiner model for evaluation
+            model=self._get_model("REFINER_MODEL"),  # Reuse refiner model for evaluation
             messages=messages,
             system_prompt=system_prompt,
             response_format={"type": "json_object"}
@@ -830,7 +836,7 @@ Check: claims supported? hallucinations? bias? balanced?"""
             output_data=critique,
             reasoning=response.get("content", json.dumps(critique)),
             timestamp=datetime.now().isoformat(),
-            model_used=config.ModelConfig.ANALYZER_MODEL,
+            model_used=self._get_model("ANALYZER_MODEL"),
             tokens_used=response.get("total_tokens", 0)
         )
         self.context.add_step(step)
@@ -865,7 +871,7 @@ Create concise summary answering the query."""
         messages = [{"role": "user", "content": user_prompt}]
         
         response = self.grok.call(
-            model=config.ModelConfig.SUMMARIZER_MODEL,
+            model=self._get_model("SUMMARIZER_MODEL"),
             messages=messages,
             system_prompt=system_prompt,
             max_tokens=config.MAX_TOKENS_SUMMARY
@@ -886,7 +892,7 @@ Create concise summary answering the query."""
             output_data={"summary": summary},
             reasoning=summary,
             timestamp=datetime.now().isoformat(),
-            model_used=config.ModelConfig.SUMMARIZER_MODEL,
+            model_used=self._get_model("SUMMARIZER_MODEL"),
             tokens_used=response.get("total_tokens", 0)
         )
         self.context.add_step(step)
