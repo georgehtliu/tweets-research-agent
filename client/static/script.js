@@ -326,9 +326,11 @@ async function submitQuery() {
     
     // Show results container immediately with logs tab active
     const resultsContainer = document.getElementById('resultsTabsContainer');
-    resultsContainer.classList.remove('hidden');
-    switchResultsTab('logs');
-    resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (resultsContainer) {
+        resultsContainer.classList.remove('hidden');
+        switchResultsTab('logs');
+        resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
     
     try {
         let endpoint, body;
@@ -371,13 +373,29 @@ async function submitQuery() {
         
         // Initialize progress tracking for comparison mode
         const modelProgress = {}; // model -> {current, total, status}
+        const modelStates = {}; // model -> {currentState, states: {stateName: status}}
+        
+        // Initialize state machine for single query mode
+        if (selectedModels.length === 0) {
+            modelStates['default'] = { currentState: null, states: {} };
+            // Show state machine immediately for single query (after container is visible)
+            requestAnimationFrame(() => {
+                showStateMachine(['default'], modelStates);
+            });
+        }
+        
         if (selectedModels.length > 0) {
             selectedModels.forEach(model => {
                 modelProgress[model] = { current: 0, total: 0, status: 'waiting' };
                 modelLogs[model] = [];
+                modelStates[model] = { currentState: null, states: {} };
             });
             // Show progress bars
             showModelProgressBars(selectedModels, modelProgress);
+            // Show state machine (after container is visible)
+            requestAnimationFrame(() => {
+                showStateMachine(selectedModels, modelStates);
+            });
         }
         
         while (true) {
@@ -411,6 +429,15 @@ async function submitQuery() {
                             });
                             // Show progress bars
                             showModelProgressBars(data.models, modelProgress);
+                            // Initialize state machine for comparison
+                            data.models.forEach(model => {
+                                if (!modelStates[model]) {
+                                    modelStates[model] = { currentState: null, states: {} };
+                                }
+                            });
+                            requestAnimationFrame(() => {
+                                showStateMachine(data.models, modelStates);
+                            });
                             // Show logs tab and start streaming
                             if (selectedModels.length > 0) {
                                 document.getElementById('resultsTabsContainer').classList.remove('hidden');
@@ -429,18 +456,24 @@ async function submitQuery() {
                             // Update progress based on log type
                             if (modelProgress[model]) {
                                 const progressMap = {
-                                    'planning': 1, 'executing': 2, 'analyzing': 3,
-                                    'evaluating': 4, 'refining': 5, 'critiquing': 6, 'summarizing': 7
+                                    'planning': 1, 'executing': 2, 'validating': 3, 'analyzing': 4,
+                                    'evaluating': 5, 'refining': 6, 'critiquing': 7, 'summarizing': 8
                                 };
                                 if (progressMap[log.type] !== undefined) {
                                     modelProgress[model].current = Math.max(modelProgress[model].current, progressMap[log.type]);
-                                    modelProgress[model].total = 7;
+                                    modelProgress[model].total = 8;
                                 }
+                            }
+                            // Update state machine
+                            if (modelStates[model]) {
+                                updateStateMachineState(model, log.type, log.status || 'started', modelStates);
                             }
                             // Update logs display immediately
                             updateModelLogsDisplay(modelLogs, selectedModels);
                             // Update progress bars
                             updateModelProgressBars(modelProgress);
+                            // Update state machine visualization
+                            updateStateMachineDisplay(modelStates);
                         } else if (data.type === 'model_complete') {
                             // Track model results
                             const model = data.model;
@@ -457,6 +490,11 @@ async function submitQuery() {
                                 }
                             }
                             updateModelProgressBars(modelProgress);
+                            // Mark all states as complete
+                            if (modelStates[model]) {
+                                modelStates[model].currentState = 'complete';
+                                updateStateMachineDisplay(modelStates);
+                            }
                         } else if (data.type === 'comparison_complete') {
                             // Final comparison summary
                             comparisonData = data.summary;
@@ -485,8 +523,15 @@ async function submitQuery() {
                             }
                             modelLogs['default'].push(logEntry);
                             
+                            // Update state machine for single query
+                            if (modelStates['default']) {
+                                updateStateMachineState('default', data.type, data.status || 'started', modelStates);
+                            }
+                            
                             // Display single query logs using the same display function
                             updateModelLogsDisplay(modelLogs, ['default']);
+                            // Update state machine visualization
+                            updateStateMachineDisplay(modelStates);
                         }
                     } catch (e) {
                         if (e instanceof SyntaxError) {
@@ -504,6 +549,19 @@ async function submitQuery() {
             displayComparisonResults(comparisonData);
             switchResultsTab('summary');
         } else if (finalResult) {
+            // Mark single query as complete
+            if (modelStates['default']) {
+                modelStates['default'].currentState = 'complete';
+                // Mark all states as completed
+                STATE_ORDER.forEach(stateKey => {
+                    if (modelStates['default'].states[stateKey] && modelStates['default'].states[stateKey].status === 'active') {
+                        modelStates['default'].states[stateKey].status = 'completed';
+                    } else if (!modelStates['default'].states[stateKey]) {
+                        modelStates['default'].states[stateKey] = { status: 'completed' };
+                    }
+                });
+                updateStateMachineDisplay(modelStates);
+            }
             // Display single result in summary tab
             const summaryEl = document.getElementById('comparisonSummary');
             if (summaryEl) {
@@ -577,6 +635,374 @@ function updateModelProgressBars(progress) {
             }
         }
     });
+}
+
+// State machine visualization
+const STATE_MAP = {
+    'planning': { name: 'PLAN', icon: '📋' },
+    'executing': { name: 'EXECUTE', icon: '⚙️' },
+    'validating': { name: 'VALIDATE', icon: '✅' },
+    'analyzing': { name: 'ANALYZE', icon: '🔍' },
+    'evaluating': { name: 'EVALUATE', icon: '🔎' },
+    'refining': { name: 'REFINE', icon: '🔄' },
+    'critiquing': { name: 'CRITIQUE', icon: '🔬' },
+    'summarizing': { name: 'SUMMARIZE', icon: '📝' }
+};
+
+const STATE_ORDER = ['planning', 'executing', 'validating', 'analyzing', 'evaluating', 'refining', 'critiquing', 'summarizing'];
+
+// State machine graph with transitions (including cycles)
+const STATE_TRANSITIONS = {
+    'planning': ['executing'],
+    'executing': ['validating'],
+    'validating': ['analyzing', 'refining', 'planning'], // Can go to ANALYZE, REFINE, or PLAN
+    'analyzing': ['evaluating'],
+    'evaluating': ['planning', 'refining'], // Can replan or refine
+    'refining': ['validating', 'critiquing'], // After refine, validate new results OR go to critique
+    'critiquing': ['refining', 'summarizing'], // Can refine again or summarize
+    'summarizing': ['complete']
+};
+
+// Graph layout positions (x, y) for each state to show cycles
+// Optimized layout: use vertical space, fit in container, show cycles clearly
+const STATE_POSITIONS = {
+    'planning': { x: 0, y: 0, row: 0 },
+    'executing': { x: 0, y: 1, row: 1 },
+    'validating': { x: 0, y: 2, row: 2 },
+    'analyzing': { x: 1, y: 2, row: 2 },
+    'evaluating': { x: 1, y: 1, row: 1 },
+    'refining': { x: 0, y: 3, row: 3 }, // Below VALIDATE to show refinement cycle
+    'critiquing': { x: 1, y: 3, row: 3 }, // Below ANALYZE
+    'summarizing': { x: 0.5, y: 4, row: 4 } // Centered below
+};
+
+// Transition labels for each edge
+const TRANSITION_LABELS = {
+    'planning-executing': '',
+    'executing-validating': '',
+    'validating-analyzing': 'if validated',
+    'validating-refining': 'if low relevance',
+    'validating-planning': 'if no results',
+    'analyzing-evaluating': '',
+    'evaluating-planning': 'if replan needed',
+    'evaluating-refining': 'if refine needed',
+    'refining-validating': 'after refine',
+    'refining-critiquing': 'if no refine',
+    'critiquing-refining': 'if issues found',
+    'critiquing-summarizing': 'if passed',
+    'summarizing-complete': ''
+};
+
+function getModelDisplayName(model) {
+    if (model === 'default') return 'Q';
+    
+    // Map model names to short display names
+    const modelMap = {
+        'grok-4-fast-reasoning': 'g4fr',
+        'grok-4': 'g4',
+        'grok-3-mini': 'g3mini',
+        'grok-3': 'g3',
+        'grok': 'g',
+        'grok-beta': 'gb'
+    };
+    
+    // Check exact match first
+    if (modelMap[model]) {
+        return modelMap[model];
+    }
+    
+    // Try partial matches
+    if (model.includes('grok-4-fast')) return 'g4fr';
+    if (model.includes('grok-4')) return 'g4';
+    if (model.includes('grok-3-mini')) return 'g3mini';
+    if (model.includes('grok-3')) return 'g3';
+    if (model.includes('grok')) return 'g';
+    
+    // Fallback: use first letter uppercase
+    return model.substring(0, 1).toUpperCase();
+}
+
+function showStateMachine(models, modelStates) {
+    console.log('[StateMachine] showStateMachine called with models:', models);
+    
+    const container = document.getElementById('stateMachineContainer');
+    if (!container) {
+        console.error('[StateMachine] Container not found!');
+        return;
+    }
+    
+    // Ensure parent container is visible first
+    const resultsContainer = document.getElementById('resultsTabsContainer');
+    if (resultsContainer) {
+        resultsContainer.classList.remove('hidden');
+        console.log('[StateMachine] Results container shown');
+    }
+    
+    // Ensure container is visible
+    container.classList.remove('hidden');
+    container.style.display = 'block';
+    container.style.visibility = 'visible';
+    container.style.opacity = '1';
+    console.log('[StateMachine] Container made visible');
+    
+    if (!models || models.length === 0) {
+        console.warn('[StateMachine] No models provided');
+        return;
+    }
+    
+    // Store models globally for updates
+    window.stateMachineModels = models;
+    
+    // Initialize Mermaid if not already done
+    if (typeof mermaid !== 'undefined' && !window.mermaidInitialized) {
+        mermaid.initialize({ 
+            startOnLoad: false,
+            theme: 'dark',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+        window.mermaidInitialized = true;
+    } else if (typeof mermaid === 'undefined') {
+        console.warn('[StateMachine] Mermaid library not loaded yet, will retry on next update');
+        // Wait a bit and retry if Mermaid loads asynchronously
+        setTimeout(() => {
+            if (typeof mermaid !== 'undefined' && !window.mermaidInitialized) {
+                mermaid.initialize({ 
+                    startOnLoad: false,
+                    theme: 'dark',
+                    flowchart: {
+                        useMaxWidth: true,
+                        htmlLabels: true,
+                        curve: 'basis'
+                    }
+                });
+                window.mermaidInitialized = true;
+                renderMermaidDiagram(models, modelStates);
+            }
+        }, 500);
+        return;
+    }
+    
+    // Show state machine graph with Mermaid
+    let html = '<div class="state-machine-header"><h4>State Machine</h4></div>';
+    html += '<div class="state-machine-graph">';
+    html += '<div class="mermaid" id="stateMachineDiagram"></div>';
+    html += '</div>';
+    
+    container.innerHTML = html;
+    container.classList.remove('hidden');
+    container.style.display = 'block';
+    container.style.visibility = 'visible';
+    container.style.opacity = '1';
+    
+    // Generate and render Mermaid diagram
+    renderMermaidDiagram(models, modelStates);
+    
+}
+
+function updateStateMachineState(model, stateType, status, modelStates) {
+    if (!modelStates[model]) {
+        modelStates[model] = { currentState: null, states: {} };
+    }
+    
+    // Map event types to state keys
+    const stateKey = stateType; // Already matches: planning, executing, etc.
+    
+    if (!modelStates[model].states[stateKey]) {
+        modelStates[model].states[stateKey] = { status: 'pending' };
+    }
+    
+    // Update state status
+    if (status === 'started' || status === 'checking' || status === 'refining') {
+        modelStates[model].states[stateKey].status = 'active';
+        modelStates[model].currentState = stateKey;
+        // Mark previous states as completed
+        const currentIdx = STATE_ORDER.indexOf(stateKey);
+        for (let i = 0; i < currentIdx; i++) {
+            const prevState = STATE_ORDER[i];
+            if (modelStates[model].states[prevState]) {
+                if (modelStates[model].states[prevState].status === 'active') {
+                    modelStates[model].states[prevState].status = 'completed';
+                }
+            } else {
+                // Mark unvisited previous states as completed (they were skipped or not reached)
+                modelStates[model].states[prevState] = { status: 'completed' };
+            }
+        }
+    } else if (status === 'completed') {
+        modelStates[model].states[stateKey].status = 'completed';
+        // Move to next state if exists
+        const currentIdx = STATE_ORDER.indexOf(stateKey);
+        if (currentIdx < STATE_ORDER.length - 1) {
+            const nextState = STATE_ORDER[currentIdx + 1];
+            if (!modelStates[model].states[nextState]) {
+                modelStates[model].states[nextState] = { status: 'pending' };
+            }
+        }
+    } else if (status === 'skipped') {
+        modelStates[model].states[stateKey].status = 'skipped';
+        // When a state is skipped, mark it and move to next
+        const currentIdx = STATE_ORDER.indexOf(stateKey);
+        if (currentIdx < STATE_ORDER.length - 1) {
+            const nextState = STATE_ORDER[currentIdx + 1];
+            if (!modelStates[model].states[nextState]) {
+                modelStates[model].states[nextState] = { status: 'pending' };
+            }
+        }
+    }
+}
+
+function renderMermaidDiagram(models, modelStates) {
+    const diagramElement = document.getElementById('stateMachineDiagram');
+    if (!diagramElement) return;
+    
+    // Prevent multiple simultaneous renders
+    if (diagramElement.dataset.rendering === 'true') {
+        return;
+    }
+    
+    // Build Mermaid diagram syntax
+    let mermaidCode = 'graph TD\n';
+    
+    // Define node styles based on current state
+    const activeStates = new Set();
+    const completedStates = new Set();
+    
+    // Find which states are active or completed
+    models.forEach(model => {
+        const currentState = modelStates[model]?.currentState;
+        if (currentState) {
+            activeStates.add(currentState);
+        }
+        
+        // Check completed states
+        Object.keys(STATE_MAP).forEach(stateKey => {
+            const stateData = modelStates[model]?.states[stateKey];
+            if (stateData?.status === 'completed' || stateData?.status === 'skipped') {
+                completedStates.add(stateKey);
+            }
+        });
+    });
+    
+    // Build node definitions with styling
+    Object.keys(STATE_MAP).forEach(stateKey => {
+        const stateInfo = STATE_MAP[stateKey];
+        const stateName = stateInfo.name;
+        const icon = stateInfo.icon;
+        
+        // Find models at this state
+        const modelsAtState = [];
+        models.forEach(model => {
+            if (modelStates[model]?.currentState === stateKey) {
+                modelsAtState.push(model);
+            }
+        });
+        
+        // Determine node style
+        let nodeClass = 'state-pending';
+        if (modelsAtState.length > 0) {
+            nodeClass = 'state-active';
+        } else if (completedStates.has(stateKey) && models.length > 0) {
+            nodeClass = 'state-completed';
+        }
+        
+        // Add model labels to node
+        let nodeLabel = `${icon} ${stateName}`;
+        if (modelsAtState.length > 0) {
+            const modelLabels = modelsAtState.map(m => getModelDisplayName(m)).join(', ');
+            nodeLabel += `<br/><small>(${modelLabels})</small>`;
+        }
+        
+        // Escape special characters for Mermaid and escape quotes
+        const nodeId = stateKey.replace(/[^a-zA-Z0-9]/g, '_');
+        // Escape quotes in nodeLabel for Mermaid
+        const escapedLabel = nodeLabel.replace(/"/g, '&quot;');
+        mermaidCode += `    ${nodeId}["${escapedLabel}"]:::${nodeClass}\n`;
+    });
+    
+    // Add transitions with labels
+    Object.keys(STATE_TRANSITIONS).forEach(fromState => {
+        const fromId = fromState.replace(/[^a-zA-Z0-9]/g, '_');
+        STATE_TRANSITIONS[fromState].forEach(toState => {
+            if (toState === 'complete') {
+                // Skip complete state - it's not in STATE_MAP
+                return;
+            }
+            const toId = toState.replace(/[^a-zA-Z0-9]/g, '_');
+            const transitionKey = `${fromState}-${toState}`;
+            const label = TRANSITION_LABELS[transitionKey] || '';
+            
+            if (label) {
+                // Escape quotes in labels
+                const escapedLabel = label.replace(/"/g, '&quot;');
+                mermaidCode += `    ${fromId} -->|"${escapedLabel}"| ${toId}\n`;
+            } else {
+                mermaidCode += `    ${fromId} --> ${toId}\n`;
+            }
+        });
+    });
+    
+    // Add class definitions for styling
+    mermaidCode += '\n    classDef state-pending fill:#1e293b,stroke:#475569,stroke-width:2px,color:#94a3b8\n';
+    mermaidCode += '    classDef state-active fill:#1e40af,stroke:#3b82f6,stroke-width:3px,color:#ffffff\n';
+    mermaidCode += '    classDef state-completed fill:#065f46,stroke:#10b981,stroke-width:2px,color:#d1fae5\n';
+    
+    // Render the diagram
+    if (typeof mermaid !== 'undefined') {
+        try {
+            // Mark as rendering to prevent concurrent renders
+            diagramElement.dataset.rendering = 'true';
+            
+            // Store current content as backup
+            const currentContent = diagramElement.innerHTML;
+            
+            const uniqueId = 'stateMachineDiagram_' + Date.now();
+            mermaid.render(uniqueId, mermaidCode).then((result) => {
+                // Only update if we're still supposed to be rendering
+                if (diagramElement.dataset.rendering === 'true') {
+                    diagramElement.innerHTML = result.svg;
+                    diagramElement.dataset.rendering = 'false';
+                }
+            }).catch((error) => {
+                console.error('[StateMachine] Mermaid render error:', error);
+                // Restore previous content on error instead of showing error message
+                if (currentContent && currentContent.trim() !== '') {
+                    diagramElement.innerHTML = currentContent;
+                } else {
+                    diagramElement.innerHTML = '<div style="color: #94a3b8; padding: 20px; text-align: center;">Error rendering state machine diagram</div>';
+                }
+                diagramElement.dataset.rendering = 'false';
+            });
+        } catch (error) {
+            console.error('[StateMachine] Mermaid render exception:', error);
+            diagramElement.dataset.rendering = 'false';
+            // Don't clear on exception - keep existing content
+        }
+    } else {
+        console.error('[StateMachine] Mermaid library not loaded');
+        if (!diagramElement.innerHTML || diagramElement.innerHTML.trim() === '') {
+            diagramElement.innerHTML = '<div style="color: #94a3b8; padding: 20px; text-align: center;">Loading state machine diagram...</div>';
+        }
+    }
+}
+
+function updateStateMachineDisplay(modelStates) {
+    if (!window.stateMachineModels || !modelStates) {
+        return;
+    }
+    
+    // Debounce rapid updates to prevent flickering
+    if (window.stateMachineUpdateTimeout) {
+        clearTimeout(window.stateMachineUpdateTimeout);
+    }
+    
+    window.stateMachineUpdateTimeout = setTimeout(() => {
+        // Re-render the entire Mermaid diagram with updated states
+        renderMermaidDiagram(window.stateMachineModels, modelStates);
+    }, 100); // Small delay to batch rapid updates
 }
 
 function updateModelLogsDisplay(modelLogs, models = null) {

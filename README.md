@@ -9,8 +9,11 @@ An autonomous multi-step agentic workflow using Grok as the central reasoner for
 This system implements a fully autonomous research agent that can:
 - **Plan**: Break down complex queries into actionable steps
 - **Execute**: Retrieve relevant data using hybrid search (semantic + keyword)
+- **Validate**: Check result relevance and quality before analysis
 - **Analyze**: Deep analysis of retrieved information
-- **Refine**: Iteratively improve results when confidence is low
+- **Evaluate**: Determine if replanning or refinement is needed
+- **Refine**: Iteratively improve results when confidence is low (with stagnation detection)
+- **Critique**: Check for hallucinations and quality issues
 - **Summarize**: Generate comprehensive final summaries
 
 The agent handles various query types: trend analysis, information extraction, comparative analysis, temporal analysis, sentiment analysis, and more.
@@ -104,11 +107,14 @@ See [Deployment Guide](DEPLOYMENT.md#docker-deployment) for detailed Docker inst
 
 1. **Planning**: Grok analyzes the query and creates a structured plan
 2. **Execution**: Hybrid retrieval system searches through posts (semantic + keyword)
-3. **Analysis**: Deep analysis identifies themes, sentiment, and confidence
-4. **Evaluation**: Decides if replanning or refinement is needed
-5. **Refinement**: Iteratively improves results when confidence is low
-6. **Critique**: Checks for hallucinations and quality issues
-7. **Summarization**: Generates final comprehensive summary
+3. **Validation**: Validates result relevance and quality before analysis (prevents analyzing irrelevant data)
+4. **Analysis**: Deep analysis identifies themes, sentiment, and confidence
+5. **Evaluation**: Decides if replanning or refinement is needed (checks both confidence and data quality)
+6. **Refinement**: Iteratively improves results when confidence is low (tracks confidence improvement to prevent loops)
+7. **Critique**: Checks for hallucinations and quality issues (skipped only when high confidence AND good data quality)
+8. **Summarization**: Generates final comprehensive summary
+
+**Accuracy Improvements**: The system includes result validation gates, confidence tracking with stagnation detection, and improved skip logic to ensure high-quality results while maintaining efficiency.
 
 See [Beginner Guide](BEGINNER_GUIDE.md) for detailed explanations of each step.
 

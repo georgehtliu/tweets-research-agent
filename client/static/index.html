@@ -130,6 +130,10 @@
                     <!-- Progress bars will be inserted here -->
                 </div>
                 
+                <div id="stateMachineContainer" class="state-machine-container hidden">
+                    <!-- State machine visualization will be inserted here -->
+                </div>
+                
                 <div class="results-tabs">
                     <button class="results-tab-btn active" onclick="switchResultsTab('logs')" id="logsTab">
                         📝 Logs
@@ -177,6 +181,7 @@
         </footer>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

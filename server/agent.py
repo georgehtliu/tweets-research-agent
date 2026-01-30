@@ -18,6 +18,7 @@ class WorkflowState(Enum):
     """States in the agent workflow state machine"""
     PLAN = "plan"
     EXECUTE = "execute"
+    VALIDATE_RESULTS = "validate_results"  # Validate results quality before analysis
     ANALYZE = "analyze"
     EVALUATE = "evaluate"  # Evaluate if replan needed
     REFINE = "refine"
@@ -379,6 +380,131 @@ After seeing tool results, decide if you need more information or can proceed.""
         
         return final_results
     
+    def validate_results(self, query: str, results: List[Dict], plan: Dict) -> Dict:
+        """
+        Validate that retrieved results match query intent before analysis
+        
+        Returns:
+            Dict with "validation_passed", "relevance_score", "recommendations", "action"
+        """
+        if not results:
+            validation = {
+                "validation_passed": False,
+                "relevance_score": 0.0,
+                "recommendations": ["No results retrieved - need to expand search"],
+                "action": "replan"  # No results = fundamental issue
+            }
+            step = ExecutionStep(
+                step_name="Result Validation",
+                step_type="validate",
+                input_data={"results_count": 0},
+                output_data=validation,
+                reasoning="No results retrieved - validation failed",
+                timestamp=datetime.now().isoformat(),
+                model_used="validation_logic",
+                tokens_used=0
+            )
+            self.context.add_step(step)
+            return validation
+        
+        # Check result count - only trigger refinement if no results at all
+        # Even 1-2 results might be sufficient for analysis
+        if len(results) == 0:
+            validation = {
+                "validation_passed": False,
+                "relevance_score": 0.0,
+                "recommendations": ["No results retrieved - need to expand search"],
+                "action": "replan"
+            }
+            step = ExecutionStep(
+                step_name="Result Validation",
+                step_type="validate",
+                input_data={"results_count": 0},
+                output_data=validation,
+                reasoning="No results retrieved - need to replan",
+                timestamp=datetime.now().isoformat(),
+                model_used="validation_logic",
+                tokens_used=0
+            )
+            self.context.add_step(step)
+            return validation
+        
+        system_prompt = """Result validator. Check if retrieved results match query intent.
+        
+Return JSON:
+{
+    "validation_passed": true|false,
+    "relevance_score": 0.0-1.0,
+    "recommendations": ["action1", "action2"],
+    "action": "proceed|refine|replan"
+}
+
+Actions:
+- "proceed": Results are relevant enough to analyze (default - prefer this unless results are clearly wrong)
+- "refine": Results are somewhat relevant but need more/better data (only if relevance_score < 0.4)
+- "replan": Results don't match query at all, need completely new strategy (only if relevance_score < 0.3)
+
+Be lenient: Only recommend "refine" or "replan" if results are clearly irrelevant or insufficient. If results are somewhat related to the query, prefer "proceed" to allow analysis."""
+        
+        # Sample results for validation
+        sample_size = min(5, len(results))
+        sample_results = results[:sample_size]
+        
+        data_summary = create_concise_data_summary(
+            sample_results,
+            query,
+            max_items=sample_size,
+            max_text_length=100
+        )
+        
+        user_prompt = f"""Query: {query}
+Plan: {json.dumps({'query_type': plan.get('query_type'), 'steps_count': len(plan.get('steps', []))}, separators=(',', ':'))}
+Retrieved Results ({len(results)} total): {data_summary}
+
+Validate: Do these results match the query intent? Are they relevant?"""
+        
+        messages = [{"role": "user", "content": user_prompt}]
+        
+        response = self.grok.call(
+            model=self._get_model("ANALYZER_MODEL"),
+            messages=messages,
+            system_prompt=system_prompt,
+            response_format={"type": "json_object"}
+        )
+        
+        if not response.get("success", False):
+            # Default to proceed on error, but with moderate relevance score
+            validation = {
+                "validation_passed": True,
+                "relevance_score": 0.6,
+                "recommendations": [],
+                "action": "proceed"
+            }
+            validation_content = json.dumps(validation)
+        else:
+            validation_content = response["content"]
+            validation = self.grok.parse_json_response(validation_content)
+            if not isinstance(validation, dict):
+                validation = {"validation_passed": True, "relevance_score": 0.6, "action": "proceed"}
+            if "action" not in validation:
+                validation["action"] = "proceed" if validation.get("validation_passed") else "refine"
+            if "relevance_score" not in validation:
+                validation["relevance_score"] = 0.7 if validation.get("validation_passed") else 0.4
+        
+        step = ExecutionStep(
+            step_name="Result Validation",
+            step_type="validate",
+            input_data={"results_count": len(results)},
+            output_data=validation,
+            reasoning=validation_content,
+            timestamp=datetime.now().isoformat(),
+            model_used=self._get_model("ANALYZER_MODEL"),
+            tokens_used=response.get("total_tokens", 0)
+        )
+        self.context.add_step(step)
+        
+        return validation
+    
     def execute(self, plan: Dict, query: str) -> List[Dict]:
         """
         Step 2: Execute - Retrieve data using hybrid search or dynamic tool calling
@@ -540,16 +666,46 @@ Analyze and return JSON."""
         
         return analysis
     
-    def refine(self, query: str, analysis: Dict, plan: Dict) -> Dict:
+    def refine(self, query: str, analysis: Dict, plan: Dict, previous_confidence: Optional[float] = None) -> Dict:
         """
         Step 4: Refine - Determine if refinement is needed
         
         Uses grok-4-fast-reasoning for decision making
+        
+        Args:
+            query: Research query
+            analysis: Current analysis results
+            plan: Original plan
+            previous_confidence: Confidence from previous iteration (for stagnation detection)
         """
         confidence = analysis.get("confidence", 0.5)
         
+        # Check if confidence improved from previous iteration
+        if previous_confidence is not None:
+            confidence_delta = confidence - previous_confidence
+            if confidence_delta < 0.05 and self.iteration_count > 0:
+                # Confidence not improving - might be stuck
+                refinement = {
+                    "refinement_needed": False,
+                    "reason": f"Confidence not improving (delta: {confidence_delta:.2f}) - proceeding to avoid loops",
+                    "next_steps": [],
+                    "confidence_stagnant": True
+                }
+                step = ExecutionStep(
+                    step_name="Refinement Check",
+                    step_type="refine",
+                    input_data={"confidence": confidence, "previous_confidence": previous_confidence},
+                    output_data=refinement,
+                    reasoning=f"Confidence stagnation detected: {previous_confidence:.2f} -> {confidence:.2f}",
+                    timestamp=datetime.now().isoformat(),
+                    model_used="decision_logic",
+                    tokens_used=0
+                )
+                self.context.add_step(step)
+                return refinement
+        
         # If confidence is high, skip refinement (optimized threshold)
-        if confidence > 0.75:  # Lowered from 0.8 to skip more often
+        if confidence > 0.85:  # Increased from 0.75 to catch more cases needing refinement
             refinement = {
                 "refinement_needed": False,
                 "reason": "High confidence achieved",
@@ -906,7 +1062,8 @@ Create concise summary answering the query."""
         
         State transitions:
         - PLAN → EXECUTE
-        - EXECUTE → ANALYZE
+        - EXECUTE → VALIDATE_RESULTS (validate result quality)
+        - VALIDATE_RESULTS → ANALYZE (if validated) OR → REFINE/REPLAN (if low quality)
         - ANALYZE → EVALUATE (check if replan needed)
         - EVALUATE → PLAN (if replan needed) OR → REFINE
         - REFINE → ANALYZE (if refinement executed) OR → CRITIQUE
@@ -937,6 +1094,8 @@ Create concise summary answering the query."""
         critique_result = None
         critique_refine_loop_count = 0  # Prevent CRITIQUE → REFINE → CRITIQUE infinite loop
         max_critique_refine_loops = 2
+        previous_confidence = None  # Track confidence for improvement detection
+        confidence_history = []  # Track confidence over iterations
         
         print(f"\n{'='*70}")
         print(f"🚀 Starting Agentic Research Workflow (State Machine)")
@@ -979,13 +1138,69 @@ Create concise summary answering the query."""
                 })
                 print(f"   Retrieved: {len(results)} items\n")
                 
-                self.current_state = WorkflowState.ANALYZE
+                self.current_state = WorkflowState.VALIDATE_RESULTS
+            
+            elif self.current_state == WorkflowState.VALIDATE_RESULTS:
+                print(f"✅ [{self.current_state.value.upper()}] Validating result quality...")
+                self._emit_progress('validating', {'status': 'started', 'message': 'Validating result relevance...'})
+                validation = self.validate_results(query, results, plan)
+                
+                action = validation.get("action", "proceed")
+                relevance_score = validation.get("relevance_score", 0.5)
+                validation_passed = validation.get("validation_passed", True)
+                
+                validation_summary = f"Validation {'passed' if validation_passed else 'failed'} (relevance: {relevance_score:.2f})"
+                self._emit_progress('validating', {
+                    'status': 'completed',
+                    'validation_passed': validation_passed,
+                    'relevance_score': relevance_score,
+                    'action': action,
+                    'summary': validation_summary
+                })
+                
+                if action == "replan" and self.replan_count < max_replans:
+                    # Only replan if relevance is very low (< 0.3)
+                    if relevance_score < 0.3:
+                        self.replan_count += 1
+                        print(f"   ⚠️  Very low relevance ({relevance_score:.2f}) - replanning needed")
+                        print(f"   Reason: {validation.get('recommendations', ['Low relevance'])}")
+                        results = []
+                        analysis = None
+                        previous_confidence = None
+                        confidence_history = []
+                        self.current_state = WorkflowState.PLAN
+                    else:
+                        # Relevance not low enough for replan - proceed to analyze
+                        print(f"   ✅ Results validated (relevance: {relevance_score:.2f}) - proceeding to analyze")
+                        self.current_state = WorkflowState.ANALYZE
+                elif action == "refine" and relevance_score < 0.4:
+                    # Only refine if explicitly requested AND relevance is low (but not terrible)
+                    print(f"   ⚠️  Low relevance ({relevance_score:.2f}) - triggering refinement")
+                    recommendations = validation.get("recommendations", ["Expand search"])
+                    # Create refinement plan from validation recommendations
+                    refinement = {
+                        "refinement_needed": True,
+                        "reason": f"Low result relevance ({relevance_score:.2f}): {', '.join(recommendations)}",
+                        "next_steps": [{"action": "search", "description": rec, "tools": ["hybrid_search"]} 
+                                      for rec in recommendations[:2]]  # Limit to 2 steps
+                    }
+                    # Store refinement for REFINE state
+                    self.context.store_intermediate_result("pending_refinement", refinement)
+                    self.current_state = WorkflowState.REFINE
+                else:
+                    # Default: proceed to analyze (even if relevance is moderate)
+                    print(f"   ✅ Results validated (relevance: {relevance_score:.2f})")
+                    self.current_state = WorkflowState.ANALYZE
             
             elif self.current_state == WorkflowState.ANALYZE:
                 print(f"🔍 [{self.current_state.value.upper()}] Analyzing results...")
                 self._emit_progress('analyzing', {'status': 'started', 'message': 'Analyzing retrieved data...'})
                 analysis = self.analyze(query, results, plan)
                 confidence = analysis.get("confidence", 0.5)
+                
+                # Track confidence history
+                confidence_history.append(confidence)
+                previous_confidence = confidence_history[-2] if len(confidence_history) > 1 else None
                 
                 analyze_summary = f"Analysis completed with {confidence:.0%} confidence."
                 self._emit_progress('analyzing', {
@@ -995,16 +1210,22 @@ Create concise summary answering the query."""
                     'summary': analyze_summary
                 })
                 print(f"   Confidence: {confidence:.2f}")
+                if previous_confidence is not None:
+                    delta = confidence - previous_confidence
+                    print(f"   Confidence Change: {delta:+.2f} (from {previous_confidence:.2f})")
                 print(f"   Main Themes: {', '.join(analysis.get('main_themes', [])[:3])}\n")
                 
                 self.current_state = WorkflowState.EVALUATE
             
             elif self.current_state == WorkflowState.EVALUATE:
-                # Skip evaluate if fast mode or high confidence (optimization)
+                # Skip evaluate if fast mode OR (high confidence AND good data quality)
                 confidence = analysis.get("confidence", 0.5) if analysis else 0.5
+                data_quality = analysis.get("data_quality", "medium") if analysis else "medium"
+                
+                # Only skip if BOTH high confidence AND good data quality
                 skip_evaluate = (
                     use_fast_mode or 
-                    (config.SKIP_EVALUATE_IF_HIGH_CONFIDENCE and confidence > 0.85)
+                    (config.SKIP_EVALUATE_IF_HIGH_CONFIDENCE and confidence > 0.85 and data_quality == "high")
                 )
                 
                 if skip_evaluate:
@@ -1071,7 +1292,15 @@ Create concise summary answering the query."""
                     'iteration': iteration,
                     'message': f'Checking if refinement needed (iteration {iteration})...'
                 })
-                refinement = self.refine(query, analysis, plan)
+                
+                # Check if there's a pending refinement from VALIDATE_RESULTS
+                pending_refinement = self.context.get_intermediate_result("pending_refinement")
+                if pending_refinement:
+                    refinement = pending_refinement
+                    self.context.clear_intermediate_result("pending_refinement")
+                else:
+                    refinement = self.refine(query, analysis, plan, previous_confidence)
+                
                 refinement_needed = refinement.get("refinement_needed", False)
                 
                 # Force refinement when critique found issues (we came from CRITIQUE)
@@ -1119,13 +1348,29 @@ Create concise summary answering the query."""
                     
                     # Re-analyze
                     analysis = self.analyze(query, results, plan)
-                    confidence = analysis.get("confidence", 0.5)
+                    new_confidence = analysis.get("confidence", 0.5)
                     
-                    print(f"   Updated Confidence: {confidence:.2f}\n")
+                    # Track confidence improvement
+                    confidence_history.append(new_confidence)
+                    if previous_confidence is not None:
+                        improvement = new_confidence - previous_confidence
+                        if improvement < 0.05 and len(confidence_history) > 1:
+                            print(f"   ⚠️  Confidence stagnating (improvement: {improvement:.2f}) - stopping refinement")
+                            self.current_state = WorkflowState.CRITIQUE
+                            previous_confidence = new_confidence
+                            continue
+                    
+                    print(f"   Updated Confidence: {new_confidence:.2f}")
+                    if previous_confidence is not None:
+                        print(f"   Improvement: {improvement:+.2f}\n")
+                    else:
+                        print()
+                    
+                    previous_confidence = new_confidence
                     critique_result = None  # Clear so we don't force refinement again
                     critique_refine_loop_count = 0  # Reset after successful refinement
-                    # Loop back to analyze (which will go to evaluate)
-                    self.current_state = WorkflowState.ANALYZE
+                    # Loop back to validate (to ensure new results are still relevant)
+                    self.current_state = WorkflowState.VALIDATE_RESULTS
                 else:
                     print(f"   No refinement needed: {refinement.get('reason', '')}\n")
                     # If we came from critique with issues, we'd have forced refinement above.
@@ -1133,11 +1378,14 @@ Create concise summary answering the query."""
                     self.current_state = WorkflowState.CRITIQUE
             
             elif self.current_state == WorkflowState.CRITIQUE:
-                # Skip critique if fast mode or high confidence (optimization)
+                # Skip critique if fast mode OR (high confidence AND good data quality)
                 confidence = analysis.get("confidence", 0.5) if analysis else 0.5
+                data_quality = analysis.get("data_quality", "medium") if analysis else "medium"
+                
+                # Only skip if BOTH high confidence AND good data quality
                 skip_critique = (
                     use_fast_mode or 
-                    (config.SKIP_CRITIQUE_IF_HIGH_CONFIDENCE and confidence > 0.85)
+                    (config.SKIP_CRITIQUE_IF_HIGH_CONFIDENCE and confidence > 0.85 and data_quality == "high")
                 )
                 
                 if skip_critique:

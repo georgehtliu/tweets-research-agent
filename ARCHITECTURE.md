@@ -23,21 +23,32 @@ The system follows a **state machine pattern** with autonomous decision-making c
         │               │               │
         ▼               ▼               ▼
 ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
-│   PLAN       │ │   EXECUTE    │ │   ANALYZE    │
-│              │ │              │ │              │
-│ - Decompose  │ │ - Tool Call  │ │ - Extract    │
-│ - Classify   │ │ - Hybrid     │ │   Themes     │
-│ - Select     │ │   Search     │ │ - Sentiment  │
-│   Tools      │ │ - Filter     │ │ - Confidence │
+│   PLAN       │ │   EXECUTE    │ │ VALIDATE_    │
+│              │ │              │ │   RESULTS     │
+│ - Decompose  │ │ - Tool Call  │ │              │
+│ - Classify   │ │ - Hybrid     │ │ - Relevance   │
+│ - Select     │ │   Search     │ │   Check      │
+│   Tools      │ │ - Filter     │ │ - Quality    │
 └──────┬───────┘ └──────┬───────┘ └──────┬───────┘
        │                │                 │
-       └────────────────┼─────────────────┘
-                        │
-                        ▼
-            ┌───────────────────────┐
-            │     EVALUATE          │
-            │  (Replan Decision)    │
-            └───────────┬───────────┘
+       │                └────────┬────────┘
+       │                         │
+       │                         ▼
+       │            ┌───────────────────────┐
+       │            │     ANALYZE           │
+       │            │                       │
+       │            │ - Extract Themes       │
+       │            │ - Sentiment Analysis   │
+       │            │ - Confidence Score    │
+       │            └───────────┬───────────┘
+       │                        │
+       └────────────────────────┼───────────────┐
+                                │               │
+                                ▼               │
+                    ┌───────────────────────┐   │
+                    │     EVALUATE          │   │
+                    │  (Replan Decision)    │   │
+                    └───────────┬───────────┘   │
                         │
             ┌───────────┴───────────┐
             │                       │
@@ -135,9 +146,23 @@ The system follows a **state machine pattern** with autonomous decision-making c
 - **Autonomy**: Enables the agent to make dynamic decisions (e.g., replanning when analysis reveals insufficient data)
 - **Flexibility**: Supports conditional state transitions (e.g., `ANALYZE → EVALUATE → PLAN` if replan needed)
 - **Clarity**: Makes the workflow explicit and debuggable
-- **Extensibility**: Easy to add new states (e.g., `CRITIQUE` state for quality checks)
+- **Extensibility**: Easy to add new states (e.g., `VALIDATE_RESULTS` for quality checks, `CRITIQUE` for hallucination detection)
 
-**Implementation**: `WorkflowState` enum with state transition logic in `run_workflow()` method.
+**State Transitions**:
+- `PLAN → EXECUTE`: Initial planning complete
+- `EXECUTE → VALIDATE_RESULTS`: Results retrieved, validate quality before analysis
+- `VALIDATE_RESULTS → ANALYZE`: Results validated, proceed to analysis
+- `VALIDATE_RESULTS → REFINE/REPLAN`: Low relevance detected, refine or replan
+- `ANALYZE → EVALUATE`: Analysis complete, evaluate if replan needed
+- `EVALUATE → PLAN`: Strategy misaligned, replan needed
+- `EVALUATE → REFINE`: Strategy sound, check if refinement needed
+- `REFINE → VALIDATE_RESULTS`: Refinement executed, validate new results
+- `REFINE → CRITIQUE`: No refinement needed, proceed to critique
+- `CRITIQUE → REFINE`: Issues found, refine to address
+- `CRITIQUE → SUMMARIZE`: Critique passed, generate summary
+- `SUMMARIZE → COMPLETE`: Workflow complete
+
+**Implementation**: `WorkflowState` enum with state transition logic in `run_workflow()` method. Includes confidence tracking and stagnation detection to prevent infinite loops.
 
 ### 2. **Hybrid Retrieval System**
 
@@ -266,6 +291,40 @@ The system follows a **state machine pattern** with autonomous decision-making c
 - **Realism**: Includes verified accounts, engagement metrics, threads, etc.
 
 **Implementation**: `MockXDataGenerator` with category-specific templates, foreign language support, and celebrity names.
+
+### 13. **Result Validation and Quality Gates**
+
+**Decision**: Added `VALIDATE_RESULTS` state to check result relevance before analysis, preventing analysis of irrelevant data.
+
+**Rationale**:
+- **Accuracy**: Prevents analyzing irrelevant results with high confidence
+- **Early Detection**: Catches data quality issues before expensive analysis steps
+- **Efficiency**: Triggers refinement/replanning early when results don't match query intent
+- **Confidence Calibration**: Provides relevance scores to inform downstream decisions
+
+**Implementation**: `validate_results()` method checks relevance using LLM evaluation; transitions to `REFINE` or `REPLAN` if relevance < 0.6; validates again after refinement.
+
+### 14. **Confidence Tracking and Stagnation Detection**
+
+**Decision**: Track confidence across iterations and detect when refinement isn't improving results.
+
+**Rationale**:
+- **Prevent Loops**: Stops infinite refinement loops when confidence plateaus
+- **Efficiency**: Avoids wasted iterations when no improvement is possible
+- **Transparency**: Shows confidence deltas in logs for debugging
+
+**Implementation**: `confidence_history` tracks confidence over iterations; `refine()` checks if delta < 0.05 after first iteration; stops refinement if stagnating.
+
+### 15. **Improved Skip Logic for EVALUATE and CRITIQUE**
+
+**Decision**: Only skip `EVALUATE` and `CRITIQUE` when both high confidence (>0.85) AND good data quality ("high").
+
+**Rationale**:
+- **Accuracy**: Prevents skipping quality checks when data quality is poor
+- **Balanced**: Maintains speed optimization while preserving accuracy
+- **Context-Aware**: Considers both confidence and data quality signals
+
+**Implementation**: Updated skip conditions in `EVALUATE` and `CRITIQUE` states to check `data_quality == "high"` in addition to confidence threshold.
 
 ## 📐 Data Flow and Tool Calls
 

@@ -21,9 +21,12 @@ This is an **autonomous AI research agent** that can answer complex questions ab
 1. **Understands** your question
 2. **Plans** how to answer it
 3. **Searches** through thousands of posts
-4. **Analyzes** what it finds
-5. **Refines** its search if needed
-6. **Summarizes** everything into a clear answer
+4. **Validates** that results match your query (prevents analyzing irrelevant data)
+5. **Analyzes** what it finds
+6. **Evaluates** if the strategy needs to change
+7. **Refines** its search if needed (with confidence tracking to prevent loops)
+8. **Critiques** the analysis for quality issues
+9. **Summarizes** everything into a clear answer
 
 ### Key Features:
 - **Autonomous**: Makes decisions on its own (when to search more, when to stop)
@@ -232,7 +235,7 @@ User Types Query
 ┌─────────────────────────────────────────────────────────────┐
 │ 3. AGENTIC RESEARCH AGENT (agent.py)                        │
 │    - State Machine Orchestrator                              │
-│    - Runs workflow: PLAN → EXECUTE → ANALYZE → ...         │
+│    - Runs workflow: PLAN → EXECUTE → VALIDATE → ANALYZE → ...│
 │    - Emits progress events via callback                     │
 └───────────────────────┬─────────────────────────────────────┘
                         │
@@ -240,21 +243,30 @@ User Types Query
         │               │               │
         ▼               ▼               ▼
 ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
-│   PLAN      │ │   EXECUTE    │ │   ANALYZE    │
-│             │ │              │ │              │
-│ Calls Grok  │ │ Calls        │ │ Calls Grok   │
-│ API to     │ │ Hybrid       │ │ API to       │
-│ create plan│ │ Retriever    │ │ analyze      │
+│   PLAN      │ │   EXECUTE    │ │ VALIDATE_    │
+│             │ │              │ │   RESULTS    │
+│ Calls Grok  │ │ Calls        │ │              │
+│ API to     │ │ Hybrid       │ │ Checks       │
+│ create plan│ │ Retriever    │ │ relevance    │
 └──────┬──────┘ └──────┬───────┘ └──────┬───────┘
        │               │                 │
-       │               │                 │
-       └───────────────┼─────────────────┘
-                       │
-                       ▼
-            ┌───────────────────────┐
-            │   EVALUATE            │
-            │   (Should we replan?) │
-            └───────────┬───────────┘
+       │               └────────┬────────┘
+       │                        │
+       │                        ▼
+       │            ┌───────────────────────┐
+       │            │     ANALYZE          │
+       │            │                       │
+       │            │ Calls Grok API to     │
+       │            │ analyze results       │
+       │            └───────────┬───────────┘
+       │                        │
+       └────────────────────────┼─────────────┐
+                                │             │
+                                ▼             │
+                    ┌───────────────────────┐ │
+                    │   EVALUATE            │ │
+                    │   (Should we replan?) │ │
+                    └───────────┬───────────┘ │
                         │
             ┌───────────┴───────────┐
             │                       │
@@ -384,10 +396,19 @@ def run_workflow(self, query: str, fast_mode: bool = None):
             
         elif self.current_state == WorkflowState.EXECUTE:
             results = self.execute(plan, query)  # Step 3b
-            self.current_state = WorkflowState.ANALYZE
-            
+            self.current_state = WorkflowState.VALIDATE_RESULTS
+        
+        elif self.current_state == WorkflowState.VALIDATE_RESULTS:
+            validation = self.validate_results(query, results, plan)  # Step 3c
+            if validation.get("action") == "replan":
+                self.current_state = WorkflowState.PLAN
+            elif validation.get("action") == "refine":
+                self.current_state = WorkflowState.REFINE
+            else:
+                self.current_state = WorkflowState.ANALYZE
+        
         elif self.current_state == WorkflowState.ANALYZE:
-            analysis = self.analyze(query, results, plan)  # Step 3c
+            analysis = self.analyze(query, results, plan)  # Step 3d
             self.current_state = WorkflowState.EVALUATE
             
         # ... more states ...
@@ -684,7 +705,7 @@ def hybrid_search(self, query: str) -> List[Dict]:
 
 ---
 
-### Step 3d: EVALUATE State
+### Step 3e: EVALUATE State
 
 **Purpose**: Decide if we need to replan (start over) or refine (search more)
 
@@ -692,17 +713,22 @@ def hybrid_search(self, query: str) -> List[Dict]:
 
 **What happens:**
 
-1. **Check if Skipped** (Optimization):
+1. **Check if Skipped** (Optimization - Improved Logic):
    ```python
    confidence = analysis.get("confidence", 0.5)
+   data_quality = analysis.get("data_quality", "medium")
+   
+   # Only skip if BOTH high confidence AND good data quality
    skip_evaluate = (
        use_fast_mode or  # Fast mode enabled
-       (SKIP_EVALUATE_IF_HIGH_CONFIDENCE and confidence > 0.85)  # High confidence
+       (SKIP_EVALUATE_IF_HIGH_CONFIDENCE and confidence > 0.85 and data_quality == "high")
    )
    
    if skip_evaluate:
        return {"replan_needed": False}  # Skip for speed
    ```
+   
+   **Improvement**: Now checks both confidence AND data quality. Previously, high confidence alone could skip evaluation even with poor data quality.
 
 2. **Call Grok API**:
    ```python
@@ -847,7 +873,7 @@ def hybrid_search(self, query: str) -> List[Dict]:
 
 ---
 
-### Step 3g: SUMMARIZE State
+### Step 3h: SUMMARIZE State
 
 **Purpose**: Generate final comprehensive summary
 
@@ -1150,15 +1176,17 @@ Look for:
 
 ---
 
-### 3. **High Confidence Skip**
+### 3. **High Confidence Skip (Improved)**
 
-**What**: Skip EVALUATE if confidence > 85%, skip CRITIQUE if confidence > 85%
+**What**: Skip EVALUATE if confidence > 85% AND data_quality == "high", skip CRITIQUE if confidence > 85% AND data_quality == "high"
 
-**Why**: If we're already confident, no need to evaluate further
+**Why**: If we're already confident AND data quality is good, no need to evaluate further. Previously only checked confidence, which could skip quality checks even with poor data.
 
-**Impact**: Saves 1-2 API calls per query when confidence is high
+**Impact**: Saves 1-2 API calls per query when confidence is high AND data quality is good, while preserving accuracy checks when data quality is poor
 
-**Code**: `server/config.py` lines 47-48, `server/agent.py` lines 1006, 1139
+**Code**: `server/config.py` lines 47-48, `server/agent.py` lines 1006-1008, 1137-1141
+
+**Improvement**: Now considers both confidence and data quality signals, preventing premature skipping when data quality is poor.
 
 ---
 
@@ -1279,7 +1307,159 @@ else:
 
 ---
 
-### 12. **Context Management**
+### 12. **Result Validation (New)**
+
+**What**: Validate result relevance before analysis using LLM evaluation
+
+**Why**: Prevents analyzing irrelevant data with high confidence, catches data quality issues early
+
+**Impact**: Improves accuracy by ensuring only relevant results are analyzed, triggers refinement/replanning early when results don't match query intent
+
+**Code**: `server/agent.py` lines 459-541
+
+**How it works**:
+```python
+# After EXECUTE, validate results before ANALYZE
+validation = self.validate_results(query, results, plan)
+
+if validation.get("action") == "replan":
+    # Results don't match query - need new strategy
+    self.current_state = WorkflowState.PLAN
+elif validation.get("action") == "refine" or relevance_score < 0.6:
+    # Low relevance - trigger refinement
+    self.current_state = WorkflowState.REFINE
+else:
+    # Results validated - proceed to analysis
+    self.current_state = WorkflowState.ANALYZE
+```
+
+**Benefits**:
+- Early detection of irrelevant results
+- Prevents false confidence from analyzing wrong data
+- Automatic refinement/replanning triggers
+
+---
+
+### 13. **Confidence Tracking and Stagnation Detection (New)**
+
+**What**: Track confidence across iterations and detect when refinement isn't improving results
+
+**Why**: Prevents infinite refinement loops when confidence plateaus
+
+**Impact**: Stops wasted iterations, improves efficiency, shows confidence deltas in logs
+
+**Code**: `server/agent.py` lines 543-665, 1120-1128
+
+**How it works**:
+```python
+# Track confidence history
+confidence_history.append(confidence)
+previous_confidence = confidence_history[-2] if len(confidence_history) > 1 else None
+
+# In refine(), check for stagnation
+if previous_confidence is not None:
+    confidence_delta = confidence - previous_confidence
+    if confidence_delta < 0.05 and self.iteration_count > 0:
+        # Confidence not improving - stop refinement
+        return {"refinement_needed": False, "confidence_stagnant": True}
+```
+
+**Benefits**:
+- Prevents infinite loops
+- Saves tokens and time
+- Transparent confidence tracking in logs
+
+---
+
+### 14. **Improved Refinement Threshold (New)**
+
+**What**: Increased refinement skip threshold from 75% to 85%
+
+**Why**: Catch more cases that need refinement, improve accuracy
+
+**Impact**: More queries will go through refinement when needed, improving result quality
+
+**Code**: `server/agent.py` line 552
+
+---
+
+### 12. **Result Validation (New)**
+
+**What**: Validate result relevance before analysis using LLM evaluation
+
+**Why**: Prevents analyzing irrelevant data with high confidence, catches data quality issues early
+
+**Impact**: Improves accuracy by ensuring only relevant results are analyzed, triggers refinement/replanning early when results don't match query intent
+
+**Code**: `server/agent.py` lines 459-541
+
+**How it works**:
+```python
+# After EXECUTE, validate results before ANALYZE
+validation = self.validate_results(query, results, plan)
+
+if validation.get("action") == "replan":
+    # Results don't match query - need new strategy
+    self.current_state = WorkflowState.PLAN
+elif validation.get("action") == "refine" or relevance_score < 0.6:
+    # Low relevance - trigger refinement
+    self.current_state = WorkflowState.REFINE
+else:
+    # Results validated - proceed to analysis
+    self.current_state = WorkflowState.ANALYZE
+```
+
+**Benefits**:
+- Early detection of irrelevant results
+- Prevents false confidence from analyzing wrong data
+- Automatic refinement/replanning triggers
+
+---
+
+### 13. **Confidence Tracking and Stagnation Detection (New)**
+
+**What**: Track confidence across iterations and detect when refinement isn't improving results
+
+**Why**: Prevents infinite refinement loops when confidence plateaus
+
+**Impact**: Stops wasted iterations, improves efficiency, shows confidence deltas in logs
+
+**Code**: `server/agent.py` lines 543-665, 1120-1128
+
+**How it works**:
+```python
+# Track confidence history
+confidence_history.append(confidence)
+previous_confidence = confidence_history[-2] if len(confidence_history) > 1 else None
+
+# In refine(), check for stagnation
+if previous_confidence is not None:
+    confidence_delta = confidence - previous_confidence
+    if confidence_delta < 0.05 and self.iteration_count > 0:
+        # Confidence not improving - stop refinement
+        return {"refinement_needed": False, "confidence_stagnant": True}
+```
+
+**Benefits**:
+- Prevents infinite loops
+- Saves tokens and time
+- Transparent confidence tracking in logs
+
+---
+
+### 14. **Improved Refinement Threshold (New)**
+
+**What**: Increased refinement skip threshold from 75% to 85%
+
+**Why**: Catch more cases that need refinement, improve accuracy
+
+**Impact**: More queries will go through refinement when needed, improving result quality
+
+**Code**: `server/agent.py` line 552
+
+---
+
+### 15. **Context Management**
 
 **What**: Truncate old steps when context gets too large
 
@@ -1394,6 +1574,10 @@ response = requests.post(
 
 ## Understanding the State Machine
 
+**Recent Improvements**: The state machine now includes result validation, confidence tracking with stagnation detection, and improved skip logic that considers both confidence and data quality. These improvements prevent analyzing irrelevant data and infinite refinement loops.
+
+The state machine is visualized in the UI using a Mermaid diagram that updates in real-time, showing which models are at each state and how they progress through the workflow.
+
 ### State Transitions
 
 ```
@@ -1403,38 +1587,394 @@ PLAN
 EXECUTE
   │
   ▼
-ANALYZE
+VALIDATE_RESULTS
   │
-  ▼
-EVALUATE
+  ├─[action="replan"]──► PLAN (start over)
   │
-  ├─[replan_needed=True]──► PLAN (start over)
+  ├─[action="refine"]──► REFINE
   │
-  └─[replan_needed=False]──► REFINE
-                              │
-                              ├─[refinement_needed=True]──► ANALYZE (re-analyze)
-                              │
-                              └─[refinement_needed=False]──► CRITIQUE
-                                                              │
-                                                              ├─[issues_found=True]──► REFINE
-                                                              │
-                                                              └─[issues_found=False]──► SUMMARIZE
-                                                                                        │
-                                                                                        ▼
-                                                                                    COMPLETE
+  └─[action="proceed"]──► ANALYZE
+                          │
+                          ▼
+                      EVALUATE
+                          │
+                          ├─[replan_needed=True]──► PLAN (start over)
+                          │
+                          └─[replan_needed=False]──► REFINE
+                                                      │
+                                                      ├─[refinement_needed=True]──► VALIDATE_RESULTS (validate new results)
+                                                      │                                 │
+                                                      │                                 └─► ANALYZE (re-analyze)
+                                                      │
+                                                      └─[refinement_needed=False]──► CRITIQUE
+                                                                                      │
+                                                                                      ├─[issues_found=True]──► REFINE
+                                                                                      │
+                                                                                      └─[issues_found=False]──► SUMMARIZE
+                                                                                                                │
+                                                                                                                ▼
+                                                                                                            COMPLETE
 ```
 
-### State Details
+### Detailed State Explanations
 
-| State | Purpose | Can Skip? | When Skipped |
-|-------|---------|-----------|--------------|
-| PLAN | Create execution plan | No | Never |
-| EXECUTE | Retrieve data | No | Never |
-| ANALYZE | Analyze results | No | Never |
-| EVALUATE | Check if replan needed | Yes | Fast mode OR confidence > 85% |
-| REFINE | Improve results | Yes | Confidence > 75% |
-| CRITIQUE | Check quality | Yes | Fast mode OR confidence > 85% |
-| SUMMARIZE | Generate final answer | No | Never |
+#### 1. **PLAN State** 📋
+
+**Purpose**: Break down the user's query into actionable steps and decide on execution strategy.
+
+**What It Does**:
+- Analyzes the query to determine its type (trend_analysis, sentiment, comparison, etc.)
+- Creates a step-by-step execution plan
+- Decides between two execution modes:
+  - **Plan-based execution** (default, faster): Direct retrieval using predefined steps
+  - **Tool-calling execution** (complex queries): Dynamic tool selection by the LLM
+
+**Key Decisions**:
+- `query_type`: Categorizes the query (trend_analysis, info_extraction, comparison, sentiment, temporal, other)
+- `use_tool_calling`: Whether to use dynamic tool calling (true) or plan-based execution (false)
+- `steps`: Array of execution steps with actions, descriptions, and tools
+- `expected_complexity`: low, medium, or high
+
+**Model Used**: `PLANNER_MODEL` (typically `grok-4-fast-reasoning`)
+
+**Can Skip?**: **No** - This is always the first state
+
+**Example Output**:
+```json
+{
+  "query_type": "comparison",
+  "use_tool_calling": false,
+  "steps": [
+    {"step_number": 1, "action": "search", "description": "Search for JavaScript posts", "tools": ["hybrid_search"]},
+    {"step_number": 2, "action": "search", "description": "Search for Python posts", "tools": ["hybrid_search"]}
+  ],
+  "expected_complexity": "medium"
+}
+```
+
+**Transitions**: Always → `EXECUTE`
+
+---
+
+#### 2. **EXECUTE State** ⚙️
+
+**Purpose**: Retrieve relevant data from the dataset based on the plan.
+
+**What It Does**:
+- Executes the plan steps sequentially
+- Uses either:
+  - **Plan-based mode**: Direct calls to `HybridRetriever` based on plan steps
+  - **Tool-calling mode**: LLM dynamically selects and calls tools iteratively
+- Combines results from multiple steps
+- Deduplicates posts by ID
+
+**Key Features**:
+- Supports multiple search strategies (keyword, semantic, hybrid)
+- Can filter by metadata (sentiment, engagement, verification status)
+- Can analyze temporal trends
+- Can look up posts by specific authors
+
+**Model Used**: 
+- Plan-based: Direct retrieval (no LLM)
+- Tool-calling: `PLANNER_MODEL` for tool selection
+
+**Can Skip?**: **No** - Data retrieval is essential
+
+**Example**: For query "Compare JavaScript vs Python sentiment", executes:
+1. Search for JavaScript posts → 50 results
+2. Search for Python posts → 45 results
+3. Combine and deduplicate → 90 unique results
+
+**Transitions**: Always → `VALIDATE_RESULTS`
+
+---
+
+#### 3. **VALIDATE_RESULTS State** ✅
+
+**Purpose**: Validate that retrieved results are relevant to the query before analysis.
+
+**What It Does**:
+- Checks if results match the query intent
+- Calculates a relevance score (0.0-1.0)
+- Recommends next action: `proceed`, `refine`, or `replan`
+
+**Key Decisions**:
+- `validation_passed`: Whether results are good enough
+- `relevance_score`: How relevant results are (0.0-1.0)
+- `action`: What to do next:
+  - `proceed`: Results are relevant → go to ANALYZE
+  - `refine`: Results need improvement → go to REFINE (only if relevance_score < 0.4)
+  - `replan`: Results don't match query → start over at PLAN (only if relevance_score < 0.3)
+
+**Special Cases**:
+- If `len(results) == 0`: Automatically triggers `replan` (no results found)
+- System is lenient: Prefers `proceed` unless results are clearly wrong
+
+**Model Used**: `ANALYZER_MODEL` (typically `grok-3-mini`)
+
+**Can Skip?**: **No** - Critical quality gate to prevent analyzing irrelevant data
+
+**Example**: 
+- Query: "What are people saying about AI?"
+- Results: 30 posts about JavaScript (not AI)
+- Validation: `relevance_score: 0.2`, `action: "replan"` → Start over with better search terms
+
+**Transitions**:
+- `action="replan"` → `PLAN` (start over)
+- `action="refine"` → `REFINE`
+- `action="proceed"` → `ANALYZE`
+
+---
+
+#### 4. **ANALYZE State** 🔍
+
+**Purpose**: Analyze retrieved results to extract patterns, themes, and insights.
+
+**What It Does**:
+- Examines a sample of results (typically 6 items)
+- Identifies key themes, patterns, and insights
+- Calculates confidence score (0.0-1.0)
+- Assesses data quality (high, medium, low)
+- Extracts key insights, sentiment distribution, and trends
+
+**Key Outputs**:
+- `confidence`: How confident the analysis is (0.0-1.0)
+- `data_quality`: Quality of retrieved data (high, medium, low)
+- `key_insights`: Array of main findings
+- `sentiment_distribution`: Breakdown of positive/negative/neutral
+- `themes`: Main topics identified
+
+**Optimizations**:
+- Only analyzes 6 sample items (not all results) for speed
+- Truncates text to 150 characters per item
+- Uses concise data summaries
+
+**Model Used**: `ANALYZER_MODEL` (typically `grok-3-mini`)
+
+**Can Skip?**: **No** - Analysis is essential for generating insights
+
+**Example Output**:
+```json
+{
+  "confidence": 0.85,
+  "data_quality": "high",
+  "key_insights": [
+    "JavaScript discussions focus on frameworks and performance",
+    "Python discussions emphasize data science and AI"
+  ],
+  "sentiment_distribution": {"positive": 0.6, "negative": 0.2, "neutral": 0.2}
+}
+```
+
+**Transitions**: Always → `EVALUATE`
+
+---
+
+#### 5. **EVALUATE State** 🔎
+
+**Purpose**: Evaluate whether the current strategy needs to be completely replanned.
+
+**What It Does**:
+- Reviews the analysis and plan
+- Determines if the strategy is fundamentally wrong
+- Decides between:
+  - **Replan**: Strategy is wrong, need to start over
+  - **Refine**: Strategy is good, just need more/better data
+
+**Key Decisions**:
+- `replan_needed`: Whether to start over from PLAN
+- `reason`: Explanation for the decision
+- `suggested_strategy`: Optional new strategy if replanning
+
+**Skip Conditions**:
+- **Fast mode enabled**: Always skipped
+- **High confidence + high quality**: If `confidence > 0.85` AND `data_quality == "high"`, skip evaluation
+
+**Replan Triggers**:
+- Confidence < 0.7 (70%) AND strategy is misaligned
+- Data doesn't match query intent
+- Fundamental approach is wrong
+
+**Model Used**: `REFINER_MODEL` (typically `grok-3-mini`)
+
+**Can Skip?**: **Yes** - Skipped in fast mode or when confidence is high
+
+**Example**:
+- Analysis shows low confidence (0.6) and data about wrong topic
+- Evaluation: `replan_needed: true`, `reason: "Results don't match query intent"` → Go back to PLAN
+
+**Transitions**:
+- `replan_needed=True` → `PLAN` (start over)
+- `replan_needed=False` → `REFINE`
+
+---
+
+#### 6. **REFINE State** 🔄
+
+**Purpose**: Improve results by gathering more or better data without changing the overall strategy.
+
+**What It Does**:
+- Decides if refinement is needed
+- Creates refinement steps (e.g., "search with different keywords", "filter by date range")
+- Executes refinement steps
+- Re-analyzes with new results
+
+**Key Decisions**:
+- `refinement_needed`: Whether more data is needed
+- `next_steps`: Array of refinement actions to take
+- `reason`: Why refinement is needed
+
+**Skip Conditions**:
+- **High confidence**: If `confidence > 0.85`, skip refinement
+- **Confidence stagnation**: If confidence isn't improving across iterations, stop refining
+
+**Stagnation Detection**:
+- Tracks `confidence_history` across refinement loops
+- If `confidence_delta < 0.05` (confidence not improving), stops refinement
+- Prevents infinite refinement loops
+
+**Refinement Steps**:
+- Can search with different keywords
+- Can apply additional filters
+- Can expand date ranges
+- Can search by different authors
+
+**Model Used**: `REFINER_MODEL` (typically `grok-3-mini`)
+
+**Can Skip?**: **Yes** - Skipped when confidence is high or stagnating
+
+**Example**:
+- Initial results: 20 posts
+- Refinement: "Search with synonyms and expand date range"
+- New results: 35 posts (includes original 20)
+- Re-analyze with combined results
+
+**Transitions**:
+- `refinement_needed=True` → `VALIDATE_RESULTS` (validate new results) → `ANALYZE` (re-analyze)
+- `refinement_needed=False` → `CRITIQUE`
+
+---
+
+#### 7. **CRITIQUE State** 🔬
+
+**Purpose**: Review the analysis and summary for hallucinations, bias, and factual errors.
+
+**What It Does**:
+- Checks if claims are supported by retrieved data
+- Identifies hallucinations (made-up facts)
+- Detects selection bias
+- Ensures analysis is balanced
+- Adjusts confidence if issues found
+
+**Key Decisions**:
+- `critique_passed`: Whether analysis passes quality checks
+- `hallucinations`: Array of unsupported claims
+- `biases`: Array of detected biases
+- `corrections`: Suggested corrections
+- `confidence_adjustment`: Adjustment to confidence score (-0.1 to 0.1)
+
+**Skip Conditions**:
+- **Fast mode enabled**: Always skipped
+- **High confidence + high quality**: If `confidence > 0.85` AND `data_quality == "high"`, skip critique
+
+**Issue Handling**:
+- If `issues_found=True`: Go back to REFINE to fix issues
+- If `issues_found=False`: Proceed to SUMMARIZE
+
+**Model Used**: `REFINER_MODEL` (typically `grok-3-mini`)
+
+**Can Skip?**: **Yes** - Skipped in fast mode or when confidence is high
+
+**Example**:
+- Analysis claims "80% positive sentiment"
+- Critique: "Only 60% positive based on data" → `hallucinations: ["Inflated sentiment percentage"]`
+- Action: Go back to REFINE to correct analysis
+
+**Transitions**:
+- `issues_found=True` → `REFINE` (fix issues)
+- `issues_found=False` → `SUMMARIZE`
+
+---
+
+#### 8. **SUMMARIZE State** 📝
+
+**Purpose**: Generate the final comprehensive summary answer for the user.
+
+**What It Does**:
+- Combines all analysis, insights, and findings
+- Creates a comprehensive summary
+- Formats the answer clearly
+- Includes key insights, patterns, and conclusions
+
+**Key Outputs**:
+- `final_summary`: The complete answer text
+- `key_findings`: Main conclusions
+- `supporting_data`: Evidence from retrieved results
+
+**Model Used**: `SUMMARIZER_MODEL` (typically `grok-3-mini`)
+
+**Can Skip?**: **No** - Final summary is always generated
+
+**Example Output**:
+```
+Based on analysis of 90 posts comparing JavaScript and Python:
+
+**Key Findings:**
+- JavaScript discussions focus on frameworks (React, Vue) and performance optimization
+- Python discussions emphasize data science, AI/ML, and ease of use
+- Sentiment: JavaScript 65% positive, Python 70% positive
+
+**Trends:**
+- JavaScript: Growing interest in performance and modern frameworks
+- Python: Strong focus on AI/ML applications and data analysis
+```
+
+**Transitions**: Always → `COMPLETE`
+
+---
+
+### State Summary Table
+
+| State | Purpose | Can Skip? | When Skipped | Model Used |
+|-------|---------|-----------|--------------|------------|
+| **PLAN** | Create execution plan | No | Never | `PLANNER_MODEL` |
+| **EXECUTE** | Retrieve data | No | Never | Direct retrieval or `PLANNER_MODEL` |
+| **VALIDATE_RESULTS** | Validate result relevance | No | Never (critical quality gate) | `ANALYZER_MODEL` |
+| **ANALYZE** | Analyze results | No | Never | `ANALYZER_MODEL` |
+| **EVALUATE** | Check if replan needed | Yes | Fast mode OR (confidence > 85% AND data_quality == "high") | `REFINER_MODEL` |
+| **REFINE** | Improve results | Yes | Confidence > 85% OR confidence stagnating | `REFINER_MODEL` |
+| **CRITIQUE** | Check quality | Yes | Fast mode OR (confidence > 85% AND data_quality == "high") | `REFINER_MODEL` |
+| **SUMMARIZE** | Generate final answer | No | Never | `SUMMARIZER_MODEL` |
+
+### Understanding State Transitions
+
+**Forward Flow (Normal Path)**:
+1. `PLAN` → `EXECUTE` → `VALIDATE_RESULTS` → `ANALYZE` → `EVALUATE` → `REFINE` → `CRITIQUE` → `SUMMARIZE` → `COMPLETE`
+
+**Cycles (Self-Correction)**:
+- **Replan Cycle**: `VALIDATE_RESULTS` or `EVALUATE` → `PLAN` (start over with new strategy)
+- **Refinement Cycle**: `REFINE` → `VALIDATE_RESULTS` → `ANALYZE` (improve results iteratively)
+- **Critique Cycle**: `CRITIQUE` → `REFINE` → `CRITIQUE` (fix quality issues)
+
+**Skip Paths (Fast Mode)**:
+- `ANALYZE` → `REFINE` (skips `EVALUATE` and `CRITIQUE`)
+
+### Visual Representation
+
+The state machine is visualized in the UI using a Mermaid diagram that:
+- Shows all states as nodes with icons
+- Displays transition arrows with labels (e.g., "if validated", "if replan needed")
+- Highlights active states (where models currently are) in blue
+- Shows completed states in green
+- Shows pending states in gray
+- Displays model indicators on active states (e.g., "g4fr", "g4", "g3mini")
+- Updates in real-time as models progress through the workflow
+
+This visualization helps you understand:
+- Where each model is in the workflow
+- What transitions are being taken
+- Which states have been completed
+- The overall progress of the research process
 
 ---
 
@@ -1451,6 +1991,8 @@ EVALUATE
 2. **Use Complex Queries**: Multi-step queries trigger tool calling
 3. **Increase Max Iterations**: Allow more refinement loops
 4. **Increase Sample Sizes**: Analyze more items
+5. **Result Validation**: The system now validates results before analysis (automatic)
+6. **Confidence Tracking**: System tracks confidence improvement to prevent loops (automatic)
 
 ### For Lower Costs:
 1. **Use Fast Mode**: Fewer API calls = lower cost

@@ -61,6 +61,11 @@ class ContextManager:
         """Retrieve intermediate result"""
         return self.intermediate_results.get(key, default)
     
+    def clear_intermediate_result(self, key: str):
+        """Clear a specific intermediate result"""
+        if key in self.intermediate_results:
+            del self.intermediate_results[key]
+    
     def get_recent_steps(self, n: int = 5) -> List[ExecutionStep]:
         """Get the most recent n execution steps"""
         return self.execution_steps[-n:]
