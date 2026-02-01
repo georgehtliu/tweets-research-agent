@@ -2,8 +2,6 @@
 
 An autonomous multi-step agentic workflow using Grok as the central reasoner for complex research on simulated X (Twitter) data.
 
-> 📖 **New to this project?** Check out the [Complete Beginner Guide](BEGINNER_GUIDE.md) for detailed explanations of data flow, optimizations, and step-by-step processes.
-
 ## 🎯 Overview
 
 This system implements a fully autonomous research agent that can:
@@ -94,14 +92,19 @@ cp .env.example .env
 docker-compose up
 ```
 
-See [Deployment Guide](DEPLOYMENT.md#docker-deployment) for detailed Docker instructions.
-
 ## 📚 Documentation
 
-- **[Beginner Guide](BEGINNER_GUIDE.md)**: Complete step-by-step walkthrough with data flow, optimizations, and detailed explanations
-- **[Architecture](ARCHITECTURE.md)**: System architecture, design decisions, and component details
-- **[API Documentation](API.md)**: API endpoints and usage examples
-- **[Deployment Guide](DEPLOYMENT.md)**: Configuration, deployment, and troubleshooting
+### Architecture
+The system uses a state machine pattern with autonomous decision-making. Components include a FastAPI server, AgenticResearchAgent (state machine orchestrator), HybridRetriever (semantic + keyword search), ToolRegistry (dynamic tool calling), ContextManager (execution tracking), and GrokClient (API interface). The workflow progresses through states: PLAN → EXECUTE → VALIDATE_RESULTS → ANALYZE → EVALUATE → REFINE → CRITIQUE → SUMMARIZE.
+
+### Beginner Guide
+The system excels at sentiment analysis, time range queries, multi-language support, author-based analysis, category-specific queries, and complex multi-step queries. It uses hybrid retrieval (semantic + keyword search), supports both plan-based and dynamic tool-calling execution modes, and includes optimizations like embedding caching, confidence tracking with stagnation detection, and result validation gates.
+
+### API
+Main endpoints: `POST /api/query` (submit query, receive SSE stream), `POST /api/query/compare-models` (parallel model comparison), `GET /api/tweets` (paginated tweet browsing), `GET /api/health` (health check). The query endpoint streams progress events (planning, executing, analyzing, etc.) via Server-Sent Events. Interactive API docs available at `/docs` (Swagger) and `/redoc` (ReDoc).
+
+### Deployment
+Configure via `server/config.py` (model selection, retrieval settings, agent parameters). Docker deployment: create `.env` with `GROK_API_KEY`, run `docker-compose up`. Supports volume mounts for data persistence, health checks, and production considerations (security, scaling, monitoring). Uses `grok-4-fast-reasoning` model for optimal cost/performance balance (45x cheaper than grok-3 with 2M token context).
 
 ## 🔍 How It Works
 
@@ -115,8 +118,6 @@ See [Deployment Guide](DEPLOYMENT.md#docker-deployment) for detailed Docker inst
 8. **Summarization**: Generates final comprehensive summary
 
 **Accuracy Improvements**: The system includes result validation gates, confidence tracking with stagnation detection, and improved skip logic to ensure high-quality results while maintaining efficiency.
-
-See [Beginner Guide](BEGINNER_GUIDE.md) for detailed explanations of each step.
 
 ## 📊 Example Queries
 
@@ -143,7 +144,6 @@ python evaluator.py --max-queries 10
 python server/evaluation/compare_models.py --max-queries 5
 ```
 
-See [Architecture](ARCHITECTURE.md) for more details on the evaluation framework.
 
 ## 🐛 Troubleshooting
 
@@ -161,7 +161,6 @@ Set `GROK_API_KEY` in `.env` file or environment variable
 - Verify data format matches expected structure
 - Try broader search terms
 
-See [Deployment Guide](DEPLOYMENT.md) for more troubleshooting tips.
 
 ## 📁 Project Structure
 
@@ -179,7 +178,6 @@ Grok-takehome/
 └── docs/                # Documentation files
 ```
 
-See [Architecture](ARCHITECTURE.md) for detailed project structure.
 
 ## 🔐 Security Notes
 
