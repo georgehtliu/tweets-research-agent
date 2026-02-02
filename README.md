@@ -2,6 +2,8 @@
 
 An autonomous multi-step agentic workflow using Grok as the central reasoner for complex research on simulated X (Twitter) data.
 
+![Grok Research Agent demo](grok-research.gif)
+
 ## 🎯 Overview
 
 This system implements a fully autonomous research agent that can:
